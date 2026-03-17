@@ -486,8 +486,9 @@ class Ajax_Handler {
 				continue;
 			}
 
-			// Slider — price min/max.
-			if ( 'price' === $key && is_array( $raw_value ) ) {
+			// Slider — price má podkľúče min/max. Range slugy (checkbox/radio)
+			// nemajú tieto kľúče a musia prejsť na generický handler nižšie.
+			if ( 'price' === $key && is_array( $raw_value ) && ( isset( $raw_value['min'] ) || isset( $raw_value['max'] ) ) ) {
 				$min = isset( $raw_value['min'] ) && '' !== $raw_value['min']
 					? (float) $raw_value['min']
 					: null;
