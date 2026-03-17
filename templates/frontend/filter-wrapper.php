@@ -47,6 +47,12 @@ use WC_Simple_Filter\Template;
 
 	</div>
 
-	<?php Template::get_template( 'partials/reset-button.php', [] ); ?>
+	<?php
+	// In horizontal layout the reset button lives inside .wcsf__active-bar.
+	// For sidebar layout render it below the filter list.
+	if ( 'sidebar' === $layout ) :
+		Template::get_template( 'partials/reset-button.php', [] );
+	endif;
+	?>
 
 </div>
