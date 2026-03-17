@@ -70,6 +70,7 @@ class Admin extends \WC_Settings_Page {
 
 		// Sekcia 'edit' je špeciálna — editácia konkrétneho filtra.
 		if ( 'edit' === $current_section ) {
+			$GLOBALS['hide_save_button'] = true;
 			$filter_id = isset( $_GET['filter_id'] ) ? absint( $_GET['filter_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			( new Filter_Edit() )->render( $filter_id );
 			return;
@@ -77,14 +78,19 @@ class Admin extends \WC_Settings_Page {
 
 		switch ( $current_section ) {
 			case 'settings':
+				// Nastavenia majú vlastné AJAX ukladanie — WC tlačidlo nepotrebujeme.
+				$GLOBALS['hide_save_button'] = true;
 				( new Settings_Tab() )->render();
 				break;
 
 			case 'help':
+				$GLOBALS['hide_save_button'] = true;
 				( new Help_Tab() )->render();
 				break;
 
 			default:
+				// Záložka Filtre — zoznam filtrov, bez ukladania cez WC mainform.
+				$GLOBALS['hide_save_button'] = true;
 				( new Filters_Tab() )->render();
 				break;
 		}
