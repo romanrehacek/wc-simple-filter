@@ -18,27 +18,27 @@ msgstr ""
 #. Plugin Name of the plugin
 #: wc-simple-filter.php
 msgid "WC Simple Filter"
-msgstr ""
+msgstr "WC Simple Filter"
 
 #. Plugin URI of the plugin
 #: wc-simple-filter.php
 msgid "https://github.com/sjbdigital/wc-simple-filter"
-msgstr ""
+msgstr "https://github.com/sjbdigital/wc-simple-filter"
 
 #. Description of the plugin
 #: wc-simple-filter.php
 msgid "Configurable product filters for WooCommerce shop. Insert via shortcode [wc_simple_filter] or PHP function wc_simple_filter()."
-msgstr ""
+msgstr "Konfigurovateľné filtre produktov pre WooCommerce obchod. Vložte prostredníctvom skratkódu [wc_simple_filter] alebo PHP funkcie wc_simple_filter()."
 
 #. Author of the plugin
 #: wc-simple-filter.php
 msgid "SJB Digital"
-msgstr ""
+msgstr "SJB Digital"
 
 #. Author URI of the plugin
 #: wc-simple-filter.php
 msgid "https://sjbdigital.dev"
-msgstr ""
+msgstr "https://sjbdigital.dev"
 
 #: includes/admin/class-admin.php:29
 #: includes/admin/class-admin.php:57
@@ -55,567 +55,567 @@ msgstr "Pomoc"
 
 #: includes/admin/class-admin.php:187
 msgid "Are you sure you want to delete this filter?"
-msgstr ""
+msgstr "Ste si istí, že chcete zmazať tento filter?"
 
 #: includes/admin/class-admin.php:188
 msgid "Saving…"
-msgstr ""
+msgstr "Ukladá sa…"
 
 #: includes/admin/class-admin.php:189
 msgid "Saved"
-msgstr ""
+msgstr "Uložené"
 
 #: includes/admin/class-admin.php:190
 msgid "Error. Try again."
-msgstr ""
+msgstr "Chyba. Skúste znova."
 
 #: includes/admin/class-admin.php:191
 msgid "Rebuilding index…"
-msgstr ""
+msgstr "Prebudovanie indexu…"
 
 #: includes/admin/class-admin.php:192
 msgid "Index rebuilt."
-msgstr ""
+msgstr "Index bol prebudovaný."
 
 #: includes/admin/class-admin.php:193
 #: templates/admin/filter-edit.php:358
 msgid "Add range"
-msgstr ""
+msgstr "Pridať rozsah"
 
 #: includes/admin/class-admin.php:194
 #: templates/admin/filter-edit.php:348
 msgid "Remove"
-msgstr ""
+msgstr "Odstrániť"
 
 #: includes/admin/class-admin.php:208
 #: includes/class-ajax-handler.php:761
 #: templates/admin/filters-tab.php:107
 msgid "Brand"
-msgstr ""
+msgstr "Značka"
 
 #: includes/admin/class-admin.php:213
 #: templates/admin/filters-tab.php:108
 msgid "Stock status"
-msgstr ""
+msgstr "Stav skladov"
 
 #: includes/admin/class-admin.php:218
 #: includes/class-ajax-handler.php:764
 #: templates/admin/filters-tab.php:109
 msgid "Sale"
-msgstr ""
+msgstr "Zľava"
 
 #: includes/admin/class-admin.php:223
 #: includes/class-ajax-handler.php:762
 #: templates/admin/filters-tab.php:110
 msgid "Price"
-msgstr ""
+msgstr "Cena"
 
 #: includes/admin/class-filter-edit.php:37
 msgid "Filter not found."
-msgstr ""
+msgstr "Filter nebol nájdený."
 
 #: includes/admin/class-filter-edit.php:38
 msgid "Error"
-msgstr ""
+msgstr "Chyba"
 
 #: includes/class-ajax-handler.php:47
 msgid "You do not have permission."
-msgstr ""
+msgstr "Nemáte povolenie."
 
 #: includes/class-ajax-handler.php:67
 msgid "Filter type is required."
-msgstr ""
+msgstr "Typ filtra je povinný."
 
 #: includes/class-ajax-handler.php:80
 msgid "Error saving filter."
-msgstr ""
+msgstr "Chyba pri ukladaní filtra."
 
 #: includes/class-ajax-handler.php:98
 msgid "Invalid filter ID."
-msgstr ""
+msgstr "Neplatné ID filtra."
 
 #: includes/class-ajax-handler.php:104
 msgid "Error deleting filter."
-msgstr ""
+msgstr "Chyba pri mazaní filtra."
 
 #: includes/class-ajax-handler.php:124
 msgid "Invalid order."
-msgstr ""
+msgstr "Neplatné poradie."
 
 #: includes/class-ajax-handler.php:142
 msgid "No filters to index."
-msgstr ""
+msgstr "Žiadne filtre na indexovanie."
 
 #. translators: %d: number of records
 #: includes/class-ajax-handler.php:152
 #, php-format
 msgid "Index rebuilt. Processed: %d records."
-msgstr ""
+msgstr "Index prebudovaný. Spracovaných: %d záznamov."
 
 #: includes/class-ajax-handler.php:170
 msgid "Filter type is missing."
-msgstr ""
+msgstr "Typ filtra chýba."
 
 #: includes/class-ajax-handler.php:212
 msgid "Settings saved."
-msgstr ""
+msgstr "Nastavenia boli uložené."
 
 #: includes/class-ajax-handler.php:245
 #: includes/class-shortcode.php:332
 msgid "On sale"
-msgstr ""
+msgstr "Na výpredaji"
 
 #: includes/class-ajax-handler.php:246
 msgid "No discount"
-msgstr ""
+msgstr "Bez zľavy"
 
 #: includes/class-ajax-handler.php:763
 msgid "Availability"
-msgstr ""
+msgstr "Dostupnosť"
 
 #: includes/class-filter-manager.php:83
 #: templates/admin/settings-tab.php:61
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 #: includes/class-filter-manager.php:85
 #: includes/class-frontend.php:219
 msgid "Reset filters"
-msgstr ""
+msgstr "Zrušiť filtre"
 
 #: includes/class-frontend.php:217
 msgid "Show more"
-msgstr ""
+msgstr "Zobraziť viac"
 
 #: includes/class-frontend.php:218
 msgid "Show less"
-msgstr ""
+msgstr "Zobraziť menej"
 
 #: includes/class-frontend.php:220
 msgid "Close"
-msgstr ""
+msgstr "Zatvoriť"
 
 #: includes/class-frontend.php:221
 msgid "Remove filter"
-msgstr ""
+msgstr "Odstrániť filter"
 
 #: includes/class-shortcode.php:311
 msgid "In stock"
-msgstr ""
+msgstr "Na sklade"
 
 #: includes/class-shortcode.php:312
 msgid "Out of stock"
-msgstr ""
+msgstr "Vypredané"
 
 #: includes/class-shortcode.php:313
 msgid "On backorder"
-msgstr ""
+msgstr "Na objednávku"
 
 #. translators: %s: formatted max price
 #: includes/class-shortcode.php:448
 #, php-format
 msgid "Up to %s"
-msgstr ""
+msgstr "Do %s"
 
 #. translators: %s: formatted min price
 #: includes/class-shortcode.php:453
 #, php-format
 msgid "%s+"
-msgstr ""
+msgstr "%s+"
 
 #: templates/admin/filter-edit.php:34
 #: templates/admin/filters-tab.php:18
 msgid "Checkboxes"
-msgstr ""
+msgstr "Zaškrtávacie políčka"
 
 #: templates/admin/filter-edit.php:35
 #: templates/admin/filters-tab.php:19
 msgid "Radio buttons"
-msgstr ""
+msgstr "Rádiové tlačidlá"
 
 #: templates/admin/filter-edit.php:36
 #: templates/admin/filters-tab.php:20
 msgid "Dropdown"
-msgstr ""
+msgstr "Rozbaľovací zoznam"
 
 #: templates/admin/filter-edit.php:37
 #: templates/admin/filters-tab.php:21
 msgid "Multi-dropdown"
-msgstr ""
+msgstr "Viacnásobný rozbaľovací zoznam"
 
 #: templates/admin/filter-edit.php:38
 #: templates/admin/filters-tab.php:22
 msgid "Slider"
-msgstr ""
+msgstr "Posúvač"
 
 #: templates/admin/filter-edit.php:57
 msgid "Back to filter list"
-msgstr ""
+msgstr "Späť na zoznam filtrov"
 
 #: templates/admin/filter-edit.php:61
 #: templates/admin/filters-tab.php:79
 msgid "Filter settings"
-msgstr ""
+msgstr "Nastavenia filtra"
 
 #: templates/admin/filter-edit.php:72
 msgid "Filter name"
-msgstr ""
+msgstr "Názov filtra"
 
 #: templates/admin/filter-edit.php:88
 msgid "Display label"
-msgstr ""
+msgstr "Zobrazovací štítok"
 
 #: templates/admin/filter-edit.php:98
 msgid "Display filter name above the filter"
-msgstr ""
+msgstr "Zobraziť názov filtra nad filtrom"
 
 #: templates/admin/filter-edit.php:106
 #: templates/admin/filters-tab.php:101
 msgid "Filter type"
-msgstr ""
+msgstr "Typ filtra"
 
 #: templates/admin/filter-edit.php:116
 msgid "Display style"
-msgstr ""
+msgstr "Štýl zobrazenia"
 
 #: templates/admin/filter-edit.php:122
 msgid "Style is fixed for this filter type."
-msgstr ""
+msgstr "Štýl je pevný pre tento typ filtra."
 
 #: templates/admin/filter-edit.php:142
 msgid "Hide empty"
-msgstr ""
+msgstr "Skryť prázdne"
 
 #: templates/admin/filter-edit.php:152
 msgid "Do not display values without products"
-msgstr ""
+msgstr "Nezobrazovať hodnoty bez produktov"
 
 #: templates/admin/filter-edit.php:163
 msgid "Stock statuses"
-msgstr ""
+msgstr "Stavy skladov"
 
 #: templates/admin/filter-edit.php:165
 msgid "Configure the display and description of individual stock statuses."
-msgstr ""
+msgstr "Konfigurácia zobrazenia a popisu jednotlivých stavov skladov."
 
 #: templates/admin/filter-edit.php:187
 msgid "Display"
-msgstr ""
+msgstr "Zobrazenie"
 
 #: templates/admin/filter-edit.php:206
 msgid "Slider settings"
-msgstr ""
+msgstr "Nastavenia posúvača"
 
 #. translators: %1$s: minimum price, %2$s: maximum price
 #: templates/admin/filter-edit.php:214
 #, php-format
 msgid "Current values in the shop: from %1$s to %2$s"
-msgstr ""
+msgstr "Aktuálne hodnoty v obchode: od %1$s do %2$s"
 
 #: templates/admin/filter-edit.php:231
 msgid "Minimum value"
-msgstr ""
+msgstr "Minimálna hodnota"
 
 #: templates/admin/filter-edit.php:246
 msgid "Maximum value"
-msgstr ""
+msgstr "Maximálna hodnota"
 
 #: templates/admin/filter-edit.php:261
 msgid "Step"
-msgstr ""
+msgstr "Krok"
 
 #: templates/admin/filter-edit.php:274
 msgid "Leave empty for free range."
-msgstr ""
+msgstr "Ponechajte prázdne pre voľný rozsah."
 
 #: templates/admin/filter-edit.php:283
 msgid "Price ranges"
-msgstr ""
+msgstr "Cenové rozsahy"
 
 #. translators: %1$s: minimum price, %2$s: maximum price
 #: templates/admin/filter-edit.php:291
 #, php-format
 msgid "Product prices in the shop: from %1$s to %2$s"
-msgstr ""
+msgstr "Ceny produktov v obchode: od %1$s do %2$s"
 
 #: templates/admin/filter-edit.php:301
 msgid "Define price ranges. Leave \"To\" empty for unlimited upper limit."
-msgstr ""
+msgstr "Definujte cenové rozsahy. Ponechajte \"Do\" prázdne pre bez hornej hranice."
 
 #: templates/admin/filter-edit.php:306
 msgid "From"
-msgstr ""
+msgstr "Od"
 
 #: templates/admin/filter-edit.php:307
 msgid "To"
-msgstr ""
+msgstr "Do"
 
 #: templates/admin/filter-edit.php:308
 msgid "Description (optional)"
-msgstr ""
+msgstr "Popis (voliteľný)"
 
 #: templates/admin/filter-edit.php:343
 msgid "e.g., Up to 100 €"
-msgstr ""
+msgstr "napr. Do 100 €"
 
 #: templates/admin/filter-edit.php:366
 msgid "Value selection"
-msgstr ""
+msgstr "Výber hodnoty"
 
 #: templates/admin/filter-edit.php:368
 msgid "Check values to display. If you don't check anything, all values will be displayed."
-msgstr ""
+msgstr "Zaškrtnite hodnoty na zobrazenie. Ak nič nezaškrtnete, budú zobrazené všetky hodnoty."
 
 #: templates/admin/filter-edit.php:373
 msgid "Select all"
-msgstr ""
+msgstr "Vybrať všetko"
 
 #: templates/admin/filter-edit.php:376
 msgid "Deselect all"
-msgstr ""
+msgstr "Odznačiť všetko"
 
 #: templates/admin/filter-edit.php:406
 msgid "No values were found for this filter type."
-msgstr ""
+msgstr "Neboli nájdené žiadne hodnoty pre tento typ filtra."
 
 #: templates/admin/filter-edit.php:414
 msgid "Sorting"
-msgstr ""
+msgstr "Triedenie"
 
 #: templates/admin/filter-edit.php:419
 msgid "By name A→Z"
-msgstr ""
+msgstr "Podľa názvu A→Z"
 
 #: templates/admin/filter-edit.php:422
 msgid "By name Z→A"
-msgstr ""
+msgstr "Podľa názvu Z→A"
 
 #: templates/admin/filter-edit.php:425
 msgid "By count ↑"
-msgstr ""
+msgstr "Podľa počtu ↑"
 
 #: templates/admin/filter-edit.php:428
 msgid "By count ↓"
-msgstr ""
+msgstr "Podľa počtu ↓"
 
 #: templates/admin/filter-edit.php:435
 msgid "Filter logic"
-msgstr ""
+msgstr "Logika filtra"
 
 #: templates/admin/filter-edit.php:441
 msgid "OR — display products with at least one value"
-msgstr ""
+msgstr "ALEBO — zobraziť produkty s aspoň jednou hodnotou"
 
 #: templates/admin/filter-edit.php:447
 msgid "AND — display only products with all values"
-msgstr ""
+msgstr "A — zobraziť iba produkty so všetkými hodnotami"
 
 #: templates/admin/filter-edit.php:458
 msgid "Save filter"
-msgstr ""
+msgstr "Uložiť filter"
 
 #: templates/admin/filters-tab.php:34
 msgid "Name"
-msgstr ""
+msgstr "Názov"
 
 #: templates/admin/filters-tab.php:35
 #: templates/admin/help-tab.php:38
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: templates/admin/filters-tab.php:36
 msgid "Style"
-msgstr ""
+msgstr "Štýl"
 
 #: templates/admin/filters-tab.php:37
 msgid "Actions"
-msgstr ""
+msgstr "Akcie"
 
 #: templates/admin/filters-tab.php:45
 msgid "No filters. Add the first filter below."
-msgstr ""
+msgstr "Žiadne filtre. Pridajte nižšie prvý filter."
 
 #: templates/admin/filters-tab.php:58
 msgid "(untitled)"
-msgstr ""
+msgstr "(bez názvu)"
 
 #: templates/admin/filters-tab.php:85
 msgid "Delete filter"
-msgstr ""
+msgstr "Zmazať filter"
 
 #: templates/admin/filters-tab.php:97
 msgid "Add new filter"
-msgstr ""
+msgstr "Pridať nový filter"
 
 #: templates/admin/filters-tab.php:105
 msgid "— Select type —"
-msgstr ""
+msgstr "— Vybrať typ —"
 
 #: templates/admin/filters-tab.php:106
 msgid "Basic"
-msgstr ""
+msgstr "Základný"
 
 #: templates/admin/filters-tab.php:116
 msgid "Product attributes"
-msgstr ""
+msgstr "Atribúty produktov"
 
 #: templates/admin/filters-tab.php:124
 msgid "Custom field"
-msgstr ""
+msgstr "Vlastné pole"
 
 #: templates/admin/filters-tab.php:125
 msgid "Custom field (enter key)"
-msgstr ""
+msgstr "Vlastné pole (vložte kľúč)"
 
 #: templates/admin/filters-tab.php:132
 msgid "Meta key"
-msgstr ""
+msgstr "Meta kľúč"
 
 #: templates/admin/filters-tab.php:145
 msgid "Filter style"
-msgstr ""
+msgstr "Štýl filtra"
 
 #: templates/admin/filters-tab.php:161
 msgid "+ Add filter"
-msgstr ""
+msgstr "+ Pridať filter"
 
 #: templates/admin/help-tab.php:15
 msgid "How to use WC Simple Filter"
-msgstr ""
+msgstr "Ako používať WC Simple Filter"
 
 #: templates/admin/help-tab.php:18
 msgid "Inserting via shortcode"
-msgstr ""
+msgstr "Vloženie prostredníctvom skratkódu"
 
 #: templates/admin/help-tab.php:20
 msgid "Insert the shortcode on any page or in a widget:"
-msgstr ""
+msgstr "Vložte skratkód na akúkoľvek stránku alebo do widgetu:"
 
 #: templates/admin/help-tab.php:26
 msgid "Inserting directly in PHP template"
-msgstr ""
+msgstr "Vloženie priamo do PHP šablóny"
 
 #: templates/admin/help-tab.php:28
 msgid "If you prefer inserting directly in the theme PHP file:"
-msgstr ""
+msgstr "Ak uprednostňujete vloženie priamo do PHP súboru témy:"
 
 #: templates/admin/help-tab.php:34
 msgid "Filter types"
-msgstr ""
+msgstr "Typy filtrov"
 
 #: templates/admin/help-tab.php:39
 msgid "Description"
-msgstr ""
+msgstr "Popis"
 
 #: templates/admin/help-tab.php:40
 msgid "Available styles"
-msgstr ""
+msgstr "Dostupné štýly"
 
 #: templates/admin/help-tab.php:46
 msgid "Filter by brand (taxonomy product_brand)"
-msgstr ""
+msgstr "Filtrovať podľa značky (taxonómia product_brand)"
 
 #: templates/admin/help-tab.php:47
 msgid "checkbox, radio, dropdown, multi-dropdown"
-msgstr ""
+msgstr "zaškrtávací políčko, rádiové tlačidlo, rozbaľovací zoznam, viacnásobný rozbaľovací zoznam"
 
 #: templates/admin/help-tab.php:51
 msgid "Stock status (in stock, out of stock, on backorder)"
-msgstr ""
+msgstr "Stav skladov (na sklade, vypredané, na objednávku)"
 
 #: templates/admin/help-tab.php:52
 #: templates/admin/help-tab.php:57
 msgid "checkbox (fixed)"
-msgstr ""
+msgstr "zaškrtávací políčko (pevný)"
 
 #: templates/admin/help-tab.php:56
 msgid "Sale products (on sale / not on sale)"
-msgstr ""
+msgstr "Produkty na výpredaji (na výpredaji / nie na výpredaji)"
 
 #: templates/admin/help-tab.php:61
 msgid "Price filter — ranges or slider"
-msgstr ""
+msgstr "Filtr ceny — rozsahy alebo posúvač"
 
 #: templates/admin/help-tab.php:62
 msgid "checkbox, radio, slider"
-msgstr ""
+msgstr "zaškrtávací políčko, rádiové tlačidlo, posúvač"
 
 #: templates/admin/help-tab.php:66
 msgid "WooCommerce product attribute (e.g., attribute_pa_color)"
-msgstr ""
+msgstr "Atribút produktu WooCommerce (napr. attribute_pa_color)"
 
 #: templates/admin/help-tab.php:67
 #: templates/admin/help-tab.php:72
 msgid "checkbox, radio, dropdown, multi-dropdown, slider"
-msgstr ""
+msgstr "zaškrtávací políčko, rádiové tlačidlo, rozbaľovací zoznam, viacnásobný rozbaľovací zoznam, posúvač"
 
 #: templates/admin/help-tab.php:71
 msgid "Custom meta field (configured by admin — e.g., meta_weight)"
-msgstr ""
+msgstr "Vlastné meta pole (nakonfigurované administrátorom — napr. meta_weight)"
 
 #: templates/admin/help-tab.php:79
 msgid "Value index (hide-empty)"
-msgstr ""
+msgstr "Index hodnôt (skryť-prázdne)"
 
 #: templates/admin/help-tab.php:81
 msgid "The plugin maintains an internal index of product counts for each filter value. This index is automatically updated when a product is saved. If you see outdated values, you can manually recalculate it in the Settings tab."
-msgstr ""
+msgstr "Plugin udržiava interný index počtov produktov pre každú hodnotu filtra. Tento index sa automaticky aktualizuje pri uložení produktu. Ak vidíte zastarané hodnoty, môžete ho ručne prepočítať v záložke Nastavenia."
 
 #: templates/admin/help-tab.php:86
 msgid "Planned features (Phase 2)"
-msgstr ""
+msgstr "Plánované funkcie (Fáza 2)"
 
 #: templates/admin/help-tab.php:88
 msgid "AJAX product filtering without page reload"
-msgstr ""
+msgstr "Filtrovanie produktov AJAX bez opätovného načítania stránky"
 
 #: templates/admin/help-tab.php:89
 msgid "URL state — sharing and back/forward navigation"
-msgstr ""
+msgstr "Stav URL — zdieľanie a navigácia dozadu/dopredu"
 
 #: templates/admin/help-tab.php:90
 msgid "Frontend CSS styling"
-msgstr ""
+msgstr "Štylizácia CSS frontendovej časti"
 
 #: templates/admin/help-tab.php:91
 msgid "WooCommerce query integration"
-msgstr ""
+msgstr "Integrácia dopytov WooCommerce"
 
 #: templates/admin/settings-tab.php:26
 msgid "Filtering method"
-msgstr ""
+msgstr "Metóda filtrovania"
 
 #: templates/admin/settings-tab.php:32
 msgid "AJAX — instantly without page load"
-msgstr ""
+msgstr "AJAX — okamžite bez načítania stránky"
 
 #: templates/admin/settings-tab.php:38
 msgid "Button — form submission"
-msgstr ""
+msgstr "Tlačidlo — odoslanie formulára"
 
 #: templates/admin/settings-tab.php:44
 msgid "Reload — page refresh on every change"
-msgstr ""
+msgstr "Opätovné načítanie — obnovenie stránky pri každej zmene"
 
 #: templates/admin/settings-tab.php:53
 msgid "\"Filter\" button text"
-msgstr ""
+msgstr "Text tlačidla \"Filter\""
 
 #: templates/admin/settings-tab.php:65
 msgid "Displayed in \"Button\" mode."
-msgstr ""
+msgstr "Zobrazené v režime \"Tlačidlo\"."
 
 #: templates/admin/settings-tab.php:73
 msgid "Reset button"
-msgstr ""
+msgstr "Tlačidlo Reset"
 
 #: templates/admin/settings-tab.php:83
 msgid "Display \"Clear filters\" button"
-msgstr ""
+msgstr "Zobraziť tlačidlo \"Zrušiť filtre\""
 
 #: templates/admin/settings-tab.php:92
 msgid "Reset button text"
-msgstr ""
+msgstr "Text tlačidla Reset"
 
 #: templates/admin/settings-tab.php:100
 #: templates/frontend/filter-wrapper.php:27
@@ -709,8 +709,8 @@ msgstr "Odstrániť filter: %s"
 #: wc-simple-filter.php:42
 #: wc-simple-filter.php:81
 msgid "WC Simple Filter requires an active WooCommerce plugin."
-msgstr ""
+msgstr "WC Simple Filter vyžaduje aktívny plugin WooCommerce."
 
 #: wc-simple-filter.php:82
 msgid "Activation Error"
-msgstr ""
+msgstr "Chyba aktivácie"
