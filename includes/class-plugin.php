@@ -1,6 +1,6 @@
 <?php
 /**
- * Hlavný orchestrátor pluginu — registruje všetky hooky.
+ * Main plugin orchestrator — registers all hooks.
  *
  * @package WC_Simple_Filter
  */
@@ -12,9 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Singleton trieda Plugin.
+ * Plugin singleton class.
  *
- * Zodpovedá za načítanie tried a registráciu WordPress hookov.
+ * Responsible for loading classes and registering WordPress hooks.
  */
 class Plugin {
 
@@ -26,12 +26,12 @@ class Plugin {
 	private static ?Plugin $instance = null;
 
 	/**
-	 * Privátny konštruktor — použite get_instance().
+	 * Private constructor — use get_instance().
 	 */
 	private function __construct() {}
 
 	/**
-	 * Vráti singleton inštanciu.
+	 * Returns the singleton instance.
 	 *
 	 * @return Plugin
 	 */
@@ -44,7 +44,7 @@ class Plugin {
 	}
 
 	/**
-	 * Inicializuje plugin — načíta súbory a zaregistruje hooky.
+	 * Initializes the plugin — loads files and registers hooks.
 	 *
 	 * @return void
 	 */
@@ -54,7 +54,7 @@ class Plugin {
 	}
 
 	/**
-	 * Načíta všetky potrebné súbory.
+	 * Loads all required files.
 	 *
 	 * @return void
 	 */
@@ -66,11 +66,11 @@ class Plugin {
 		require_once WC_SF_PLUGIN_DIR . 'includes/class-template.php';
 		require_once WC_SF_PLUGIN_DIR . 'includes/class-shortcode.php';
 		require_once WC_SF_PLUGIN_DIR . 'includes/class-frontend.php';
-		// Admin triedy sa načítavajú neskôr — WC_Settings_Page musí byť dostupná.
+		// Admin classes are loaded later — WC_Settings_Page must be available.
 	}
 
 	/**
-	 * Zaregistruje WordPress hooky.
+	 * Registers WordPress hooks.
 	 *
 	 * @return void
 	 */
@@ -78,11 +78,11 @@ class Plugin {
 		// i18n.
 		add_action( 'init', [ $this, 'load_textdomain' ] );
 
-		// AJAX hooky — musia byť registrované skoro (pred wp_ajax_*).
+		// AJAX hooks — must be registered early (before wp_ajax_*).
 		$ajax = new Ajax_Handler();
 		$ajax->register_hooks();
 
-		// Inkrementálny update indexu pri uložení produktu.
+		// Incremental index update on product save.
 		$index_manager = new Index_Manager();
 		$index_manager->register_hooks();
 
@@ -93,18 +93,18 @@ class Plugin {
 		$frontend = new Frontend();
 		$frontend->register_hooks();
 
-		// Admin UI — registrujeme cez woocommerce_get_settings_pages filter.
-		// Tento filter sa spúšťa keď WC_Settings_Page je už dostupná.
+		// Admin UI — register via woocommerce_get_settings_pages filter.
+		// This filter is fired when WC_Settings_Page is available.
 		if ( is_admin() ) {
 			add_filter( 'woocommerce_get_settings_pages', [ $this, 'load_admin' ] );
 		}
 	}
 
 	/**
-	 * Načíta admin triedy a zaregistruje Admin hooks.
-	 * Volá sa cez woocommerce_get_settings_pages filter — WC_Settings_Page je v tom čase dostupná.
+	 * Loads admin classes and registers admin hooks.
+	 * Called via woocommerce_get_settings_pages filter — WC_Settings_Page is available at that point.
 	 *
-	 * @param array<\WC_Settings_Page> $settings Existujúce settings pages.
+	 * @param array<\WC_Settings_Page> $settings Existing settings pages.
 	 * @return array<\WC_Settings_Page>
 	 */
 	public function load_admin( array $settings ): array {
@@ -120,7 +120,7 @@ class Plugin {
 	}
 
 	/**
-	 * Načíta prekladový súbor pluginu.
+	 * Loads the plugin translation file.
 	 *
 	 * @return void
 	 */

@@ -1,10 +1,10 @@
 <?php
 /**
- * Loader šablón s WooCommerce-style override systémom.
+ * Template loader with WooCommerce-style override system.
  *
- * Šablónu je možné prebiť z témy:
+ * Templates can be overridden from a theme:
  *   {theme}/wc-simple-filter/{template}.php
- *   alebo z plugin adresára:
+ *   or from the plugin directory:
  *   {plugin}/templates/frontend/{template}.php
  *
  * @package WC_Simple_Filter
@@ -17,33 +17,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trieda Template.
+ * Class Template.
  *
- * Zodpovedá za vyhľadávanie a načítanie frontend šablón
- * s podporou override z témy (ako WooCommerce templates/).
+ * Responsible for locating and loading frontend templates
+ * with support for theme overrides (like WooCommerce templates/).
  */
 class Template {
 
 	/**
-	 * Adresár šablón v téme (relatívne ku koreňu témy).
+	 * Template directory in theme (relative to theme root).
 	 */
 	const THEME_DIR = 'wc-simple-filter';
 
 	/**
-	 * Adresár šablón v plugine (relatívne ku koreňu pluginu).
+	 * Template directory in plugin (relative to plugin root).
 	 */
 	const PLUGIN_DIR = 'templates/frontend/';
 
 	/**
-	 * Vráti cestu k šablóne s lookuom: téma → child-téma → plugin.
+	 * Returns the path to a template with lookup: theme → child-theme → plugin.
 	 *
-	 * @param string $template_name Relatívna cesta k šablóne, napr. 'filter-item.php'.
-	 * @return string Absolútna cesta k šablóne.
+	 * @param string $template_name Relative path to template, e.g., 'filter-item.php'.
+	 * @return string Absolute path to template.
 	 */
 	public static function locate( string $template_name ): string {
 		$template = '';
 
-		// Hľadaj v aktuálnej téme a child-téme.
+		// Search in current theme and child theme.
 		$theme_locations = [
 			get_stylesheet_directory() . '/' . self::THEME_DIR . '/' . $template_name,
 			get_template_directory() . '/' . self::THEME_DIR . '/' . $template_name,
@@ -56,7 +56,7 @@ class Template {
 			}
 		}
 
-		// Fallback na plugin šablónu.
+		// Fallback to plugin template.
 		if ( ! $template ) {
 			$plugin_template = WC_SF_PLUGIN_DIR . self::PLUGIN_DIR . $template_name;
 			if ( file_exists( $plugin_template ) ) {
@@ -65,21 +65,21 @@ class Template {
 		}
 
 		/**
-		 * Filter na override cesty šablóny.
+		 * Filter to override template path.
 		 *
-		 * @param string $template      Absolútna cesta k šablóne.
-		 * @param string $template_name Relatívna cesta šablóny.
+		 * @param string $template      Absolute path to template.
+		 * @param string $template_name Relative template path.
 		 */
 		return (string) apply_filters( 'wc_sf_locate_template', $template, $template_name );
 	}
 
 	/**
-	 * Načíta a zobrazí šablónu.
+	 * Loads and displays a template.
 	 *
-	 * @param string               $template_name Relatívna cesta k šablóne, napr. 'filter-item.php'.
-	 * @param array<string, mixed> $args          Premenné dostupné v šablóne.
-	 * @param bool                 $return        Ak true, vráti HTML ako string namiesto echo.
-	 * @return string HTML výstup (iba ak $return === true).
+	 * @param string               $template_name Relative path to template, e.g., 'filter-item.php'.
+	 * @param array<string, mixed> $args          Variables available in the template.
+	 * @param bool                 $return        If true, return HTML as string instead of echo.
+	 * @return string HTML output (only if $return === true).
 	 */
 	public static function get_template( string $template_name, array $args = [], bool $return = false ): string {
 		$template = self::locate( $template_name );
@@ -89,10 +89,10 @@ class Template {
 		}
 
 		/**
-		 * Akcia pred načítaním šablóny.
+		 * Action before loading template.
 		 *
-		 * @param string               $template_name Relatívna cesta šablóny.
-		 * @param array<string, mixed> $args          Premenné šablóny.
+		 * @param string               $template_name Relative template path.
+		 * @param array<string, mixed> $args          Template variables.
 		 */
 		do_action( 'wc_sf_before_template', $template_name, $args );
 
@@ -100,7 +100,7 @@ class Template {
 			ob_start();
 		}
 
-		// Bezpečný extract — premenné dostupné v šablóne.
+		// Safe extract — variables available in template.
 		if ( ! empty( $args ) ) {
 			// phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 			extract( $args, EXTR_SKIP );
@@ -109,10 +109,10 @@ class Template {
 		include $template;
 
 		/**
-		 * Akcia po načítaní šablóny.
+		 * Action after loading template.
 		 *
-		 * @param string               $template_name Relatívna cesta šablóny.
-		 * @param array<string, mixed> $args          Premenné šablóny.
+		 * @param string               $template_name Relative template path.
+		 * @param array<string, mixed> $args          Template variables.
 		 */
 		do_action( 'wc_sf_after_template', $template_name, $args );
 
@@ -124,18 +124,18 @@ class Template {
 	}
 
 	/**
-	 * Vráti URL adresára šablón v téme (pre dokumentáciu / debug).
+	 * Returns the URL of the theme template directory (for documentation / debug).
 	 *
-	 * @return string URL adresára šablón v téme.
+	 * @return string URL of the theme template directory.
 	 */
 	public static function get_theme_template_dir_url(): string {
 		return get_stylesheet_directory_uri() . '/' . self::THEME_DIR . '/';
 	}
 
 	/**
-	 * Vráti URL adresára šablón v plugine.
+	 * Returns the URL of the plugin template directory.
 	 *
-	 * @return string URL adresára šablón v plugine.
+	 * @return string URL of the plugin template directory.
 	 */
 	public static function get_plugin_template_dir_url(): string {
 		return WC_SF_PLUGIN_URL . self::PLUGIN_DIR;

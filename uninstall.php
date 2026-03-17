@@ -1,9 +1,9 @@
 <?php
 /**
- * Cleanup pri odinštalácii pluginu.
+ * Plugin cleanup on uninstall.
  *
- * Spustí sa keď používateľ zmaže plugin cez WP Admin.
- * Zmaže DB tabuľky a options iba ak je nastavená voľba delete_on_uninstall.
+ * Runs when the user deletes the plugin via WP Admin.
+ * Deletes database tables and options only if the delete_on_uninstall option is set.
  *
  * @package WC_Simple_Filter
  */

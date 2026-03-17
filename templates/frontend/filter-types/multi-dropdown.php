@@ -1,13 +1,13 @@
 <?php
 /**
- * Template: Multi-dropdown filter typ (multiple select).
+ * Template: Multi-dropdown filter type (multiple select).
  *
- * Premenné dostupné v tejto šablóne:
- * @var array<string, mixed>             $filter  Dáta filtra z DB.
- * @var array<int, array<string, mixed>> $values  Hodnoty filtra.
- * @var string                           $layout  Layout typ.
+ * Variables available in this template:
+ * @var array<string, mixed>             $filter  Filter data from DB.
+ * @var array<int, array<string, mixed>> $values  Filter values.
+ * @var string                           $layout  Layout type.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/filter-types/multi-dropdown.php
+ * Override: copy to {theme}/wc-simple-filter/filter-types/multi-dropdown.php
  *
  * @package WC_Simple_Filter
  */
@@ -35,5 +35,5 @@ $label       = $filter['label'] ?? '';
 			</option>
 		<?php endforeach; ?>
 	</select>
-	<p class="wcsf__dropdown-hint"><?php esc_html_e( 'Ctrl/Cmd + klik pre viac hodnôt', 'wc-simple-filter' ); ?></p>
+	<p class="wcsf__dropdown-hint"><?php esc_html_e( 'Ctrl/Cmd + click for multiple values', 'wc-simple-filter' ); ?></p>
 </div>

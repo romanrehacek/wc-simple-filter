@@ -1,6 +1,6 @@
 <?php
 /**
- * Záložka „Filtre" — zoznam filtrov s repeaterom.
+ * "Filters" tab — list of filters with repeater.
  *
  * @package WC_Simple_Filter
  */
@@ -14,12 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WC_Simple_Filter\Filter_Manager;
 
 /**
- * Trieda Filters_Tab.
+ * Filters_Tab class.
  */
 class Filters_Tab {
 
 	/**
-	 * Renderuje obsah záložky.
+	 * Renders the tab content.
 	 *
 	 * @return void
 	 */

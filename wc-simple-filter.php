@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WC Simple Filter
  * Plugin URI:  https://github.com/sjbdigital/wc-simple-filter
- * Description: Konfigurovateľné produktové filtre pre WooCommerce obchod. Vložte cez shortcode [wc_simple_filter] alebo PHP funkciu wc_simple_filter().
+ * Description: Configurable product filters for WooCommerce shop. Insert via shortcode [wc_simple_filter] or PHP function wc_simple_filter().
  * Version:     0.1.0
  * Author:      SJB Digital
  * Author URI:  https://sjbdigital.dev
@@ -28,23 +28,23 @@ define( 'WC_SF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WC_SF_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 /**
- * Kontrola či je WooCommerce aktívny.
+ * Check if WooCommerce is active.
  */
 function wc_sf_is_woocommerce_active(): bool {
 	return class_exists( 'WooCommerce' );
 }
 
 /**
- * Zobrazí admin notice ak WooCommerce nie je aktívny.
+ * Display admin notice if WooCommerce is not active.
  */
 function wc_sf_woocommerce_missing_notice(): void {
 	echo '<div class="notice notice-error"><p>';
-	echo esc_html__( 'WC Simple Filter vyžaduje aktívny plugin WooCommerce.', 'wc-simple-filter' );
+	echo esc_html__( 'WC Simple Filter requires an active WooCommerce plugin.', 'wc-simple-filter' );
 	echo '</p></div>';
 }
 
 /**
- * Hlavná inicializácia pluginu.
+ * Main plugin initialization.
  */
 function wc_sf_init(): void {
 	if ( ! wc_sf_is_woocommerce_active() ) {
@@ -59,7 +59,7 @@ function wc_sf_init(): void {
 add_action( 'plugins_loaded', 'wc_sf_init' );
 
 /**
- * Deklarácia kompatibility s WooCommerce funkciami (HPOS, Cart/Checkout Blocks).
+ * Declare compatibility with WooCommerce features (HPOS, Cart/Checkout Blocks).
  */
 add_action(
 	'before_woocommerce_init',
@@ -72,14 +72,14 @@ add_action(
 );
 
 /**
- * Aktivačný hook — vytvorí DB tabuľky.
+ * Activation hook — creates database tables.
  */
 function wc_sf_activate(): void {
 	if ( ! wc_sf_is_woocommerce_active() ) {
 		deactivate_plugins( WC_SF_PLUGIN_BASENAME );
 		wp_die(
-			esc_html__( 'WC Simple Filter vyžaduje aktívny plugin WooCommerce.', 'wc-simple-filter' ),
-			esc_html__( 'Chyba aktivácie', 'wc-simple-filter' ),
+			esc_html__( 'WC Simple Filter requires an active WooCommerce plugin.', 'wc-simple-filter' ),
+			esc_html__( 'Activation Error', 'wc-simple-filter' ),
 			[ 'back_link' => true ]
 		);
 	}
@@ -91,21 +91,21 @@ function wc_sf_activate(): void {
 register_activation_hook( __FILE__, 'wc_sf_activate' );
 
 /**
- * Deaktivačný hook.
+ * Deactivation hook.
  */
 function wc_sf_deactivate(): void {
-	// Tabuľky zostávajú. Žiadne dátové zmeny pri deaktivácii.
+	// Tables remain. No data changes on deactivation.
 }
 
 register_deactivation_hook( __FILE__, 'wc_sf_deactivate' );
 
 /**
- * PHP helper funkcia pre vloženie filtrov do šablóny.
+ * PHP helper function for inserting filters into template.
  *
- * @param array<string, mixed> $args Argumenty (zatiaľ rezervované pre Fázu 2).
+ * @param array<string, mixed> $args Arguments (reserved for Phase 2).
  */
 function wc_simple_filter( array $args = [] ): void {
-	// Fáza 2 — frontend rendering.
+	// Phase 2 — frontend rendering.
 	if ( ! wc_sf_is_woocommerce_active() ) {
 		return;
 	}

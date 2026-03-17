@@ -1,6 +1,6 @@
 <?php
 /**
- * Shortcode [wc_simple_filter] a PHP helper wc_simple_filter().
+ * Shortcode [wc_simple_filter] and PHP helper wc_simple_filter().
  *
  * @package WC_Simple_Filter
  */
@@ -12,23 +12,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trieda Shortcode.
+ * Shortcode class.
  *
- * Zodpovedá za:
- * - registráciu shortcodu [wc_simple_filter]
- * - parsovanie atribútov shortcodu
- * - načítanie filtrov z DB
- * - renderovanie filtrov cez template systém
+ * Responsible for:
+ * - registering the [wc_simple_filter] shortcode
+ * - parsing shortcode attributes
+ * - loading filters from the database
+ * - rendering filters through the template system
  */
 class Shortcode {
 
 	/**
-	 * Maximálny počet hodnôt zobrazených pred "Zobraziť viac".
+	 * Maximum number of values displayed before "Show more".
 	 */
 	const DEFAULT_VALUES_VISIBLE = 5;
 
 	/**
-	 * Inicializuje shortcode.
+	 * Initializes the shortcode.
 	 *
 	 * @return void
 	 */
@@ -38,10 +38,10 @@ class Shortcode {
 	}
 
 	/**
-	 * Callback pre shortcode [wc_simple_filter].
+	 * Callback for the [wc_simple_filter] shortcode.
 	 *
-	 * @param array<string, string>|string $atts Atribúty shortcodu.
-	 * @return string HTML výstup.
+	 * @param array<string, string>|string $atts Shortcode attributes.
+	 * @return string HTML output.
 	 */
 	public function render( array|string $atts = [] ): string {
 		$atts = shortcode_atts(
@@ -60,13 +60,13 @@ class Shortcode {
 	}
 
 	/**
-	 * Callback pre action wc_sf_render_filters (PHP helper).
+	 * Callback for action wc_sf_render_filters (PHP helper).
 	 *
-	 * @param array<string, mixed> $args Argumenty.
+	 * @param array<string, mixed> $args Arguments.
 	 * @return void
 	 */
 	public function render_from_action( array $args = [] ): void {
-		// Normalizuj args na rovnaký formát ako shortcode atts.
+		// Normalize args to the same format as shortcode atts.
 		$atts = wp_parse_args(
 			$args,
 			[
@@ -83,29 +83,29 @@ class Shortcode {
 	}
 
 	/**
-	 * Renderuje filtre — hlavná logika.
+	 * Renders filters: main logic.
 	 *
-	 * @param array<string, mixed> $atts Atribúty.
-	 * @return string HTML výstup.
+	 * @param array<string, mixed> $atts Attributes.
+	 * @return string HTML output.
 	 */
 	private function render_filters( array $atts ): string {
-		// Načítaj filtre z DB.
+		// Load filters from the database.
 		$filters = $this->get_filters( $atts );
 
 		if ( empty( $filters ) ) {
-			/**
-			 * Filter na HTML keď nie sú žiadne filtre.
-			 *
-			 * @param string $html Prázdny HTML výstup.
-			 */
+		/**
+		 * Filter for HTML when there are no filters.
+		 *
+		 * @param string $html Empty HTML output.
+		 */
 			return (string) apply_filters( 'wc_sf_no_filters_html', '' );
 		}
 
-		// Normalizuj a ovaliduj parametre.
+		// Normalize and validate parameters.
 		$layout      = in_array( $atts['layout'], [ 'sidebar', 'vertical', 'horizontal' ], true )
 			? $atts['layout']
 			: 'vertical';
-		// 'vertical' je alias pre 'sidebar'.
+		// 'vertical' is an alias for 'sidebar'.
 		if ( 'vertical' === $layout ) {
 			$layout = 'sidebar';
 		}
@@ -113,15 +113,15 @@ class Shortcode {
 		$collapsed   = filter_var( $atts['collapsed'], FILTER_VALIDATE_BOOLEAN );
 
 		/**
-		 * Filter na pole filtrov pred renderovaním.
+		 * Filter for the list of filters before rendering.
 		 *
-		 * @param array<int, array<string, mixed>> $filters  Pole filtrov.
-		 * @param string                           $layout   Layout typ.
-		 * @param array<string, mixed>             $atts     Shortcode atribúty.
+		 * @param array<int, array<string, mixed>> $filters  List of filters.
+		 * @param string                           $layout   Layout type.
+		 * @param array<string, mixed>             $atts     Shortcode attributes.
 		 */
 		$filters = (array) apply_filters( 'wc_sf_render_filters_data', $filters, $layout, $atts );
 
-		// Priprav template args.
+		// Prepare template args.
 		$template_args = [
 			'filters'     => $filters,
 			'layout'      => $layout,
@@ -131,20 +131,20 @@ class Shortcode {
 		];
 
 		/**
-		 * Akcia pred celým blokom filtrov.
+		 * Action before the entire filters block.
 		 *
-		 * @param array<int, array<string, mixed>> $filters Pole filtrov.
-		 * @param string                           $layout  Layout typ.
+		 * @param array<int, array<string, mixed>> $filters List of filters.
+		 * @param string                           $layout  Layout type.
 		 */
 		do_action( 'wc_sf_before_filters', $filters, $layout );
 
 		$html = Template::get_template( 'filter-wrapper.php', $template_args, true );
 
 		/**
-		 * Akcia po celom bloku filtrov.
+		 * Action after the entire filters block.
 		 *
-		 * @param array<int, array<string, mixed>> $filters Pole filtrov.
-		 * @param string                           $layout  Layout typ.
+		 * @param array<int, array<string, mixed>> $filters List of filters.
+		 * @param string                           $layout  Layout type.
 		 */
 		do_action( 'wc_sf_after_filters', $filters, $layout );
 
@@ -152,9 +152,9 @@ class Shortcode {
 	}
 
 	/**
-	 * Načíta filtre z DB podľa atribútov shortcodu.
+	 * Loads filters from the database according to shortcode attributes.
 	 *
-	 * @param array<string, mixed> $atts Atribúty shortcodu.
+	 * @param array<string, mixed> $atts Shortcode attributes.
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function get_filters( array $atts ): array {
@@ -164,7 +164,7 @@ class Shortcode {
 			return [];
 		}
 
-		// Filtruj podľa filter_ids.
+		// Filter by filter_ids.
 		if ( ! empty( $atts['filter_ids'] ) ) {
 			$ids         = array_map( 'absint', explode( ',', $atts['filter_ids'] ) );
 			$all_filters = array_filter(
@@ -173,7 +173,7 @@ class Shortcode {
 			);
 		}
 
-		// Vylúč podľa exclude_ids.
+		// Exclude by exclude_ids.
 		if ( ! empty( $atts['exclude_ids'] ) ) {
 			$exclude_ids = array_map( 'absint', explode( ',', $atts['exclude_ids'] ) );
 			$all_filters = array_filter(
@@ -186,14 +186,14 @@ class Shortcode {
 	}
 
 	/**
-	 * Renderuje jeden filter item a vráti HTML.
-	 * Volá sa z template filter-wrapper.php.
+	 * Renders one filter item and returns HTML.
+	 * Called from template filter-wrapper.php.
 	 *
-	 * @param array<string, mixed> $filter      Dáta filtra z DB.
-	 * @param string               $layout      Layout typ ('sidebar' | 'horizontal').
-	 * @param bool                 $collapsible Či je filter zbaliteľný.
-	 * @param bool                 $collapsed   Či je filter defaultne zbalený.
-	 * @return string HTML výstup jedného filtra.
+	 * @param array<string, mixed> $filter      Filter data from database.
+	 * @param string               $layout      Layout type ('sidebar' | 'horizontal').
+	 * @param bool                 $collapsible Whether the filter is collapsible.
+	 * @param bool                 $collapsed   Whether the filter is collapsed by default.
+	 * @return string HTML output of one filter.
 	 */
 	public static function render_filter_item(
 		array $filter,
@@ -202,9 +202,9 @@ class Shortcode {
 		bool $collapsed
 	): string {
 		/**
-		 * Akcia pred jednotlivým filtrom.
+		 * Action before individual filter.
 		 *
-		 * @param array<string, mixed> $filter Dáta filtra.
+		 * @param array<string, mixed> $filter Filter data.
 		 */
 		do_action( 'wc_sf_before_filter_item', $filter );
 
@@ -219,17 +219,17 @@ class Shortcode {
 		$html = Template::get_template( 'filter-item.php', $args, true );
 
 		/**
-		 * Filter na HTML jedného filtra.
+		 * Filter for HTML of one filter.
 		 *
-		 * @param string               $html   HTML výstup.
-		 * @param array<string, mixed> $filter Dáta filtra.
+		 * @param string               $html   HTML output.
+		 * @param array<string, mixed> $filter Filter data.
 		 */
 		$html = (string) apply_filters( 'wc_sf_filter_item_html', $html, $filter );
 
 		/**
-		 * Akcia po jednotlivom filtri.
+		 * Action after individual filter.
 		 *
-		 * @param array<string, mixed> $filter Dáta filtra.
+		 * @param array<string, mixed> $filter Filter data.
 		 */
 		do_action( 'wc_sf_after_filter_item', $filter );
 
@@ -237,9 +237,9 @@ class Shortcode {
 	}
 
 	/**
-	 * Načíta a vráti hodnoty filtra (terms, meta values, rozsahy...).
+	 * Loads and returns filter values (terms, meta values, ranges...).
 	 *
-	 * @param array<string, mixed> $filter Dáta filtra z DB.
+	 * @param array<string, mixed> $filter Filter data from database.
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function get_filter_values( array $filter ): array {
@@ -248,7 +248,7 @@ class Shortcode {
 		$config       = $filter['config'] ?? [];
 		$values       = [];
 
-		// Rozsahy (radio/checkbox s manuálnymi rozsahmi).
+		// Ranges (radio/checkbox with manual ranges).
 		if ( ! empty( $config['ranges'] ) && is_array( $config['ranges'] ) ) {
 			$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' )
 				? get_woocommerce_currency_symbol()
@@ -258,7 +258,7 @@ class Shortcode {
 				$min_val = isset( $range['min'] ) && '' !== $range['min'] ? (float) $range['min'] : null;
 				$max_val = isset( $range['max'] ) && '' !== $range['max'] ? (float) $range['max'] : null;
 
-				// Vygeneruj label ak nie je nastavený.
+				// Generate label if not set.
 				$label = isset( $range['label'] ) && '' !== trim( $range['label'] )
 					? $range['label']
 					: self::generate_range_label( $min_val, $max_val, $currency_symbol );
@@ -274,7 +274,7 @@ class Shortcode {
 			return $values;
 		}
 
-		// Slider — vráti min/max konfig.
+		// Slider: return min/max config.
 		if ( 'slider' === $filter_style ) {
 			return [
 				[
@@ -288,12 +288,12 @@ class Shortcode {
 
 		// Status filter.
 		if ( 'status' === $filter_type ) {
-			// Použi všetky hodnoty nakonfigurované v admin, nie len hardcoded 3.
+			// Use all values configured in admin, not just hardcoded 3.
 			$configured = $config['values'] ?? [];
 
 			if ( ! empty( $configured ) && is_array( $configured ) ) {
 				foreach ( $configured as $slug => $status_config ) {
-					// Preskočiť ak je explicitne disabled.
+					// Skip if explicitly disabled.
 					if ( isset( $status_config['enabled'] ) && ! filter_var( $status_config['enabled'], FILTER_VALIDATE_BOOLEAN ) ) {
 						continue;
 					}
@@ -306,11 +306,11 @@ class Shortcode {
 				return $values;
 			}
 
-			// Fallback na default 3 stavy ak nie je config.
+			// Fallback to default 3 statuses if no config.
 			$status_defaults = [
-				'instock'     => __( 'Na sklade', 'wc-simple-filter' ),
-				'outofstock'  => __( 'Vypredané', 'wc-simple-filter' ),
-				'onbackorder' => __( 'Na objednávku', 'wc-simple-filter' ),
+				'instock'     => __( 'In stock', 'wc-simple-filter' ),
+				'outofstock'  => __( 'Out of stock', 'wc-simple-filter' ),
+				'onbackorder' => __( 'On backorder', 'wc-simple-filter' ),
 			];
 
 			foreach ( $status_defaults as $slug => $default_label ) {
@@ -329,12 +329,12 @@ class Shortcode {
 				[
 					'type'  => 'sale',
 					'slug'  => 'on_sale',
-					'label' => __( 'V akcii', 'wc-simple-filter' ),
+					'label' => __( 'On sale', 'wc-simple-filter' ),
 				],
 			];
 		}
 
-		// Taxonomy term filtre (brand, attribute_*).
+		// Taxonomy term filters (brand, attribute_*).
 		if ( 'brand' === $filter_type || str_starts_with( $filter_type, 'attribute_' ) ) {
 			$taxonomy = 'brand' === $filter_type
 				? 'product_brand'
@@ -363,13 +363,13 @@ class Shortcode {
 				];
 			}
 
-			// Ak má include_values, filtruj.
+			// If has include_values, filter.
 			if ( ! empty( $config['include_values'] ) && is_array( $config['include_values'] ) ) {
 				$include = $config['include_values'];
 				$values  = array_filter( $values, static fn( $v ) => in_array( $v['slug'], $include, true ) );
 			}
 
-			// Ak má exclude_values, filtruj.
+			// If has exclude_values, filter.
 			if ( ! empty( $config['exclude_values'] ) && is_array( $config['exclude_values'] ) ) {
 				$exclude = $config['exclude_values'];
 				$values  = array_filter( $values, static fn( $v ) => ! in_array( $v['slug'], $exclude, true ) );
@@ -389,7 +389,7 @@ class Shortcode {
 
 			global $wpdb;
 
-			// Načítaj unikátne hodnoty meta kľúča pre produkty.
+			// Load unique values of meta key for products.
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT DISTINCT pm.meta_value AS value
@@ -421,21 +421,21 @@ class Shortcode {
 		}
 
 		/**
-		 * Filter na custom hodnoty pre neznáme typy filtrov.
+		 * Filter for custom values for unknown filter types.
 		 *
-		 * @param array<int, array<string, mixed>> $values  Prázdne pole.
-		 * @param array<string, mixed>             $filter  Dáta filtra.
+		 * @param array<int, array<string, mixed>> $values  Empty array.
+		 * @param array<string, mixed>             $filter  Filter data.
 		 */
 		return (array) apply_filters( 'wc_sf_filter_values', $values, $filter );
 	}
 
 	/**
-	 * Vygeneruje label pre cenový rozsah ak nie je manuálne nastavený.
-	 * Príklady: "0 – 100 €", "500 €+", "Do 100 €"
+	 * Generates a label for a price range if not manually set.
+	 * Examples: "0 – 100 €", "500 €+", "Up to 100 €"
 	 *
-	 * @param float|null  $min             Minimálna hodnota (null = bez spodnej hranice).
-	 * @param float|null  $max             Maximálna hodnota (null = bez hornej hranice).
-	 * @param string      $currency_symbol Symbol meny.
+	 * @param float|null  $min             Minimum value (null = no lower bound).
+	 * @param float|null  $max             Maximum value (null = no upper bound).
+	 * @param string      $currency_symbol Currency symbol.
 	 * @return string
 	 */
 	private static function generate_range_label( ?float $min, ?float $max, string $currency_symbol ): string {
@@ -445,7 +445,7 @@ class Shortcode {
 
 		if ( null === $min && null !== $max ) {
 			/* translators: %s: formatted max price */
-			return sprintf( __( 'Do %s', 'wc-simple-filter' ), $fmt( $max ) );
+			return sprintf( __( 'Up to %s', 'wc-simple-filter' ), $fmt( $max ) );
 		}
 
 		if ( null !== $min && null === $max ) {

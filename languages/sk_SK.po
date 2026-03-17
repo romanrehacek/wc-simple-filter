@@ -1,0 +1,716 @@
+# Copyright (C) 2026 SJB Digital
+# This file is distributed under the same license as the WC Simple Filter plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: WC Simple Filter 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-simple-filter\n"
+"Last-Translator: Slovak Translation\n"
+"Language-Team: Slovak\n"
+"Language: sk_SK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-03-17T21:30:28+01:00\n"
+"PO-Revision-Date: 2026-03-17 21:30+0100\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wc-simple-filter\n"
+
+#. Plugin Name of the plugin
+#: wc-simple-filter.php
+msgid "WC Simple Filter"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: wc-simple-filter.php
+msgid "https://github.com/sjbdigital/wc-simple-filter"
+msgstr ""
+
+#. Description of the plugin
+#: wc-simple-filter.php
+msgid "Configurable product filters for WooCommerce shop. Insert via shortcode [wc_simple_filter] or PHP function wc_simple_filter()."
+msgstr ""
+
+#. Author of the plugin
+#: wc-simple-filter.php
+msgid "SJB Digital"
+msgstr ""
+
+#. Author URI of the plugin
+#: wc-simple-filter.php
+msgid "https://sjbdigital.dev"
+msgstr ""
+
+#: includes/admin/class-admin.php:29
+#: includes/admin/class-admin.php:57
+msgid "Filters"
+msgstr "Filtre"
+
+#: includes/admin/class-admin.php:58
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: includes/admin/class-admin.php:59
+msgid "Help"
+msgstr "Pomoc"
+
+#: includes/admin/class-admin.php:187
+msgid "Are you sure you want to delete this filter?"
+msgstr ""
+
+#: includes/admin/class-admin.php:188
+msgid "Saving…"
+msgstr ""
+
+#: includes/admin/class-admin.php:189
+msgid "Saved"
+msgstr ""
+
+#: includes/admin/class-admin.php:190
+msgid "Error. Try again."
+msgstr ""
+
+#: includes/admin/class-admin.php:191
+msgid "Rebuilding index…"
+msgstr ""
+
+#: includes/admin/class-admin.php:192
+msgid "Index rebuilt."
+msgstr ""
+
+#: includes/admin/class-admin.php:193
+#: templates/admin/filter-edit.php:358
+msgid "Add range"
+msgstr ""
+
+#: includes/admin/class-admin.php:194
+#: templates/admin/filter-edit.php:348
+msgid "Remove"
+msgstr ""
+
+#: includes/admin/class-admin.php:208
+#: includes/class-ajax-handler.php:761
+#: templates/admin/filters-tab.php:107
+msgid "Brand"
+msgstr ""
+
+#: includes/admin/class-admin.php:213
+#: templates/admin/filters-tab.php:108
+msgid "Stock status"
+msgstr ""
+
+#: includes/admin/class-admin.php:218
+#: includes/class-ajax-handler.php:764
+#: templates/admin/filters-tab.php:109
+msgid "Sale"
+msgstr ""
+
+#: includes/admin/class-admin.php:223
+#: includes/class-ajax-handler.php:762
+#: templates/admin/filters-tab.php:110
+msgid "Price"
+msgstr ""
+
+#: includes/admin/class-filter-edit.php:37
+msgid "Filter not found."
+msgstr ""
+
+#: includes/admin/class-filter-edit.php:38
+msgid "Error"
+msgstr ""
+
+#: includes/class-ajax-handler.php:47
+msgid "You do not have permission."
+msgstr ""
+
+#: includes/class-ajax-handler.php:67
+msgid "Filter type is required."
+msgstr ""
+
+#: includes/class-ajax-handler.php:80
+msgid "Error saving filter."
+msgstr ""
+
+#: includes/class-ajax-handler.php:98
+msgid "Invalid filter ID."
+msgstr ""
+
+#: includes/class-ajax-handler.php:104
+msgid "Error deleting filter."
+msgstr ""
+
+#: includes/class-ajax-handler.php:124
+msgid "Invalid order."
+msgstr ""
+
+#: includes/class-ajax-handler.php:142
+msgid "No filters to index."
+msgstr ""
+
+#. translators: %d: number of records
+#: includes/class-ajax-handler.php:152
+#, php-format
+msgid "Index rebuilt. Processed: %d records."
+msgstr ""
+
+#: includes/class-ajax-handler.php:170
+msgid "Filter type is missing."
+msgstr ""
+
+#: includes/class-ajax-handler.php:212
+msgid "Settings saved."
+msgstr ""
+
+#: includes/class-ajax-handler.php:245
+#: includes/class-shortcode.php:332
+msgid "On sale"
+msgstr ""
+
+#: includes/class-ajax-handler.php:246
+msgid "No discount"
+msgstr ""
+
+#: includes/class-ajax-handler.php:763
+msgid "Availability"
+msgstr ""
+
+#: includes/class-filter-manager.php:83
+#: templates/admin/settings-tab.php:61
+msgid "Filter"
+msgstr ""
+
+#: includes/class-filter-manager.php:85
+#: includes/class-frontend.php:219
+msgid "Reset filters"
+msgstr ""
+
+#: includes/class-frontend.php:217
+msgid "Show more"
+msgstr ""
+
+#: includes/class-frontend.php:218
+msgid "Show less"
+msgstr ""
+
+#: includes/class-frontend.php:220
+msgid "Close"
+msgstr ""
+
+#: includes/class-frontend.php:221
+msgid "Remove filter"
+msgstr ""
+
+#: includes/class-shortcode.php:311
+msgid "In stock"
+msgstr ""
+
+#: includes/class-shortcode.php:312
+msgid "Out of stock"
+msgstr ""
+
+#: includes/class-shortcode.php:313
+msgid "On backorder"
+msgstr ""
+
+#. translators: %s: formatted max price
+#: includes/class-shortcode.php:448
+#, php-format
+msgid "Up to %s"
+msgstr ""
+
+#. translators: %s: formatted min price
+#: includes/class-shortcode.php:453
+#, php-format
+msgid "%s+"
+msgstr ""
+
+#: templates/admin/filter-edit.php:34
+#: templates/admin/filters-tab.php:18
+msgid "Checkboxes"
+msgstr ""
+
+#: templates/admin/filter-edit.php:35
+#: templates/admin/filters-tab.php:19
+msgid "Radio buttons"
+msgstr ""
+
+#: templates/admin/filter-edit.php:36
+#: templates/admin/filters-tab.php:20
+msgid "Dropdown"
+msgstr ""
+
+#: templates/admin/filter-edit.php:37
+#: templates/admin/filters-tab.php:21
+msgid "Multi-dropdown"
+msgstr ""
+
+#: templates/admin/filter-edit.php:38
+#: templates/admin/filters-tab.php:22
+msgid "Slider"
+msgstr ""
+
+#: templates/admin/filter-edit.php:57
+msgid "Back to filter list"
+msgstr ""
+
+#: templates/admin/filter-edit.php:61
+#: templates/admin/filters-tab.php:79
+msgid "Filter settings"
+msgstr ""
+
+#: templates/admin/filter-edit.php:72
+msgid "Filter name"
+msgstr ""
+
+#: templates/admin/filter-edit.php:88
+msgid "Display label"
+msgstr ""
+
+#: templates/admin/filter-edit.php:98
+msgid "Display filter name above the filter"
+msgstr ""
+
+#: templates/admin/filter-edit.php:106
+#: templates/admin/filters-tab.php:101
+msgid "Filter type"
+msgstr ""
+
+#: templates/admin/filter-edit.php:116
+msgid "Display style"
+msgstr ""
+
+#: templates/admin/filter-edit.php:122
+msgid "Style is fixed for this filter type."
+msgstr ""
+
+#: templates/admin/filter-edit.php:142
+msgid "Hide empty"
+msgstr ""
+
+#: templates/admin/filter-edit.php:152
+msgid "Do not display values without products"
+msgstr ""
+
+#: templates/admin/filter-edit.php:163
+msgid "Stock statuses"
+msgstr ""
+
+#: templates/admin/filter-edit.php:165
+msgid "Configure the display and description of individual stock statuses."
+msgstr ""
+
+#: templates/admin/filter-edit.php:187
+msgid "Display"
+msgstr ""
+
+#: templates/admin/filter-edit.php:206
+msgid "Slider settings"
+msgstr ""
+
+#. translators: %1$s: minimum price, %2$s: maximum price
+#: templates/admin/filter-edit.php:214
+#, php-format
+msgid "Current values in the shop: from %1$s to %2$s"
+msgstr ""
+
+#: templates/admin/filter-edit.php:231
+msgid "Minimum value"
+msgstr ""
+
+#: templates/admin/filter-edit.php:246
+msgid "Maximum value"
+msgstr ""
+
+#: templates/admin/filter-edit.php:261
+msgid "Step"
+msgstr ""
+
+#: templates/admin/filter-edit.php:274
+msgid "Leave empty for free range."
+msgstr ""
+
+#: templates/admin/filter-edit.php:283
+msgid "Price ranges"
+msgstr ""
+
+#. translators: %1$s: minimum price, %2$s: maximum price
+#: templates/admin/filter-edit.php:291
+#, php-format
+msgid "Product prices in the shop: from %1$s to %2$s"
+msgstr ""
+
+#: templates/admin/filter-edit.php:301
+msgid "Define price ranges. Leave \"To\" empty for unlimited upper limit."
+msgstr ""
+
+#: templates/admin/filter-edit.php:306
+msgid "From"
+msgstr ""
+
+#: templates/admin/filter-edit.php:307
+msgid "To"
+msgstr ""
+
+#: templates/admin/filter-edit.php:308
+msgid "Description (optional)"
+msgstr ""
+
+#: templates/admin/filter-edit.php:343
+msgid "e.g., Up to 100 €"
+msgstr ""
+
+#: templates/admin/filter-edit.php:366
+msgid "Value selection"
+msgstr ""
+
+#: templates/admin/filter-edit.php:368
+msgid "Check values to display. If you don't check anything, all values will be displayed."
+msgstr ""
+
+#: templates/admin/filter-edit.php:373
+msgid "Select all"
+msgstr ""
+
+#: templates/admin/filter-edit.php:376
+msgid "Deselect all"
+msgstr ""
+
+#: templates/admin/filter-edit.php:406
+msgid "No values were found for this filter type."
+msgstr ""
+
+#: templates/admin/filter-edit.php:414
+msgid "Sorting"
+msgstr ""
+
+#: templates/admin/filter-edit.php:419
+msgid "By name A→Z"
+msgstr ""
+
+#: templates/admin/filter-edit.php:422
+msgid "By name Z→A"
+msgstr ""
+
+#: templates/admin/filter-edit.php:425
+msgid "By count ↑"
+msgstr ""
+
+#: templates/admin/filter-edit.php:428
+msgid "By count ↓"
+msgstr ""
+
+#: templates/admin/filter-edit.php:435
+msgid "Filter logic"
+msgstr ""
+
+#: templates/admin/filter-edit.php:441
+msgid "OR — display products with at least one value"
+msgstr ""
+
+#: templates/admin/filter-edit.php:447
+msgid "AND — display only products with all values"
+msgstr ""
+
+#: templates/admin/filter-edit.php:458
+msgid "Save filter"
+msgstr ""
+
+#: templates/admin/filters-tab.php:34
+msgid "Name"
+msgstr ""
+
+#: templates/admin/filters-tab.php:35
+#: templates/admin/help-tab.php:38
+msgid "Type"
+msgstr ""
+
+#: templates/admin/filters-tab.php:36
+msgid "Style"
+msgstr ""
+
+#: templates/admin/filters-tab.php:37
+msgid "Actions"
+msgstr ""
+
+#: templates/admin/filters-tab.php:45
+msgid "No filters. Add the first filter below."
+msgstr ""
+
+#: templates/admin/filters-tab.php:58
+msgid "(untitled)"
+msgstr ""
+
+#: templates/admin/filters-tab.php:85
+msgid "Delete filter"
+msgstr ""
+
+#: templates/admin/filters-tab.php:97
+msgid "Add new filter"
+msgstr ""
+
+#: templates/admin/filters-tab.php:105
+msgid "— Select type —"
+msgstr ""
+
+#: templates/admin/filters-tab.php:106
+msgid "Basic"
+msgstr ""
+
+#: templates/admin/filters-tab.php:116
+msgid "Product attributes"
+msgstr ""
+
+#: templates/admin/filters-tab.php:124
+msgid "Custom field"
+msgstr ""
+
+#: templates/admin/filters-tab.php:125
+msgid "Custom field (enter key)"
+msgstr ""
+
+#: templates/admin/filters-tab.php:132
+msgid "Meta key"
+msgstr ""
+
+#: templates/admin/filters-tab.php:145
+msgid "Filter style"
+msgstr ""
+
+#: templates/admin/filters-tab.php:161
+msgid "+ Add filter"
+msgstr ""
+
+#: templates/admin/help-tab.php:15
+msgid "How to use WC Simple Filter"
+msgstr ""
+
+#: templates/admin/help-tab.php:18
+msgid "Inserting via shortcode"
+msgstr ""
+
+#: templates/admin/help-tab.php:20
+msgid "Insert the shortcode on any page or in a widget:"
+msgstr ""
+
+#: templates/admin/help-tab.php:26
+msgid "Inserting directly in PHP template"
+msgstr ""
+
+#: templates/admin/help-tab.php:28
+msgid "If you prefer inserting directly in the theme PHP file:"
+msgstr ""
+
+#: templates/admin/help-tab.php:34
+msgid "Filter types"
+msgstr ""
+
+#: templates/admin/help-tab.php:39
+msgid "Description"
+msgstr ""
+
+#: templates/admin/help-tab.php:40
+msgid "Available styles"
+msgstr ""
+
+#: templates/admin/help-tab.php:46
+msgid "Filter by brand (taxonomy product_brand)"
+msgstr ""
+
+#: templates/admin/help-tab.php:47
+msgid "checkbox, radio, dropdown, multi-dropdown"
+msgstr ""
+
+#: templates/admin/help-tab.php:51
+msgid "Stock status (in stock, out of stock, on backorder)"
+msgstr ""
+
+#: templates/admin/help-tab.php:52
+#: templates/admin/help-tab.php:57
+msgid "checkbox (fixed)"
+msgstr ""
+
+#: templates/admin/help-tab.php:56
+msgid "Sale products (on sale / not on sale)"
+msgstr ""
+
+#: templates/admin/help-tab.php:61
+msgid "Price filter — ranges or slider"
+msgstr ""
+
+#: templates/admin/help-tab.php:62
+msgid "checkbox, radio, slider"
+msgstr ""
+
+#: templates/admin/help-tab.php:66
+msgid "WooCommerce product attribute (e.g., attribute_pa_color)"
+msgstr ""
+
+#: templates/admin/help-tab.php:67
+#: templates/admin/help-tab.php:72
+msgid "checkbox, radio, dropdown, multi-dropdown, slider"
+msgstr ""
+
+#: templates/admin/help-tab.php:71
+msgid "Custom meta field (configured by admin — e.g., meta_weight)"
+msgstr ""
+
+#: templates/admin/help-tab.php:79
+msgid "Value index (hide-empty)"
+msgstr ""
+
+#: templates/admin/help-tab.php:81
+msgid "The plugin maintains an internal index of product counts for each filter value. This index is automatically updated when a product is saved. If you see outdated values, you can manually recalculate it in the Settings tab."
+msgstr ""
+
+#: templates/admin/help-tab.php:86
+msgid "Planned features (Phase 2)"
+msgstr ""
+
+#: templates/admin/help-tab.php:88
+msgid "AJAX product filtering without page reload"
+msgstr ""
+
+#: templates/admin/help-tab.php:89
+msgid "URL state — sharing and back/forward navigation"
+msgstr ""
+
+#: templates/admin/help-tab.php:90
+msgid "Frontend CSS styling"
+msgstr ""
+
+#: templates/admin/help-tab.php:91
+msgid "WooCommerce query integration"
+msgstr ""
+
+#: templates/admin/settings-tab.php:26
+msgid "Filtering method"
+msgstr ""
+
+#: templates/admin/settings-tab.php:32
+msgid "AJAX — instantly without page load"
+msgstr ""
+
+#: templates/admin/settings-tab.php:38
+msgid "Button — form submission"
+msgstr ""
+
+#: templates/admin/settings-tab.php:44
+msgid "Reload — page refresh on every change"
+msgstr ""
+
+#: templates/admin/settings-tab.php:53
+msgid "\"Filter\" button text"
+msgstr ""
+
+#: templates/admin/settings-tab.php:65
+msgid "Displayed in \"Button\" mode."
+msgstr ""
+
+#: templates/admin/settings-tab.php:73
+msgid "Reset button"
+msgstr ""
+
+#: templates/admin/settings-tab.php:83
+msgid "Display \"Clear filters\" button"
+msgstr ""
+
+#: templates/admin/settings-tab.php:92
+msgid "Reset button text"
+msgstr ""
+
+#: templates/admin/settings-tab.php:100
+#: templates/frontend/filter-wrapper.php:27
+#: templates/frontend/partials/reset-button.php:16
+msgid "Clear filters"
+msgstr "Zrušiť filtre"
+
+#: templates/admin/settings-tab.php:109
+msgid "Hide empty values"
+msgstr "Skryť prázdne hodnoty"
+
+#: templates/admin/settings-tab.php:119
+msgid "Do not display filter values without products (global default)"
+msgstr "Nezobrazovať hodnoty filtrov bez produktov (globálne predvolené)"
+
+#: templates/admin/settings-tab.php:127
+msgid "Uninstallation"
+msgstr "Odinštalácia"
+
+#: templates/admin/settings-tab.php:137
+msgid "Delete all plugin data on uninstall"
+msgstr "Zmazať všetky údaje pluginu pri odinštalácii"
+
+#: templates/admin/settings-tab.php:140
+msgid "Warning: this action is irreversible. DB tables, settings, and cache will be deleted."
+msgstr "Upozornenie: táto akcia je nevratná. Budú zmazané tabuľky DB, nastavenia a vyrovnávacia pamäť."
+
+#: templates/admin/settings-tab.php:149
+msgid "Save settings"
+msgstr "Uložiť nastavenia"
+
+#: templates/admin/settings-tab.php:161
+msgid "Filter value index"
+msgstr "Index hodnôt filtrov"
+
+#: templates/admin/settings-tab.php:163
+msgid "The index stores product counts for each filter value. It is used to hide empty values (hide-empty)."
+msgstr "Index uchovává počty produktov pre každú hodnotu filtra. Používa sa na skrytie prázdnych hodnôt (hide-empty)."
+
+#. translators: %s: time of last update
+#: templates/admin/settings-tab.php:171
+#, php-format
+msgid "Last recalculated: %s"
+msgstr "Posledný výpočet: %s"
+
+#: templates/admin/settings-tab.php:177
+msgid "Index has not been recalculated yet."
+msgstr "Index ešte nebol prepočítaný."
+
+#: templates/admin/settings-tab.php:182
+msgid "Recalculate index"
+msgstr "Prepočítať index"
+
+#: templates/frontend/filter-item.php:80
+msgid "No values"
+msgstr "Bez hodnôt"
+
+#. translators: %d: number of hidden values
+#: templates/frontend/filter-types/checkbox.php:62
+#: templates/frontend/filter-types/radio.php:59
+#, php-format
+msgid "Show more (%d)"
+msgstr "Zobraziť viac (%d)"
+
+#: templates/frontend/filter-types/dropdown.php:28
+msgid "— Select —"
+msgstr "— Vybrať —"
+
+#: templates/frontend/filter-types/multi-dropdown.php:38
+msgid "Ctrl/Cmd + click for multiple values"
+msgstr "Ctrl/Cmd + klik na výber viacerých hodnôt"
+
+#: templates/frontend/filter-wrapper.php:43
+#: templates/frontend/partials/filter-toggle-bar.php:22
+msgid "Product filters"
+msgstr "Filtre produktov"
+
+#: templates/frontend/filter-wrapper.php:57
+msgid "Apply filters"
+msgstr "Aplikovať filtre"
+
+#: templates/frontend/filter-wrapper.php:65
+msgid "Active filters"
+msgstr "Aktívne filtre"
+
+#: templates/frontend/partials/active-chip.php:27
+#, php-format
+msgid "Remove filter: %s"
+msgstr "Odstrániť filter: %s"
+
+#: wc-simple-filter.php:42
+#: wc-simple-filter.php:81
+msgid "WC Simple Filter requires an active WooCommerce plugin."
+msgstr ""
+
+#: wc-simple-filter.php:82
+msgid "Activation Error"
+msgstr ""

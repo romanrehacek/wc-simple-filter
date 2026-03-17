@@ -1,6 +1,6 @@
 <?php
 /**
- * AJAX handler — spracúva všetky admin AJAX požiadavky pluginu.
+ * AJAX handler — processes all admin AJAX requests for the plugin.
  *
  * @package WC_Simple_Filter
  */
@@ -12,17 +12,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trieda Ajax_Handler.
+ * Class Ajax_Handler.
  */
 class Ajax_Handler {
 
 	/**
-	 * Zaregistruje AJAX hooky.
+	 * Registers AJAX hooks.
 	 *
 	 * @return void
 	 */
 	public function register_hooks(): void {
-		// Admin AJAX endpointy.
+		// Admin AJAX endpoints.
 		add_action( 'wp_ajax_wc_sf_save_filter',     [ $this, 'save_filter' ] );
 		add_action( 'wp_ajax_wc_sf_delete_filter',   [ $this, 'delete_filter' ] );
 		add_action( 'wp_ajax_wc_sf_reorder_filters', [ $this, 'reorder_filters' ] );
@@ -30,13 +30,13 @@ class Ajax_Handler {
 		add_action( 'wp_ajax_wc_sf_get_type_values', [ $this, 'get_type_values' ] );
 		add_action( 'wp_ajax_wc_sf_save_settings',   [ $this, 'save_settings' ] );
 
-		// Frontend AJAX endpoint — dostupný pre prihlásených aj neprihlásených.
+		// Frontend AJAX endpoint — available to both authenticated and unauthenticated users.
 		add_action( 'wp_ajax_wc_sf_filter_products',        [ $this, 'filter_products' ] );
 		add_action( 'wp_ajax_nopriv_wc_sf_filter_products', [ $this, 'filter_products' ] );
 	}
 
 	/**
-	 * Overí nonce a kapacitu. Pri neúspechu ukončí s chybou.
+	 * Verifies nonce and capability. Exits with error on failure.
 	 *
 	 * @return void
 	 */
@@ -44,12 +44,12 @@ class Ajax_Handler {
 		check_ajax_referer( 'wc_sf_admin_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Nemáte oprávnenie.', 'wc-simple-filter' ) ], 403 );
+			wp_send_json_error( [ 'message' => __( 'You do not have permission.', 'wc-simple-filter' ) ], 403 );
 		}
 	}
 
 	/**
-	 * Uloží nový alebo aktualizuje existujúci filter.
+	 * Saves a new or updates an existing filter.
 	 *
 	 * @return void
 	 */
@@ -60,11 +60,11 @@ class Ajax_Handler {
 		$id     = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 		$data   = $this->extract_filter_data();
 
-		// Debug log — overí sa, či config správne prišiel.
+		// Debug log — verify that config came through correctly.
 		error_log( 'WC_SF save_filter: ' . wp_json_encode( $data ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 
 		if ( empty( $data['filter_type'] ) ) {
-			wp_send_json_error( [ 'message' => __( 'Typ filtra je povinný.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Filter type is required.', 'wc-simple-filter' ) ] );
 		}
 
 		if ( $id > 0 ) {
@@ -77,14 +77,14 @@ class Ajax_Handler {
 		}
 
 		if ( ! $success || ! $filter ) {
-			wp_send_json_error( [ 'message' => __( 'Chyba pri ukladaní filtra.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Error saving filter.', 'wc-simple-filter' ) ] );
 		}
 
 		wp_send_json_success( [ 'filter' => $filter ] );
 	}
 
 	/**
-	 * Zmaže filter.
+	 * Deletes a filter.
 	 *
 	 * @return void
 	 */
@@ -95,20 +95,20 @@ class Ajax_Handler {
 		$id = absint( $_POST['id'] ?? 0 );
 
 		if ( $id <= 0 ) {
-			wp_send_json_error( [ 'message' => __( 'Neplatné ID filtra.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Invalid filter ID.', 'wc-simple-filter' ) ] );
 		}
 
 		$success = Filter_Manager::delete( $id );
 
 		if ( ! $success ) {
-			wp_send_json_error( [ 'message' => __( 'Chyba pri mazaní filtra.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Error deleting filter.', 'wc-simple-filter' ) ] );
 		}
 
 		wp_send_json_success();
 	}
 
 	/**
-	 * Uloží nové poradie filtrov po drag & drop.
+	 * Saves new filter order after drag & drop.
 	 *
 	 * @return void
 	 */
@@ -121,7 +121,7 @@ class Ajax_Handler {
 		$order     = array_filter( $order );
 
 		if ( empty( $order ) ) {
-			wp_send_json_error( [ 'message' => __( 'Neplatné poradie.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Invalid order.', 'wc-simple-filter' ) ] );
 		}
 
 		Filter_Manager::reorder( $order );
@@ -129,7 +129,7 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Spustí full rebuild indexu.
+	 * Triggers a full rebuild of the index.
 	 *
 	 * @return void
 	 */
@@ -139,7 +139,7 @@ class Ajax_Handler {
 		$filters = Filter_Manager::get_all();
 
 		if ( empty( $filters ) ) {
-			wp_send_json_success( [ 'count' => 0, 'message' => __( 'Žiadne filtre na indexovanie.', 'wc-simple-filter' ) ] );
+			wp_send_json_success( [ 'count' => 0, 'message' => __( 'No filters to index.', 'wc-simple-filter' ) ] );
 		}
 
 		$filter_types = array_unique( array_column( $filters, 'filter_type' ) );
@@ -148,15 +148,15 @@ class Ajax_Handler {
 		wp_send_json_success( [
 			'count'   => $total,
 			'message' => sprintf(
-				/* translators: %d: počet záznamov */
-				__( 'Index prebudovaný. Spracovaných: %d záznamov.', 'wc-simple-filter' ),
+				/* translators: %d: number of records */
+				__( 'Index rebuilt. Processed: %d records.', 'wc-simple-filter' ),
 				$total
 			),
 		] );
 	}
 
 	/**
-	 * Vráti dostupné hodnoty pre daný filter_type (pre values picker v edit stránke).
+	 * Returns available values for a given filter_type (for values picker in edit page).
 	 *
 	 * @return void
 	 */
@@ -167,7 +167,7 @@ class Ajax_Handler {
 		$filter_type = sanitize_text_field( wp_unslash( $_POST['filter_type'] ?? '' ) );
 
 		if ( empty( $filter_type ) ) {
-			wp_send_json_error( [ 'message' => __( 'Chýba filter_type.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Filter type is missing.', 'wc-simple-filter' ) ] );
 		}
 
 		$values = $this->load_available_values( $filter_type );
@@ -175,7 +175,7 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Uloží všeobecné nastavenia pluginu.
+	 * Saves general plugin settings.
 	 *
 	 * @return void
 	 */
@@ -191,7 +191,7 @@ class Ajax_Handler {
 
 		foreach ( $allowed as $key ) {
 			if ( ! isset( $posted[ $key ] ) ) {
-				// Checkboxy posielajú hodnotu len keď sú zaškrtnuté.
+				// Checkboxes only send values when checked.
 				if ( in_array( $key, [ 'show_reset_button', 'hide_empty', 'delete_on_uninstall' ], true ) ) {
 					$settings[ $key ] = false;
 				}
@@ -209,13 +209,13 @@ class Ajax_Handler {
 		}
 
 		update_option( 'wc_sf_settings', $settings );
-		wp_send_json_success( [ 'message' => __( 'Nastavenia uložené.', 'wc-simple-filter' ) ] );
+		wp_send_json_success( [ 'message' => __( 'Settings saved.', 'wc-simple-filter' ) ] );
 	}
 
 	/**
-	 * Načíta dostupné hodnoty pre daný filter_type z WooCommerce.
+	 * Loads available values for a given filter_type from WooCommerce.
 	 *
-	 * @param string $filter_type Typ filtra.
+	 * @param string $filter_type Filter type.
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function load_available_values( string $filter_type ): array {
@@ -229,7 +229,7 @@ class Ajax_Handler {
 		}
 
 		if ( 'status' === $filter_type ) {
-			// Načítame všetky registrované stavy vrátane custom (cez woocommerce_product_stock_status_options).
+			// Load all registered statuses including custom ones (via woocommerce_product_stock_status_options).
 			$stock_statuses = wc_get_product_stock_status_options();
 			$values         = [];
 
@@ -242,8 +242,8 @@ class Ajax_Handler {
 
 		if ( 'sale' === $filter_type ) {
 			return [
-				[ 'value' => 'on_sale',  'label' => __( 'V akcii', 'wc-simple-filter' ) ],
-				[ 'value' => 'off_sale', 'label' => __( 'Bez zľavy', 'wc-simple-filter' ) ],
+				[ 'value' => 'on_sale',  'label' => __( 'On sale', 'wc-simple-filter' ) ],
+				[ 'value' => 'off_sale', 'label' => __( 'No discount', 'wc-simple-filter' ) ],
 			];
 		}
 
@@ -256,9 +256,9 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Načíta termy z taxonomie ako pole value/label.
+	 * Loads terms from a taxonomy as value/label array.
 	 *
-	 * @param string $taxonomy Taxonomia.
+	 * @param string $taxonomy Taxonomy.
 	 * @return array<int, array<string, string>>
 	 */
 	private function get_term_values( string $taxonomy ): array {
@@ -287,9 +287,9 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Načíta unikátne hodnoty meta kľúča.
+	 * Loads unique values for a meta key.
 	 *
-	 * @param string $meta_key Meta kľúč.
+	 * @param string $meta_key Meta key.
 	 * @return array<int, array<string, string>>
 	 */
 	private function get_meta_values( string $meta_key ): array {
@@ -321,46 +321,46 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * AJAX endpoint pre filtrovanie produktov (frontend).
+	 * AJAX endpoint for filtering products (frontend).
 	 *
-	 * Dostupný pre prihlásených aj neprihlásených používateľov.
-	 * Overenie: frontend nonce (wc_sf_frontend_nonce).
+	 * Available to both authenticated and unauthenticated users.
+	 * Verification: frontend nonce (wc_sf_frontend_nonce).
 	 *
-	 * Vstup (POST):
-	 *  - nonce    string  Nonce overenia.
-	 *  - wcsf     array   Sanitizované filter parametre (rovnaká štruktúra ako $_GET['wcsf']).
-	 *  - paged    int     Číslo stránky (default 1).
-	 *  - orderby  string  WC orderby hodnota (nepovinné).
+	 * Input (POST):
+	 *  - nonce    string  Verification nonce.
+	 *  - wcsf     array   Sanitized filter parameters (same structure as $_GET['wcsf']).
+	 *  - paged    int     Page number (default 1).
+	 *  - orderby  string  WC orderby value (optional).
 	 *
-	 * Výstup (JSON success):
+	 * Output (JSON success):
 	 *  - html         string  HTML product loop.
-	 *  - pagination   string  HTML stránkovania.
-	 *  - found_posts  int     Celkový počet nájdených produktov.
-	 *  - max_pages    int     Celkový počet stránok.
-	 *  - paged        int     Aktuálna stránka.
+	 *  - pagination   string  HTML pagination.
+	 *  - found_posts  int     Total number of found products.
+	 *  - max_pages    int     Total number of pages.
+	 *  - paged        int     Current page.
 	 *
 	 * @return void
 	 */
 	public function filter_products(): void {
-		// Overenie frontend nonce — CSRF ochrana.
-		// Kapacitná kontrola nie je potrebná (endpoint je verejný, len čítame).
+		// Verify frontend nonce — CSRF protection.
+		// Capability check not needed (endpoint is public, read-only).
 		check_ajax_referer( 'wc_sf_frontend_nonce', 'nonce' );
 
-		// --- Sanitizácia vstupu ---
+		// --- Input sanitization ---
 
-		// Filter parametre — rovnaký mechanizmus ako pre $_GET, ale z $_POST.
-		// Dočasne presunieme wcsf z POST do GET aby Query_Builder::get_active_params() fungoval,
-		// ale radšej použijeme priamy sanitizačný kód aby sme nemodifikovali globály.
+		// Filter parameters — same mechanism as for $_GET, but from $_POST.
+		// Temporarily move wcsf from POST to GET so Query_Builder::get_active_params() works,
+		// but prefer direct sanitization code to avoid modifying globals.
 		$raw_wcsf = isset( $_POST['wcsf'] ) && is_array( $_POST['wcsf'] )
 			? (array) wp_unslash( $_POST['wcsf'] )
 			: [];
 
 		$params = $this->sanitize_frontend_params( $raw_wcsf );
 
-		// Stránkovanie.
+		// Pagination.
 		$paged    = isset( $_POST['paged'] ) ? max( 1, absint( $_POST['paged'] ) ) : 1;
 
-		// Zoradenie — validujeme voči povoleným WC hodnotám.
+		// Sorting — validate against allowed WC values.
 		$raw_orderby = isset( $_POST['orderby'] )
 			? sanitize_text_field( wp_unslash( (string) $_POST['orderby'] ) )
 			: '';
@@ -368,16 +368,16 @@ class Ajax_Handler {
 			? $raw_orderby
 			: get_option( 'woocommerce_default_catalog_orderby', 'menu_order' );
 
-		// --- Zostavenie WP_Query args ---
+		// --- Build WP_Query args ---
 
 		$filter_configs = Filter_Manager::get_all();
 		$filter_args    = Query_Builder::build( $params, $filter_configs );
 
 		/**
-		 * Počet produktov na stránku pre AJAX endpoint.
-		 * Default: WooCommerce nastavenie.
+		 * Number of products per page for AJAX endpoint.
+		 * Default: WooCommerce setting.
 		 *
-		 * @param int $per_page Počet produktov.
+		 * @param int $per_page Number of products.
 		 */
 		$per_page = (int) apply_filters(
 			'wc_sf_ajax_per_page',
@@ -395,20 +395,20 @@ class Ajax_Handler {
 			$filter_args
 		);
 
-		// Aplikuj WC zoradenie.
+		// Apply WC sorting.
 		$query_args = $this->apply_orderby( $query_args, $orderby );
 
 		/**
-		 * Filter na úpravu WP_Query args pre AJAX filtrovanie.
+		 * Filter to modify WP_Query args for AJAX filtering.
 		 *
-		 * @param array<string, mixed> $query_args    Zostavené args.
-		 * @param array<string, mixed> $params        Aktívne filter parametre.
-		 * @param int                  $paged         Číslo stránky.
-		 * @param string               $orderby       Zoradenie.
+		 * @param array<string, mixed> $query_args    Built args.
+		 * @param array<string, mixed> $params        Active filter parameters.
+		 * @param int                  $paged         Page number.
+		 * @param string               $orderby       Sorting.
 		 */
 		$query_args = (array) apply_filters( 'wc_sf_ajax_query_args', $query_args, $params, $paged, $orderby );
 
-		// --- Spustenie query a render ---
+		// --- Run query and render ---
 
 		$query = new \WP_Query( $query_args );
 
@@ -429,8 +429,8 @@ class Ajax_Handler {
 
 			woocommerce_product_loop_end();
 		} else {
-			// Prázdny stav — zabalíme do rovnakého wrappera ako loop-start.php,
-			// aby JS mohol nájsť [data-wcsf-products] aj pri prázdnom výsledku.
+			// Empty state — wrap in the same wrapper as loop-start.php,
+			// so JS can find [data-wcsf-products] even on empty results.
 			echo '<div class="child-category__products" data-wcsf-products>';
 			wc_get_template( 'loop/no-products-found.php' );
 			echo '</div>';
@@ -440,10 +440,10 @@ class Ajax_Handler {
 		wp_reset_postdata();
 
 		// Render pagination HTML.
-		// Volávame wc_get_template() priamo namiesto woocommerce_pagination(), pretože
-		// tematická override funkcie woocommerce_pagination() volá woocommerce_products_will_display()
-		// čo vracia false v AJAX kontexte (mimo štandardného WC archive loop) a tým blokuje výstup.
-		// Vždy renderujeme wrapper, aby JS mohol konzistentne nahradiť existujúci element v DOM.
+		// Call wc_get_template() directly instead of woocommerce_pagination() because
+		// theme override of woocommerce_pagination() calls woocommerce_products_will_display()
+		// which returns false in AJAX context (outside standard WC archive loop) and blocks output.
+		// Always render wrapper so JS can consistently replace existing element in DOM.
 		ob_start();
 
 		if ( $query->max_num_pages > 1 ) {
@@ -465,17 +465,17 @@ class Ajax_Handler {
 				]
 			);
 		} else {
-			// Prázdny wrapper — zachová element v DOM, JS ho môže nahradiť.
+			// Empty wrapper — keep element in DOM, JS can replace it.
 			echo '<div class="child-category__pagination"></div>';
 		}
 
 		$pagination_html = (string) ob_get_clean();
 
 		/**
-		 * Akcia po vykreslení produktov (napr. re-init WC JS hooky).
+		 * Action after rendering products (e.g., re-init WC JS hooks).
 		 *
-		 * @param \WP_Query            $query   WP_Query objekt.
-		 * @param array<string, mixed> $params  Aktívne filter parametre.
+		 * @param \WP_Query            $query   WP_Query object.
+		 * @param array<string, mixed> $params  Active filter parameters.
 		 */
 		do_action( 'wc_sf_after_products_render', $query, $params );
 
@@ -489,12 +489,12 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Sanitizuje pole frontend filter parametrov (z AJAX POST).
+	 * Sanitizes an array of frontend filter parameters (from AJAX POST).
 	 *
-	 * Replikuje logiku Query_Builder::get_active_params() ale číta z poľa
-	 * namiesto priamo z $_GET, aby sme nemodifikovali globálne superglobals.
+	 * Replicates the logic of Query_Builder::get_active_params() but reads from an array
+	 * instead of directly from $_GET, so we don't modify global superglobals.
 	 *
-	 * @param  array<mixed> $raw  Nesanitizovaný vstup (z wp_unslash()).
+	 * @param  array<mixed> $raw  Unsanitized input (from wp_unslash()).
 	 * @return array<string, mixed>
 	 */
 	private function sanitize_frontend_params( array $raw ): array {
@@ -577,9 +577,9 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Validuje filter kľúč — rovnaká logika ako v Query_Builder.
+	 * Validates a filter key — same logic as in Query_Builder.
 	 *
-	 * @param  string $key  Sanitizovaný kľúč.
+	 * @param  string $key  Sanitized key.
 	 * @return bool
 	 */
 	private function is_valid_filter_key( string $key ): bool {
@@ -601,10 +601,10 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Aplikuje WooCommerce orderby na WP_Query args.
+	 * Applies WooCommerce orderby to WP_Query args.
 	 *
 	 * @param  array<string, mixed> $args     WP_Query args.
-	 * @param  string               $orderby  WC orderby hodnota.
+	 * @param  string               $orderby  WC orderby value.
 	 * @return array<string, mixed>
 	 */
 	private function apply_orderby( array $args, string $orderby ): array {
@@ -653,7 +653,7 @@ class Ajax_Handler {
 		return $args;
 	}
 	/**
-	 * Extrahuje a sanitizuje dáta filtra z POST requestu.
+	 * Extracts and sanitizes filter data from POST request.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -663,23 +663,23 @@ class Ajax_Handler {
 		$filter_type = sanitize_text_field( wp_unslash( $_POST['filter_type'] ?? '' ) );
 		$label       = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
 
-		// Ak label nie je zadaný, vygenerujeme pekný defaultný názov.
+		// If label is not provided, generate a nice default name.
 		if ( '' === $label ) {
 			$label = self::default_label_for_type( $filter_type );
 		}
 
-		// Ak prišlo ako string (JSON), dekódujeme. Ak ako array, berieme priamo.
-		// Keď príde zo serialize() formuláru, $raw_config bude array.
+		// If it came as string (JSON), decode it. If as array, take it directly.
+		// When from serialize() form, $raw_config will be array.
 		if ( is_string( $raw_config ) ) {
 			$config = json_decode( $raw_config, true ) ?? [];
 		} else {
 			$config = (array) $raw_config;
 		}
 
-		// Sanitizuj config rekurzívne.
+		// Recursively sanitize config.
 		$config = self::sanitize_config( $config );
 
-		// Pre status filter — explicitne nastaviť `enabled = false` pre stavy, ktoré sa neposlali.
+		// For status filter — explicitly set `enabled = false` for statuses that weren't sent.
 		if ( 'status' === $filter_type ) {
 			$config = self::process_status_config( $config );
 		}
@@ -695,16 +695,16 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Spracuje config pre status filter — nastaví `enabled = false`
-	 * pre stavy, ktoré sa neposlali.
+	 * Processes config for status filter — sets `enabled = false`
+	 * for statuses that weren't sent.
 	 *
-	 * @param array<string, mixed> $config Config pole.
+	 * @param array<string, mixed> $config Config array.
 	 * @return array<string, mixed>
 	 */
 	private static function process_status_config( array $config ): array {
 		$stock_statuses = wc_get_product_stock_status_options();
 
-		// Inicializuj všetky stavy s enabled = false.
+		// Initialize all statuses with enabled = false.
 		$values = [];
 		foreach ( $stock_statuses as $status_key => $label ) {
 			$values[ $status_key ] = [
@@ -713,7 +713,7 @@ class Ajax_Handler {
 			];
 		}
 
-		// Merge so submitnutými hodnotami — tie čo sa poslali budú mať enabled = 1.
+		// Merge with submitted values — those sent will have enabled = 1.
 		if ( isset( $config['values'] ) && is_array( $config['values'] ) ) {
 			foreach ( $config['values'] as $status_key => $data ) {
 				if ( isset( $values[ $status_key ] ) ) {
@@ -730,9 +730,9 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Sanitizuje config pole rekurzívne.
+	 * Sanitizes config array recursively.
 	 *
-	 * @param mixed $data Nesanitizované dáta.
+	 * @param mixed $data Unsanitized data.
 	 * @return mixed
 	 */
 	private static function sanitize_config( $data ) {
@@ -748,27 +748,27 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Vráti pekný defaultný názov filtra pre daný filter_type.
+	 * Returns a nice default name for a filter of a given filter_type.
 	 *
-	 * Používa sa keď admin neposkytol vlastný názov.
+	 * Used when admin hasn't provided a custom name.
 	 *
-	 * @param string $filter_type Typ filtra (napr. 'brand', 'price', 'attribute_pa_farba').
+	 * @param string $filter_type Filter type (e.g., 'brand', 'price', 'attribute_pa_color').
 	 * @return string
 	 */
 	public static function default_label_for_type( string $filter_type ): string {
-		// Základné typy.
+		// Basic types.
 		$labels = [
-			'brand'  => __( 'Značka', 'wc-simple-filter' ),
-			'price'  => __( 'Cena', 'wc-simple-filter' ),
-			'status' => __( 'Dostupnosť', 'wc-simple-filter' ),
-			'sale'   => __( 'Akcia', 'wc-simple-filter' ),
+			'brand'  => __( 'Brand', 'wc-simple-filter' ),
+			'price'  => __( 'Price', 'wc-simple-filter' ),
+			'status' => __( 'Availability', 'wc-simple-filter' ),
+			'sale'   => __( 'Sale', 'wc-simple-filter' ),
 		];
 
 		if ( isset( $labels[ $filter_type ] ) ) {
 			return $labels[ $filter_type ];
 		}
 
-		// WC atribúty: attribute_pa_farba → načítame label z WC.
+		// WC attributes: attribute_pa_color → load label from WC.
 		if ( str_starts_with( $filter_type, 'attribute_pa_' ) ) {
 			$attr_name = substr( $filter_type, strlen( 'attribute_pa_' ) );
 			$taxonomy  = wc_attribute_taxonomy_name( $attr_name );
@@ -788,7 +788,7 @@ class Ajax_Handler {
 			return ucfirst( str_replace( [ '_', '-' ], ' ', $key ) );
 		}
 
-		// Posledný fallback.
+		// Last fallback.
 		return ucfirst( str_replace( [ '_', '-' ], ' ', $filter_type ) );
 	}
 }

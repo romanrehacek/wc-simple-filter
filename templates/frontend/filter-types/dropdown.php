@@ -1,13 +1,13 @@
 <?php
 /**
- * Template: Dropdown filter typ (single select).
+ * Template: Dropdown filter type (single select).
  *
- * Premenné dostupné v tejto šablóne:
- * @var array<string, mixed>             $filter  Dáta filtra z DB.
- * @var array<int, array<string, mixed>> $values  Hodnoty filtra.
- * @var string                           $layout  Layout typ.
+ * Variables available in this template:
+ * @var array<string, mixed>             $filter  Filter data from DB.
+ * @var array<int, array<string, mixed>> $values  Filter values.
+ * @var string                           $layout  Layout type.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/filter-types/dropdown.php
+ * Override: copy to {theme}/wc-simple-filter/filter-types/dropdown.php
  *
  * @package WC_Simple_Filter
  */
@@ -25,7 +25,7 @@ $label       = $filter['label'] ?? '';
 		class="wcsf__dropdown"
 		name="wcsf[<?php echo esc_attr( $filter_type ); ?>]"
 		aria-label="<?php echo esc_attr( $label ); ?>">
-		<option value=""><?php esc_html_e( '— Vybrať —', 'wc-simple-filter' ); ?></option>
+		<option value=""><?php esc_html_e( '— Select —', 'wc-simple-filter' ); ?></option>
 		<?php foreach ( $values as $value ) : ?>
 			<option value="<?php echo esc_attr( $value['slug'] ?? '' ); ?>">
 				<?php echo esc_html( $value['label'] ?? '' ); ?>

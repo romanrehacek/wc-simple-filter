@@ -1,13 +1,13 @@
 <?php
 /**
- * Template: Slider filter typ (range slider).
+ * Template: Slider filter type (range slider).
  *
- * Premenné dostupné v tejto šablóne:
- * @var array<string, mixed>             $filter  Dáta filtra z DB.
- * @var array<int, array<string, mixed>> $values  Hodnoty filtra (1 item so slider konfiguráciou).
- * @var string                           $layout  Layout typ.
+ * Variables available in this template:
+ * @var array<string, mixed>             $filter  Filter data from DB.
+ * @var array<int, array<string, mixed>> $values  Filter values (1 item with slider configuration).
+ * @var string                           $layout  Layout type.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/filter-types/slider.php
+ * Override: copy to {theme}/wc-simple-filter/filter-types/slider.php
  *
  * @package WC_Simple_Filter
  */

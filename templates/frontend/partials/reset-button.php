@@ -1,8 +1,8 @@
 <?php
 /**
- * Template partial: Reset tlačidlo.
+ * Template partial: Reset button.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/partials/reset-button.php
+ * Override: copy to {theme}/wc-simple-filter/partials/reset-button.php
  *
  * @package WC_Simple_Filter
  */
@@ -13,12 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $settings         = get_option( 'wc_sf_settings', [] );
 $show_reset       = $settings['show_reset_button'] ?? true;
-$reset_label      = $settings['reset_button_text'] ?? __( 'Zrušiť filtre', 'wc-simple-filter' );
+$reset_label      = $settings['reset_button_text'] ?? __( 'Clear filters', 'wc-simple-filter' );
 
 /**
- * Filter na zobrazenie reset tlačidla.
+ * Filter to show reset button.
  *
- * @param bool $show_reset Zobraziť reset tlačidlo?
+ * @param bool $show_reset Show reset button?
  */
 $show_reset = (bool) apply_filters( 'wc_sf_show_reset_button', $show_reset );
 
@@ -27,9 +27,9 @@ if ( ! $show_reset ) {
 }
 
 /**
- * Filter na label reset tlačidla.
+ * Filter for reset button label.
  *
- * @param string $reset_label Text tlačidla.
+ * @param string $reset_label Button text.
  */
 $reset_label = (string) apply_filters( 'wc_sf_reset_button_label', $reset_label );
 ?>

@@ -1,10 +1,10 @@
 <?php
 /**
- * Query Builder — prekladá sanitizované filter parametre na WP_Query args.
+ * Query Builder: translates sanitized filter parameters to WP_Query args.
  *
- * Táto trieda je čisto statická a nespúšťa žiadne hooky sama od seba.
- * Hookuje sa výhradne cez apply_filters() aby externe mohlo byť správanie
- * upravené bez nutnosti overridovať celú triedu.
+ * This class is purely static and triggers no hooks on its own.
+ * It uses apply_filters() exclusively so external behavior can be modified
+ * without needing to override the entire class.
  *
  * @package WC_Simple_Filter
  */
@@ -16,21 +16,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trieda Query_Builder.
+ * Query_Builder class.
  *
- * Vstup: sanitizované pole aktívnych filter parametrov z URL ($_GET['wcsf']).
- * Výstup: pole WP_Query args pripravené na merge do hlavného query.
+ * Input: sanitized array of active filter parameters from URL ($_GET['wcsf']).
+ * Output: array of WP_Query args ready to merge into the main query.
  */
 class Query_Builder {
 
 	/**
-	 * Povolené filter_type kľúče (validácia vstupu).
-	 * Dynamické typy (attribute_*, meta_*) sa kontrolujú prefix-validáciou.
+	 * Allowed filter_type keys (input validation).
+	 * Dynamic types (attribute_*, meta_*) are validated via prefix checking.
 	 */
 	private const STATIC_TYPES = [ 'brand', 'status', 'sale', 'price' ];
 
 	/**
-	 * Povolené WooCommerce orderby hodnoty.
+	 * Allowed WooCommerce orderby values.
 	 */
 	public const ALLOWED_ORDERBY = [
 		'menu_order',
@@ -43,19 +43,19 @@ class Query_Builder {
 	];
 
 	// -------------------------------------------------------------------------
-	// Verejné API
+	// Public API
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Načíta, sanitizuje a vráti aktívne filter parametre z $_GET.
+	 * Loads, sanitizes, and returns active filter parameters from $_GET.
 	 *
-	 * Táto metóda je jediné miesto kde sa číta $_GET['wcsf'] — všade inde
-	 * pracujeme s výstupom tejto metódy.
+	 * This method is the only place where $_GET['wcsf'] is read — everywhere else
+	 * we work with the output of this method.
 	 *
-	 * @return array<string, mixed>  Sanitizované parametre, napr.:
+	 * @return array<string, mixed>  Sanitized parameters, for example:
 	 *   [
 	 *     'brand'              => ['nike', 'adidas'],
-	 *     'attribute_pa_farba' => ['cervena'],
+	 *     'attribute_pa_color' => ['red'],
 	 *     'status'             => ['instock'],
 	 *     'sale'               => '1',
 	 *     'price'              => ['min' => 100.0, 'max' => 500.0],
@@ -78,15 +78,15 @@ class Query_Builder {
 				continue;
 			}
 
-			// Validácia: povolené sú iba known typy + attribute_* + meta_*.
+			// Validation: only known types + attribute_* + meta_* are allowed.
 			if ( ! self::is_valid_filter_key( $key ) ) {
 				continue;
 			}
 
-			// Slider — price má podkľúče min/max (wcsf[price][min], wcsf[price][max]).
-			// Range slugy (checkbox/radio) prichádzajú ako wcsf[price][] a nemajú
-			// kľúče min/max — v tom prípade nechaj hodnoty prejsť na generický
-			// handler pre pole nižšie.
+			// Slider — price has sub-keys min/max (wcsf[price][min], wcsf[price][max]).
+			// Range slugs (checkbox/radio) come as wcsf[price][] and have no
+			// min/max keys — in that case, let the values pass to the generic
+			// array handler below.
 			if ( 'price' === $key && is_array( $raw_value ) && ( isset( $raw_value['min'] ) || isset( $raw_value['max'] ) ) ) {
 				$min = isset( $raw_value['min'] ) && '' !== $raw_value['min']
 					? (float) $raw_value['min']
@@ -104,7 +104,7 @@ class Query_Builder {
 				continue;
 			}
 
-			// Attribute/meta slider — rovnaký vzor: wcsf[attribute_pa_xxx][min].
+			// Attribute/meta slider — same pattern: wcsf[attribute_pa_xxx][min].
 			if (
 				is_array( $raw_value )
 				&& isset( $raw_value['min'], $raw_value['max'] )
@@ -122,7 +122,7 @@ class Query_Builder {
 				continue;
 			}
 
-			// Skalárna hodnota (napr. sale=1, radio bez rozsahu).
+			// Scalar value (e.g. sale=1, radio without range).
 			if ( ! is_array( $raw_value ) ) {
 				$value = sanitize_text_field( (string) $raw_value );
 				if ( '' !== $value ) {
@@ -131,7 +131,7 @@ class Query_Builder {
 				continue;
 			}
 
-			// Pole hodnôt (checkbox multi-select, multi-dropdown).
+			// Array of values (checkbox multi-select, multi-dropdown).
 			$sanitized = [];
 			foreach ( $raw_value as $v ) {
 				$s = sanitize_text_field( (string) $v );
@@ -149,21 +149,21 @@ class Query_Builder {
 	}
 
 	/**
-	 * Zostrojí WP_Query args fragment z aktívnych filter parametrov.
+	 * Builds WP_Query args fragment from active filter parameters.
 	 *
-	 * Vracia iba kľúče ktoré sú relevantné (tax_query, meta_query, post__in).
-	 * Volajúci ich musí mergnúť do vlastného WP_Query args poľa.
+	 * Returns only keys that are relevant (tax_query, meta_query, post__in).
+	 * The caller must merge them into their own WP_Query args array.
 	 *
-	 * @param  array<string, mixed>             $params         Výstup z get_active_params().
-	 * @param  array<int, array<string, mixed>> $filter_configs Filtre z DB (pre čítanie config['logic']).
-	 * @return array<string, mixed>  Fragment WP_Query args.
+	 * @param  array<string, mixed>             $params         Output from get_active_params().
+	 * @param  array<int, array<string, mixed>> $filter_configs Filters from DB (for reading config['logic']).
+	 * @return array<string, mixed>  WP_Query args fragment.
 	 */
 	public static function build( array $params, array $filter_configs = [] ): array {
 		if ( empty( $params ) ) {
 			return [];
 		}
 
-		// Indexuj config podľa filter_type pre O(1) lookup.
+		// Index config by filter_type for O(1) lookup.
 		$config_index = [];
 		foreach ( $filter_configs as $fc ) {
 			$ft = $fc['filter_type'] ?? '';
@@ -174,7 +174,7 @@ class Query_Builder {
 
 		$tax_query  = [];
 		$meta_query = [];
-		$post__in   = null;   // null = neaplikovať; [] = žiadne výsledky
+		$post__in   = null;   // null = do not apply; [] = no results
 
 		foreach ( $params as $filter_type => $values ) {
 			$config = $config_index[ $filter_type ] ?? [];
@@ -191,7 +191,7 @@ class Query_Builder {
 			}
 
 			// -----------------------------------------------------------------
-			// status → meta_query na _stock_status
+			// status → meta_query on _stock_status
 			// -----------------------------------------------------------------
 			if ( 'status' === $filter_type ) {
 				$clause = self::build_status_clause( $values );
@@ -207,7 +207,7 @@ class Query_Builder {
 			if ( 'sale' === $filter_type ) {
 				$sale_ids = self::build_sale_post_ids( $values );
 				if ( null !== $post__in ) {
-					// Viac post__in podmienok → prienik.
+					// Multiple post__in conditions → intersection.
 					$post__in = array_intersect( $post__in, $sale_ids );
 				} else {
 					$post__in = $sale_ids;
@@ -216,7 +216,7 @@ class Query_Builder {
 			}
 
 			// -----------------------------------------------------------------
-			// price → meta_query na _price
+			// price → meta_query on _price
 			// -----------------------------------------------------------------
 			if ( 'price' === $filter_type ) {
 				$clause = self::build_price_clause( $values );
@@ -227,7 +227,7 @@ class Query_Builder {
 			}
 
 			// -----------------------------------------------------------------
-			// meta_* → meta_query na custom meta kľúč
+			// meta_* → meta_query on custom meta key
 			// -----------------------------------------------------------------
 			if ( str_starts_with( $filter_type, 'meta_' ) ) {
 				$clause = self::build_meta_clause( $filter_type, $values, $config );
@@ -238,17 +238,17 @@ class Query_Builder {
 			}
 		}
 
-		// Zostrojenie finálneho args poľa.
+		// Build the final args array.
 		$args = [];
 
 		if ( ! empty( $tax_query ) ) {
 			$tax_query['relation'] = 'AND';
 			/**
-			 * Filter na úpravu tax_query pred aplikovaním.
+			 * Filter to modify tax_query before applying.
 			 *
-			 * @param array<mixed>         $tax_query    Zostavená tax_query.
-			 * @param array<string, mixed> $params       Aktívne filter parametre.
-			 * @param array<mixed>         $config_index Index konfigurácií filtrov.
+			 * @param array<mixed>         $tax_query    Built tax_query.
+			 * @param array<string, mixed> $params       Active filter parameters.
+			 * @param array<mixed>         $config_index Index of filter configurations.
 			 */
 			$args['tax_query'] = (array) apply_filters( 'wc_sf_tax_query', $tax_query, $params, $config_index ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		}
@@ -256,39 +256,39 @@ class Query_Builder {
 		if ( ! empty( $meta_query ) ) {
 			$meta_query['relation'] = 'AND';
 			/**
-			 * Filter na úpravu meta_query pred aplikovaním.
+			 * Filter to modify meta_query before applying.
 			 *
-			 * @param array<mixed>         $meta_query   Zostavená meta_query.
-			 * @param array<string, mixed> $params       Aktívne filter parametre.
-			 * @param array<mixed>         $config_index Index konfigurácií filtrov.
+			 * @param array<mixed>         $meta_query   Built meta_query.
+			 * @param array<string, mixed> $params       Active filter parameters.
+			 * @param array<mixed>         $config_index Index of filter configurations.
 			 */
 			$args['meta_query'] = (array) apply_filters( 'wc_sf_meta_query', $meta_query, $params, $config_index ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		}
 
 		if ( null !== $post__in ) {
-			// Prázdne post__in → žiadne produkty nespĺňajú podmienku.
+			// Empty post__in → no products match the condition.
 			$args['post__in'] = ! empty( $post__in ) ? array_values( $post__in ) : [ 0 ];
 		}
 
 		/**
-		 * Filter na úpravu všetkých WP_Query args pred vrátením.
+		 * Filter to modify all WP_Query args before returning.
 		 *
-		 * @param array<string, mixed> $args    Zostavené args.
-		 * @param array<string, mixed> $params  Aktívne filter parametre.
+		 * @param array<string, mixed> $args    Built args.
+		 * @param array<string, mixed> $params  Active filter parameters.
 		 */
 		return (array) apply_filters( 'wc_sf_query_args', $args, $params );
 	}
 
 	// -------------------------------------------------------------------------
-	// Privátne builder metódy
+	// Private builder methods
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Zostrojí tax_query clause pre brand alebo attribute_* filter.
+	 * Builds tax_query clause for brand or attribute_* filter.
 	 *
-	 * @param  string              $filter_type  Typ filtra.
-	 * @param  mixed               $values       Pole slugov alebo skalár.
-	 * @param  array<string,mixed> $config       Config filtra z DB.
+	 * @param  string              $filter_type  Filter type.
+	 * @param  mixed               $values       Array of slugs or scalar.
+	 * @param  array<string,mixed> $config       Filter config from DB.
 	 * @return array<string, mixed>
 	 */
 	private static function build_tax_clause( string $filter_type, mixed $values, array $config ): array {
@@ -296,7 +296,7 @@ class Query_Builder {
 			? 'product_brand'
 			: 'pa_' . substr( $filter_type, strlen( 'attribute_' ) );
 
-		// Normalizuj na pole.
+		// Normalize to array.
 		$slugs = is_array( $values ) ? $values : [ $values ];
 		$slugs = array_filter( array_map( 'sanitize_text_field', $slugs ) );
 
@@ -304,7 +304,7 @@ class Query_Builder {
 			return [];
 		}
 
-		// AND = produkt musí mať VŠETKY vybrané hodnoty; OR = aspoň jednu.
+		// AND = product must have ALL selected values; OR = at least one.
 		$logic    = strtolower( $config['logic'] ?? 'or' );
 		$operator = ( 'and' === $logic ) ? 'AND' : 'IN';
 
@@ -316,20 +316,20 @@ class Query_Builder {
 		];
 
 		/**
-		 * Filter na úpravu jednotlivého tax_query clause.
+		 * Filter to modify individual tax_query clause.
 		 *
 		 * @param array<string,mixed> $clause      Clause.
-		 * @param string              $filter_type Typ filtra.
-		 * @param array<string>       $slugs       Vybrané hodnoty.
-		 * @param array<string,mixed> $config      Config filtra.
+		 * @param string              $filter_type Filter type.
+		 * @param array<string>       $slugs       Selected values.
+		 * @param array<string,mixed> $config      Filter config.
 		 */
 		return (array) apply_filters( 'wc_sf_tax_query_clause', $clause, $filter_type, $slugs, $config );
 	}
 
 	/**
-	 * Zostrojí meta_query clause pre status filter.
+	 * Builds meta_query clause for status filter.
 	 *
-	 * @param  mixed $values  Pole stock status slugov alebo skalár.
+	 * @param  mixed $values  Array of stock status slugs or scalar.
 	 * @return array<string, mixed>
 	 */
 	private static function build_status_clause( mixed $values ): array {
@@ -340,7 +340,7 @@ class Query_Builder {
 			return [];
 		}
 
-		// Validácia: iba povolené WC stock status hodnoty.
+		// Validation: only allowed WC stock status values.
 		$allowed  = array_keys( wc_get_product_stock_status_options() );
 		$statuses = array_values( array_intersect( $statuses, $allowed ) );
 
@@ -356,14 +356,14 @@ class Query_Builder {
 	}
 
 	/**
-	 * Vráti pole product IDs pre sale filter.
-	 * Prázdna kolekcia (žiadne produkty v akcii) → [0] aby WP_Query vrátila 0 výsledkov.
+	 * Returns array of product IDs for sale filter.
+	 * Empty collection (no products on sale) → [0] so WP_Query returns 0 results.
 	 *
-	 * @param  mixed $values  '1' ak je filter aktívny.
+	 * @param  mixed $values  '1' if filter is active.
 	 * @return array<int>
 	 */
 	private static function build_sale_post_ids( mixed $values ): array {
-		// Filter je aktívny ak je values '1' alebo ['on_sale'].
+		// Filter is active if values is '1' or ['on_sale'].
 		$is_active = '1' === $values
 			|| ( is_array( $values ) && in_array( 'on_sale', $values, true ) );
 
@@ -377,19 +377,19 @@ class Query_Builder {
 	}
 
 	/**
-	 * Zostrojí meta_query clause pre price filter.
+	 * Builds meta_query clause for price filter.
 	 *
-	 * Podporuje:
+	 * Supports:
 	 *  - ['min' => x, 'max' => y] — slider (BETWEEN)
 	 *  - ['min' => x]             — >= min
 	 *  - ['max' => y]             — <= max
-	 *  - pole range slugov        — OR z viacerých BETWEEN podmienok
+	 *  - array of range slugs     — OR of multiple BETWEEN conditions
 	 *
-	 * @param  mixed $values  Pole s kľúčmi min/max, pole range slugov, alebo skalárny range slug.
+	 * @param  mixed $values  Array with min/max keys, array of range slugs, or scalar range slug.
 	 * @return array<string, mixed>
 	 */
 	private static function build_price_clause( mixed $values ): array {
-		// Slider alebo jednoduchý min/max.
+		// Slider or simple min/max.
 		if ( is_array( $values ) && ( isset( $values['min'] ) || isset( $values['max'] ) ) ) {
 			$min = isset( $values['min'] ) ? (float) $values['min'] : null;
 			$max = isset( $values['max'] ) ? (float) $values['max'] : null;
@@ -397,14 +397,14 @@ class Query_Builder {
 			return self::numeric_range_clause( '_price', $min, $max );
 		}
 
-		// Skalárny range slug z radio inputu: wcsf[price]=range_200_500.
+		// Scalar range slug from radio input: wcsf[price]=range_200_500.
 		if ( is_string( $values ) && str_starts_with( $values, 'range_' ) ) {
 			[ $min, $max ] = self::parse_range_slug( $values );
 
 			return self::numeric_range_clause( '_price', $min, $max );
 		}
 
-		// Pole range slugov napr. ['range_0_100', 'range_200_500'].
+		// Array of range slugs e.g. ['range_0_100', 'range_200_500'].
 		if ( is_array( $values ) && ! empty( $values ) ) {
 			$clauses = [];
 
@@ -421,7 +421,7 @@ class Query_Builder {
 				return [];
 			}
 
-			// Viac rozsahov = OR (produkt musí spadať aspoň do jedného).
+			// Multiple ranges = OR (product must fall into at least one).
 			if ( 1 === count( $clauses ) ) {
 				return $clauses[0];
 			}
@@ -433,11 +433,11 @@ class Query_Builder {
 	}
 
 	/**
-	 * Zostrojí meta_query clause pre meta_* filter.
+	 * Builds meta_query clause for meta_* filter.
 	 *
-	 * @param  string              $filter_type  Typ filtra (napr. 'meta_weight').
-	 * @param  mixed               $values       Pole hodnôt alebo slider min/max.
-	 * @param  array<string,mixed> $config       Config filtra z DB.
+	 * @param  string              $filter_type  Filter type (e.g. 'meta_weight').
+	 * @param  mixed               $values       Array of values or slider min/max.
+	 * @param  array<string,mixed> $config       Filter config from DB.
 	 * @return array<string, mixed>
 	 */
 	private static function build_meta_clause( string $filter_type, mixed $values, array $config ): array {
@@ -456,17 +456,17 @@ class Query_Builder {
 			$clause = self::numeric_range_clause( $meta_key, $min, $max );
 
 			/**
-			 * Filter na úpravu meta_query clause pre meta_* typ.
+			 * Filter to modify meta_query clause for meta_* type.
 			 *
 			 * @param array<string,mixed> $clause      Clause.
-			 * @param string              $filter_type Typ filtra.
-			 * @param mixed               $values      Aktívne hodnoty.
-			 * @param array<string,mixed> $config      Config filtra.
+			 * @param string              $filter_type Filter type.
+			 * @param mixed               $values      Active values.
+			 * @param array<string,mixed> $config      Filter config.
 			 */
 			return (array) apply_filters( 'wc_sf_meta_query_clause', $clause, $filter_type, $values, $config );
 		}
 
-		// Pole range slugov.
+		// Array of range slugs.
 		if ( is_array( $values ) && ! empty( $values ) && str_starts_with( (string) reset( $values ), 'range_' ) ) {
 			$clauses = [];
 
@@ -490,7 +490,7 @@ class Query_Builder {
 			return (array) apply_filters( 'wc_sf_meta_query_clause', $result, $filter_type, $values, $config );
 		}
 
-		// Pole textových hodnôt.
+		// Array of text values.
 		$vals = is_array( $values ) ? $values : [ $values ];
 		$vals = array_filter( array_map( 'sanitize_text_field', $vals ) );
 
@@ -509,15 +509,15 @@ class Query_Builder {
 	}
 
 	// -------------------------------------------------------------------------
-	// Pomocné metódy
+	// Helper methods
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Zostrojí numerický range meta_query clause.
+	 * Builds a numeric range meta_query clause.
 	 *
-	 * @param  string     $meta_key Meta kľúč.
-	 * @param  float|null $min      Minimálna hodnota (null = bez spodnej hranice).
-	 * @param  float|null $max      Maximálna hodnota (null = bez hornej hranice).
+	 * @param  string     $meta_key Meta key.
+	 * @param  float|null $min      Minimum value (null = no lower bound).
+	 * @param  float|null $max      Maximum value (null = no upper bound).
 	 * @return array<string, mixed>
 	 */
 	private static function numeric_range_clause( string $meta_key, ?float $min, ?float $max ): array {
@@ -526,8 +526,8 @@ class Query_Builder {
 		}
 
 		$base = [
-			'key'     => $meta_key,
-			'type'    => 'NUMERIC',
+			'key'    => $meta_key,
+			'type'   => 'NUMERIC',
 		];
 
 		if ( null !== $min && null !== $max ) {
@@ -551,9 +551,9 @@ class Query_Builder {
 	}
 
 	/**
-	 * Parsuje range slug na [min, max].
-	 * Formát: 'range_{min}_{max}' kde max môže byť 'inf' pre neobmedzenú hornú hranicu.
-	 * Príklady: 'range_0_100' → [0.0, 100.0], 'range_500_inf' → [500.0, null].
+	 * Parses a range slug into [min, max].
+	 * Format: 'range_{min}_{max}' where max can be 'inf' for unlimited upper bound.
+	 * Examples: 'range_0_100' → [0.0, 100.0], 'range_500_inf' → [500.0, null].
 	 *
 	 * @param  string $slug  Range slug.
 	 * @return array{0: float|null, 1: float|null}
@@ -563,9 +563,9 @@ class Query_Builder {
 			return [ null, null ];
 		}
 
-		// Odober prefix 'range_'.
+		// Remove 'range_' prefix.
 		$rest  = substr( $slug, 6 );
-		// Rozdelíme na max 2 časti z prava — posledná je max, predposledná min.
+		// Split into max 2 parts from right — last is max, second-to-last is min.
 		$parts = explode( '_', $rest );
 
 		if ( count( $parts ) < 2 ) {
@@ -582,9 +582,9 @@ class Query_Builder {
 	}
 
 	/**
-	 * Validuje filter kľúč — povolené sú iba known typy.
+	 * Validates a filter key — only known types are allowed.
 	 *
-	 * @param  string $key  Sanitizovaný kľúč.
+	 * @param  string $key  Sanitized key.
 	 * @return bool
 	 */
 	private static function is_valid_filter_key( string $key ): bool {
@@ -593,7 +593,7 @@ class Query_Builder {
 		}
 
 		if ( str_starts_with( $key, 'attribute_' ) ) {
-			// attribute_ musí byť nasledovaný neprázdnym reťazcom.
+			// attribute_ must be followed by a non-empty string.
 			return strlen( $key ) > strlen( 'attribute_' );
 		}
 

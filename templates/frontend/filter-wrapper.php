@@ -1,15 +1,15 @@
 <?php
 /**
- * Template: Obal celého bloku filtrov.
+ * Template: Wrapper for entire filter block.
  *
- * Premenné dostupné v tejto šablóne:
- * @var array<int, array<string, mixed>> $filters     Pole filtrov z DB.
- * @var string                           $layout      Layout typ: 'sidebar' | 'horizontal'.
- * @var bool                             $collapsible Či sú filtre zbaliteľné.
- * @var bool                             $collapsed   Či sú filtre defaultne zbalené.
- * @var array<string, mixed>             $atts        Shortcode atribúty.
+ * Variables available in this template:
+ * @var array<int, array<string, mixed>> $filters     Array of filters from DB.
+ * @var string                           $layout      Layout type: 'sidebar' | 'horizontal'.
+ * @var bool                             $collapsible Whether filters are collapsible.
+ * @var bool                             $collapsed   Whether filters are collapsed by default.
+ * @var array<string, mixed>             $atts        Shortcode attributes.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/filter-wrapper.php
+ * Override: copy to {theme}/wc-simple-filter/filter-wrapper.php
  *
  * @package WC_Simple_Filter
  */
@@ -24,7 +24,7 @@ use WC_Simple_Filter\Template;
 $settings    = get_option( 'wc_sf_settings', [] );
 $filter_mode = $settings['filter_mode'] ?? 'ajax';
 $show_reset  = (bool) apply_filters( 'wc_sf_show_reset_button', $settings['show_reset_button'] ?? true );
-$reset_label = (string) apply_filters( 'wc_sf_reset_button_label', $settings['reset_button_text'] ?? __( 'Zrušiť filtre', 'wc-simple-filter' ) );
+$reset_label = (string) apply_filters( 'wc_sf_reset_button_label', $settings['reset_button_text'] ?? __( 'Clear filters', 'wc-simple-filter' ) );
 ?>
 <div class="wcsf wcsf--<?php echo esc_attr( $layout ); ?>" data-layout="<?php echo esc_attr( $layout ); ?>" data-filter-mode="<?php echo esc_attr( $filter_mode ); ?>">
 
@@ -34,13 +34,13 @@ $reset_label = (string) apply_filters( 'wc_sf_reset_button_label', $settings['re
 
 	<form class="wcsf__form" method="get" action="<?php echo esc_url( get_pagenum_link( 1 ) ); ?>" novalidate>
 
-		<?php
-		// Stránkovanie — reset na 1 pri každom odoslaní formulára.
-		// V AJAX a reload režime JS zabraňuje default submit a rieši to sám.
-		?>
-		<input type="hidden" name="paged" value="1">
+	<?php
+	// Pagination — reset to page 1 on every form submission.
+	// In AJAX and reload modes JS prevents default submit and handles it itself.
+	?>
+	<input type="hidden" name="paged" value="1">
 
-		<div class="wcsf__filters" role="group" aria-label="<?php esc_attr_e( 'Filtre produktov', 'wc-simple-filter' ); ?>">
+	<div class="wcsf__filters" role="group" aria-label="<?php esc_attr_e( 'Product filters', 'wc-simple-filter' ); ?>">
 
 			<?php foreach ( $filters as $filter ) : ?>
 				<?php
@@ -51,18 +51,18 @@ $reset_label = (string) apply_filters( 'wc_sf_reset_button_label', $settings['re
 
 		</div>
 
-		<?php if ( 'submit' === $filter_mode ) : ?>
-			<div class="wcsf__submit-row">
-				<button type="submit" class="wcsf__submit-btn">
-					<?php esc_html_e( 'Použiť filtre', 'wc-simple-filter' ); ?>
-				</button>
-			</div>
-		<?php endif; ?>
+	<?php if ( 'submit' === $filter_mode ) : ?>
+		<div class="wcsf__submit-row">
+			<button type="submit" class="wcsf__submit-btn">
+				<?php esc_html_e( 'Apply filters', 'wc-simple-filter' ); ?>
+			</button>
+		</div>
+	<?php endif; ?>
 
-	</form>
+</form>
 
-	<?php if ( 'horizontal' === $layout ) : ?>
-		<div class="wcsf__active-bar" aria-live="polite" aria-label="<?php esc_attr_e( 'Aktívne filtre', 'wc-simple-filter' ); ?>">
+<?php if ( 'horizontal' === $layout ) : ?>
+	<div class="wcsf__active-bar" aria-live="polite" aria-label="<?php esc_attr_e( 'Active filters', 'wc-simple-filter' ); ?>">
 			<div class="wcsf__active-bar-chips"></div>
 			<?php if ( $show_reset ) : ?>
 				<button type="button" class="wcsf__reset-btn wcsf__reset-btn--inline">

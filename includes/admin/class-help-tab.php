@@ -1,6 +1,6 @@
 <?php
 /**
- * Záložka „Nápoveda" — dokumentácia pre vývojára.
+ * "Help" tab — developer documentation.
  *
  * @package WC_Simple_Filter
  */
@@ -12,12 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trieda Help_Tab.
+ * Help_Tab class.
  */
 class Help_Tab {
 
 	/**
-	 * Renderuje obsah záložky.
+	 * Renders the tab content.
 	 *
 	 * @return void
 	 */

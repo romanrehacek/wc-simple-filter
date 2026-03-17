@@ -1,13 +1,13 @@
 <?php
 /**
- * Template: Color swatch filter typ.
+ * Template: Color swatch filter type.
  *
- * Premenné dostupné v tejto šablóne:
- * @var array<string, mixed>             $filter  Dáta filtra z DB.
- * @var array<int, array<string, mixed>> $values  Hodnoty filtra.
- * @var string                           $layout  Layout typ.
+ * Variables available in this template:
+ * @var array<string, mixed>             $filter  Filter data from DB.
+ * @var array<int, array<string, mixed>> $values  Filter values.
+ * @var string                           $layout  Layout type.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/filter-types/color.php
+ * Override: copy to {theme}/wc-simple-filter/filter-types/color.php
  *
  * @package WC_Simple_Filter
  */

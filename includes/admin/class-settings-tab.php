@@ -1,6 +1,6 @@
 <?php
 /**
- * Záložka „Nastavenia" — všeobecné nastavenia pluginu.
+ * "Settings" tab — general plugin settings.
  *
  * @package WC_Simple_Filter
  */
@@ -15,12 +15,12 @@ use WC_Simple_Filter\Filter_Manager;
 use WC_Simple_Filter\Index_Manager;
 
 /**
- * Trieda Settings_Tab.
+ * Settings_Tab class.
  */
 class Settings_Tab {
 
 	/**
-	 * Renderuje obsah záložky.
+	 * Renders the tab content.
 	 *
 	 * @return void
 	 */
@@ -31,7 +31,7 @@ class Settings_Tab {
 	}
 
 	/**
-	 * Vráti čas poslednej aktualizácie indexu.
+	 * Returns the time of the last index update.
 	 *
 	 * @return string|null
 	 */

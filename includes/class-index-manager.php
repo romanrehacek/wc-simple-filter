@@ -1,6 +1,6 @@
 <?php
 /**
- * Správa indexu hodnôt filtrov — cache pre hide-empty logiku.
+ * Index Manager: cache for hide-empty filtering logic.
  *
  * @package WC_Simple_Filter
  */
@@ -12,32 +12,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trieda Index_Manager.
+ * Index_Manager class.
  *
- * Zodpovedá za:
- * - budovanie a aktualizáciu tabuľky wc_sf_index
- * - transient cache nad indexom
- * - inkrementálny update pri zmene produktu
+ * Responsible for:
+ * - building and updating the wc_sf_index table
+ * - transient cache over the index
+ * - incremental updates on product changes
  */
 class Index_Manager {
 
 	/**
-	 * Názov tabuľky indexu (bez prefixu).
+	 * Index table name (without prefix).
 	 */
 	const TABLE_INDEX = 'wc_sf_index';
 
 	/**
-	 * TTL transient cache v sekundách (12 hodín).
+	 * Transient cache TTL in seconds (12 hours).
 	 */
 	const CACHE_TTL = 43200;
 
 	/**
-	 * Prefix pre transient kľúče.
+	 * Prefix for transient keys.
 	 */
 	const CACHE_PREFIX = 'wc_sf_index_';
 
 	/**
-	 * Zaregistruje WordPress hooky pre inkrementálny update.
+	 * Registers WordPress hooks for incremental updates.
 	 *
 	 * @return void
 	 */
@@ -49,7 +49,7 @@ class Index_Manager {
 	}
 
 	/**
-	 * Vytvorí DB tabuľku indexu. Volá sa z Filter_Manager::install().
+	 * Creates the DB index table. Called from Filter_Manager::install().
 	 *
 	 * @return void
 	 */
@@ -74,7 +74,7 @@ class Index_Manager {
 	}
 
 	/**
-	 * Zmaže DB tabuľku indexu. Volá sa z uninstall.php.
+	 * Deletes the DB index table. Called from uninstall.php.
 	 *
 	 * @return void
 	 */
@@ -86,11 +86,11 @@ class Index_Manager {
 	}
 
 	/**
-	 * Vráti počet produktov pre danú hodnotu filtra.
-	 * Výsledok je cachovaný v transiente.
+	 * Returns the count of products for a given filter value.
+	 * Result is cached in a transient.
 	 *
-	 * @param string $filter_type Typ filtra.
-	 * @return array<string, int> Mapa value => product_count.
+	 * @param string $filter_type Filter type.
+	 * @return array<string, int> Map of value => product_count.
 	 */
 	public static function get_counts( string $filter_type ): array {
 		$cache_key = self::CACHE_PREFIX . md5( $filter_type );
@@ -125,10 +125,10 @@ class Index_Manager {
 	}
 
 	/**
-	 * Spustí full rebuild indexu pre všetky typy filtrov.
+	 * Triggers a full rebuild of the index for all filter types.
 	 *
-	 * @param string[] $filter_types Zoznam typov na prebudovanie.
-	 * @return int Počet spracovaných záznamov.
+	 * @param string[] $filter_types List of types to rebuild.
+	 * @return int Count of processed records.
 	 */
 	public static function rebuild( array $filter_types ): int {
 		$total = 0;
@@ -141,17 +141,17 @@ class Index_Manager {
 	}
 
 	/**
-	 * Prebuduje index pre jeden filter_type.
+	 * Rebuilds the index for a single filter_type.
 	 *
-	 * @param string $filter_type Typ filtra.
-	 * @return int Počet uložených záznamov.
+	 * @param string $filter_type Filter type.
+	 * @return int Count of saved records.
 	 */
 	public static function rebuild_type( string $filter_type ): int {
 		$counts = self::compute_counts( $filter_type );
 
 		self::save_counts( $filter_type, $counts );
 
-		// Invaliduj transient cache.
+		// Invalidate transient cache.
 		$cache_key = self::CACHE_PREFIX . md5( $filter_type );
 		delete_transient( $cache_key );
 
@@ -159,10 +159,10 @@ class Index_Manager {
 	}
 
 	/**
-	 * Vypočíta počty produktov pre daný filter_type.
+	 * Computes product counts for a given filter_type.
 	 *
-	 * @param string $filter_type Typ filtra.
-	 * @return array<string, int> Mapa value => count.
+	 * @param string $filter_type Filter type.
+	 * @return array<string, int> Map of value => count.
 	 */
 	private static function compute_counts( string $filter_type ): array {
 		if ( str_starts_with( $filter_type, 'attribute_' ) ) {
@@ -191,9 +191,9 @@ class Index_Manager {
 	}
 
 	/**
-	 * Vypočíta počty pre taxonomy (atribúty, brand).
+	 * Computes counts for a taxonomy (attributes, brand).
 	 *
-	 * @param string $taxonomy Názov taxonomie.
+	 * @param string $taxonomy Taxonomy name.
 	 * @return array<string, int>
 	 */
 	private static function compute_taxonomy_counts( string $taxonomy ): array {
@@ -210,7 +210,7 @@ class Index_Manager {
 		$counts = [];
 
 		foreach ( $terms as $term ) {
-			// Počítame len publikované produkty.
+			// Count only published products.
 			$count = self::count_published_products_with_term( $term->term_id, $taxonomy );
 			$counts[ $term->slug ] = $count;
 		}
@@ -219,9 +219,9 @@ class Index_Manager {
 	}
 
 	/**
-	 * Vypočíta počty pre meta kľúč.
+	 * Computes counts for a meta key.
 	 *
-	 * @param string $meta_key Meta kľúč.
+	 * @param string $meta_key Meta key.
 	 * @return array<string, int>
 	 */
 	private static function compute_meta_counts( string $meta_key ): array {
@@ -254,7 +254,7 @@ class Index_Manager {
 	}
 
 	/**
-	 * Vypočíta počty pre stav skladu.
+	 * Computes counts for stock status.
 	 *
 	 * @return array<string, int>
 	 */
@@ -285,7 +285,7 @@ class Index_Manager {
 	}
 
 	/**
-	 * Vypočíta počty pre zľavové filtre.
+	 * Computes counts for sale filters.
 	 *
 	 * @return array<string, int>
 	 */
@@ -303,10 +303,10 @@ class Index_Manager {
 	}
 
 	/**
-	 * Počet publikovaných produktov s daným termom.
+	 * Count of published products with a given term.
 	 *
-	 * @param int    $term_id  ID termu.
-	 * @param string $taxonomy Taxonomia.
+	 * @param int    $term_id  Term ID.
+	 * @param string $taxonomy Taxonomy.
 	 * @return int
 	 */
 	private static function count_published_products_with_term( int $term_id, string $taxonomy ): int {
@@ -331,18 +331,18 @@ class Index_Manager {
 	}
 
 	/**
-	 * Uloží počty do index tabuľky (INSERT ... ON DUPLICATE KEY UPDATE).
+	 * Saves counts to the index table (INSERT ... ON DUPLICATE KEY UPDATE).
 	 *
-	 * @param string           $filter_type Typ filtra.
-	 * @param array<string,int> $counts     Mapa value => count.
+	 * @param string           $filter_type Filter type.
+	 * @param array<string,int> $counts     Map of value => count.
 	 * @return void
 	 */
-	private static function save_counts( string $filter_type, array $counts ): void {
+	private static function save_counts( string $filter_type, array $counts ): void 	{
 		global $wpdb;
 
 		$table = $wpdb->prefix . self::TABLE_INDEX;
 
-		// Najprv zmažeme staré záznamy pre tento filter_type.
+		// First delete old records for this filter_type.
 		$wpdb->delete( $table, [ 'filter_type' => $filter_type ], [ '%s' ] );
 
 		foreach ( $counts as $value => $count ) {
@@ -359,13 +359,13 @@ class Index_Manager {
 	}
 
 	/**
-	 * Hook: inkrementálny update pri uložení produktu.
+	 * Hook: incremental update when saving a product.
 	 *
-	 * @param int $product_id ID produktu.
+	 * @param int $product_id Product ID.
 	 * @return void
 	 */
 	public function on_product_save( int $product_id ): void {
-		// Ignoruj auto-drafts a revízie.
+		// Ignore auto-drafts and revisions.
 		if ( wp_is_post_revision( $product_id ) || wp_is_post_autosave( $product_id ) ) {
 			return;
 		}
@@ -374,11 +374,11 @@ class Index_Manager {
 	}
 
 	/**
-	 * Hook: zmena stavu publikovania produktu.
+	 * Hook: post status change.
 	 *
-	 * @param string   $new_status Nový stav.
-	 * @param string   $old_status Starý stav.
-	 * @param \WP_Post $post       Post objekt.
+	 * @param string   $new_status New status.
+	 * @param string   $old_status Old status.
+	 * @param \WP_Post $post       Post object.
 	 * @return void
 	 */
 	public function on_post_status_change( string $new_status, string $old_status, \WP_Post $post ): void {
@@ -394,21 +394,21 @@ class Index_Manager {
 	}
 
 	/**
-	 * Invaliduje cache pre typy filtrov dotknuté konkrétnym produktom.
-	 * Plný rebuild sa spustí pri nasledujúcom volaní get_counts().
+	 * Invalidates cache for filter types affected by a specific product.
+	 * Full rebuild is triggered on next get_counts() call.
 	 *
-	 * @param int $product_id ID produktu.
+	 * @param int $product_id Product ID.
 	 * @return void
 	 */
 	private function invalidate_product_related_cache( int $product_id ): void {
-		// Invaliduj brand.
+		// Invalidate brand.
 		delete_transient( self::CACHE_PREFIX . md5( 'brand' ) );
 
-		// Invaliduj status + sale.
+		// Invalidate status + sale.
 		delete_transient( self::CACHE_PREFIX . md5( 'status' ) );
 		delete_transient( self::CACHE_PREFIX . md5( 'sale' ) );
 
-		// Invaliduj atribúty tohto produktu.
+		// Invalidate attributes for this product.
 		$product = wc_get_product( $product_id );
 
 		if ( ! $product ) {
@@ -424,7 +424,7 @@ class Index_Manager {
 	}
 
 	/**
-	 * Zmaže všetky transient cache indexu.
+	 * Deletes all transient cache for the index.
 	 *
 	 * @return void
 	 */

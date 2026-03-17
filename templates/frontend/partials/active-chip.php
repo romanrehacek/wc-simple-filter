@@ -1,15 +1,15 @@
 <?php
 /**
- * Template partial: Aktívny filter chip/tag.
+ * Template partial: Active filter chip/tag.
  *
- * Premenné dostupné v tejto šablóne:
- * @var string $label      Zobrazovaný label chipa.
- * @var string $value_slug Hodnota filtra (slug).
- * @var string $filter_type Typ filtra.
+ * Variables available in this template:
+ * @var string $label      The label displayed on the chip.
+ * @var string $value_slug Filter value (slug).
+ * @var string $filter_type Filter type.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/partials/active-chip.php
+ * Override: copy to {theme}/wc-simple-filter/partials/active-chip.php
  *
- * Poznámka: Plne funkčné iba v Fáze 2b (filtrovanie).
+ * Note: Fully functional only in Phase 2b (filtering).
  *
  * @package WC_Simple_Filter
  */
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<span class="wcsf__active-chip-label"><?php echo esc_html( $label ?? '' ); ?></span>
 	<button type="button"
 			class="wcsf__active-chip-remove"
-			aria-label="<?php echo esc_attr( sprintf( __( 'Odstrániť filter: %s', 'wc-simple-filter' ), $label ?? '' ) ); ?>">
+			aria-label="<?php echo esc_attr( sprintf( __( 'Remove filter: %s', 'wc-simple-filter' ), $label ?? '' ) ); ?>">
 		<span aria-hidden="true">&times;</span>
 	</button>
 </span>

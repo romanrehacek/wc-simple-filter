@@ -1,15 +1,15 @@
 <?php
 /**
- * Template: Obal jedného filtra (label + obsah).
+ * Template: Wrapper for a single filter (label + content).
  *
- * Premenné dostupné v tejto šablóne:
- * @var array<string, mixed>             $filter      Dáta filtra z DB.
- * @var string                           $layout      Layout typ: 'sidebar' | 'horizontal'.
- * @var bool                             $collapsible Či je filter zbaliteľný.
- * @var bool                             $collapsed   Či je filter defaultne zbalený.
- * @var array<int, array<string, mixed>> $values      Hodnoty filtra.
+ * Variables available in this template:
+ * @var array<string, mixed>             $filter      Filter data from DB.
+ * @var string                           $layout      Layout type: 'sidebar' | 'horizontal'.
+ * @var bool                             $collapsible Whether filter is collapsible.
+ * @var bool                             $collapsed   Whether filter is collapsed by default.
+ * @var array<int, array<string, mixed>> $values      Filter values.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/filter-item.php
+ * Override: copy to {theme}/wc-simple-filter/filter-item.php
  *
  * @package WC_Simple_Filter
  */
@@ -26,13 +26,13 @@ $filter_type  = $filter['filter_type'] ?? '';
 $show_label   = (bool) ( $filter['show_label'] ?? true );
 $label        = $filter['label'] ?? '';
 
-// CSS triedy pre filter wrapper.
+// CSS classes for filter wrapper.
 $css_classes = [ 'wcsf__filter' ];
 $css_classes[] = 'wcsf__filter--' . esc_attr( $filter_style );
 $css_classes[] = 'wcsf__filter--type-' . esc_attr( str_replace( '_', '-', $filter_type ) );
 
-// Collapsible triedy platia iba pre sidebar layout.
-// V horizontal layoute otváranie/zatváranie riadi JS cez toggle-bar pills.
+// Collapsible classes apply only to sidebar layout.
+// In horizontal layout, opening/closing is controlled by JS via toggle-bar pills.
 $is_horizontal = ( 'horizontal' === $layout );
 
 if ( $collapsible && ! $is_horizontal ) {
@@ -70,15 +70,15 @@ $body_id       = 'wcsf-filter-body-' . $filter_id;
 		 id="<?php echo esc_attr( $body_id ); ?>"
 		 <?php if ( $collapsible && $collapsed && ! $is_horizontal ) : ?>aria-hidden="true"<?php endif; ?>>
 
-		<?php if ( ! empty( $values ) ) : ?>
-			<?php
-			// Načítaj správny type template.
-			$type_template = 'filter-types/' . $filter_style . '.php';
-			Template::get_template( $type_template, compact( 'filter', 'values', 'layout' ) );
-			?>
-		<?php else : ?>
-			<p class="wcsf__filter-empty"><?php esc_html_e( 'Žiadne hodnoty', 'wc-simple-filter' ); ?></p>
-		<?php endif; ?>
+	<?php if ( ! empty( $values ) ) : ?>
+		<?php
+		// Load the correct type template.
+		$type_template = 'filter-types/' . $filter_style . '.php';
+		Template::get_template( $type_template, compact( 'filter', 'values', 'layout' ) );
+		?>
+	<?php else : ?>
+		<p class="wcsf__filter-empty"><?php esc_html_e( 'No values', 'wc-simple-filter' ); ?></p>
+	<?php endif; ?>
 
 	</div>
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Správa filtrov — CRUD operácie a inštalácia DB.
+ * Filter management — CRUD operations and database installation.
  *
  * @package WC_Simple_Filter
  */
@@ -12,26 +12,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trieda Filter_Manager.
+ * Class Filter_Manager.
  *
- * Zodpovedá za:
- * - vytvorenie DB tabuliek pri aktivácii
- * - CRUD operácie nad tabuľkou wc_sf_filters
+ * Responsible for:
+ * - creating database tables on plugin activation
+ * - CRUD operations on the wc_sf_filters table
  */
 class Filter_Manager {
 
 	/**
-	 * Názov tabuľky filtrov (bez prefixu).
+	 * Table name for filters (without prefix).
 	 */
 	const TABLE_FILTERS = 'wc_sf_filters';
 
 	/**
-	 * Verzia DB schémy.
+	 * Database schema version.
 	 */
 	const DB_VERSION = '1.0.0';
 
 	/**
-	 * Vytvorí DB tabuľky. Volá sa pri aktivácii pluginu.
+	 * Creates database tables. Called during plugin activation.
 	 *
 	 * @return void
 	 */
@@ -59,37 +59,37 @@ class Filter_Manager {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 
-		// Vytvor index tabuľku.
+		// Create index table.
 		require_once WC_SF_PLUGIN_DIR . 'includes/class-index-manager.php';
 		Index_Manager::install();
 
-		// Ulož verziu schémy.
+		// Store schema version.
 		update_option( 'wc_sf_db_version', self::DB_VERSION );
 
-		// Ulož default nastavenia ak ešte neexistujú.
+		// Store default settings if they don't exist yet.
 		if ( false === get_option( 'wc_sf_settings' ) ) {
 			add_option( 'wc_sf_settings', self::default_settings() );
 		}
 	}
 
 	/**
-	 * Vráti default nastavenia pluginu.
+	 * Returns default plugin settings.
 	 *
 	 * @return array<string, mixed>
 	 */
 	public static function default_settings(): array {
 		return [
 			'filter_mode'          => 'ajax',
-			'filter_button_text'   => __( 'Filtrovať', 'wc-simple-filter' ),
+			'filter_button_text'   => __( 'Filter', 'wc-simple-filter' ),
 			'show_reset_button'    => true,
-			'reset_button_text'    => __( 'Zrušiť filtre', 'wc-simple-filter' ),
+			'reset_button_text'    => __( 'Reset filters', 'wc-simple-filter' ),
 			'hide_empty'           => true,
 			'delete_on_uninstall'  => false,
 		];
 	}
 
 	/**
-	 * Vráti všetky filtre zoradené podľa sort_order.
+	 * Returns all filters ordered by sort_order.
 	 *
 	 * @return array<int, array<string, mixed>>
 	 */
@@ -108,9 +108,9 @@ class Filter_Manager {
 	}
 
 	/**
-	 * Vráti jeden filter podľa ID.
+	 * Returns a single filter by ID.
 	 *
-	 * @param int $id ID filtra.
+	 * @param int $id Filter ID.
 	 * @return array<string, mixed>|null
 	 */
 	public static function get( int $id ): ?array {
@@ -130,10 +130,10 @@ class Filter_Manager {
 	}
 
 	/**
-	 * Vytvorí nový filter.
+	 * Creates a new filter.
 	 *
-	 * @param array<string, mixed> $data Dáta filtra.
-	 * @return int|false ID nového filtra alebo false pri chybe.
+	 * @param array<string, mixed> $data Filter data.
+	 * @return int|false New filter ID or false on error.
 	 */
 	public static function create( array $data ): int|false {
 		global $wpdb;
@@ -160,10 +160,10 @@ class Filter_Manager {
 	}
 
 	/**
-	 * Aktualizuje existujúci filter.
+	 * Updates an existing filter.
 	 *
-	 * @param int                  $id   ID filtra.
-	 * @param array<string, mixed> $data Nové dáta.
+	 * @param int                  $id   Filter ID.
+	 * @param array<string, mixed> $data New data.
 	 * @return bool
 	 */
 	public static function update( int $id, array $data ): bool {
@@ -203,9 +203,9 @@ class Filter_Manager {
 	}
 
 	/**
-	 * Zmaže filter podľa ID.
+	 * Deletes a filter by ID.
 	 *
-	 * @param int $id ID filtra.
+	 * @param int $id Filter ID.
 	 * @return bool
 	 */
 	public static function delete( int $id ): bool {
@@ -218,9 +218,9 @@ class Filter_Manager {
 	}
 
 	/**
-	 * Aktualizuje poradie filtrov.
+	 * Updates the filter order.
 	 *
-	 * @param int[] $ordered_ids Pole ID v novom poradí.
+	 * @param int[] $ordered_ids Array of IDs in new order.
 	 * @return bool
 	 */
 	public static function reorder( array $ordered_ids ): bool {
@@ -242,9 +242,9 @@ class Filter_Manager {
 	}
 
 	/**
-	 * Spracuje riadok z DB — dekóduje JSON config.
+	 * Processes a row from the database — decodes JSON config.
 	 *
-	 * @param array<string, mixed> $row Surový riadok z DB.
+	 * @param array<string, mixed> $row Raw row from database.
 	 * @return array<string, mixed>
 	 */
 	private static function parse_row( array $row ): array {
@@ -257,7 +257,7 @@ class Filter_Manager {
 	}
 
 	/**
-	 * Zmaže DB tabuľky. Volá sa z uninstall.php.
+	 * Deletes database tables. Called from uninstall.php.
 	 *
 	 * @return void
 	 */

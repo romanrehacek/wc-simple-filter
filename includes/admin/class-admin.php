@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrácia do WooCommerce Settings — dedí WC_Settings_Page.
+ * Integration into WooCommerce Settings — inherits WC_Settings_Page.
  *
  * @package WC_Simple_Filter
  */
@@ -14,61 +14,61 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WC_Simple_Filter\Filter_Manager;
 
 /**
- * Trieda Admin.
+ * Admin class.
  *
- * Dedí WC_Settings_Page — využíva natívny WC systém sekcií
- * (subsubsub zoznam, $current_section, woocommerce_sections_ hook).
+ * Inherits WC_Settings_Page — uses the native WC system of sections
+ * (subsubsub list, $current_section, woocommerce_sections_ hook).
  */
 class Admin extends \WC_Settings_Page {
 
 	/**
-	 * Konštruktor — nastaví id/label a zaregistruje hooky cez WC_Settings_Page.
+	 * Constructor — sets id/label and registers hooks through WC_Settings_Page.
 	 */
 	public function __construct() {
 		$this->id    = 'wc_sf';
-		$this->label = __( 'Filtre', 'wc-simple-filter' );
+		$this->label = __( 'Filters', 'wc-simple-filter' );
 
-		// Rodičovský konštruktor registruje:
-		// - woocommerce_settings_tabs_array (pridanie záložky)
-		// - woocommerce_sections_{id}       (renderovanie subsubsub)
-		// - woocommerce_settings_{id}       (renderovanie obsahu)
-		// - woocommerce_settings_save_{id}  (uloženie)
+		// Parent constructor registers:
+		// - woocommerce_settings_tabs_array (add tab)
+		// - woocommerce_sections_{id}       (render subsubsub)
+		// - woocommerce_settings_{id}       (render content)
+		// - woocommerce_settings_save_{id}  (save)
 		parent::__construct();
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 	}
 
 	/**
-	 * Registruje hooky. Volá sa z Plugin::register_hooks().
+	 * Registers hooks. Called from Plugin::register_hooks().
 	 *
 	 * @return void
 	 */
 	public function register_hooks(): void {
-		// Konštruktor sa postará o WC hooky.
+		// Constructor will handle WC hooks.
 	}
 
 	/**
-	 * Vráti sekcie (sub-taby) pre tento settings page.
+	 * Returns sections (sub-tabs) for this settings page.
 	 *
 	 * @return array<string, string>
 	 */
 	protected function get_own_sections(): array {
 		return [
-			''         => __( 'Filtre', 'wc-simple-filter' ),
-			'settings' => __( 'Nastavenia', 'wc-simple-filter' ),
-			'help'     => __( 'Nápoveda', 'wc-simple-filter' ),
+			''         => __( 'Filters', 'wc-simple-filter' ),
+			'settings' => __( 'Settings', 'wc-simple-filter' ),
+			'help'     => __( 'Help', 'wc-simple-filter' ),
 		];
 	}
 
 	/**
-	 * Renderuje obsah záložky podľa aktívnej sekcie.
+	 * Renders tab content according to the active section.
 	 *
 	 * @return void
 	 */
 	public function output(): void {
 		global $current_section;
 
-		// Sekcia 'edit' je špeciálna — editácia konkrétneho filtra.
+		// The 'edit' section is special — editing a specific filter.
 		if ( 'edit' === $current_section ) {
 			$GLOBALS['hide_save_button'] = true;
 			$filter_id = isset( $_GET['filter_id'] ) ? absint( $_GET['filter_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -78,7 +78,7 @@ class Admin extends \WC_Settings_Page {
 
 		switch ( $current_section ) {
 			case 'settings':
-				// Nastavenia majú vlastné AJAX ukladanie — WC tlačidlo nepotrebujeme.
+				// Settings have their own AJAX saving — we don't need the WC button.
 				$GLOBALS['hide_save_button'] = true;
 				( new Settings_Tab() )->render();
 				break;
@@ -89,7 +89,7 @@ class Admin extends \WC_Settings_Page {
 				break;
 
 			default:
-				// Záložka Filtre — zoznam filtrov, bez ukladania cez WC mainform.
+				// Filters tab — list of filters, no saving via WC mainform.
 				$GLOBALS['hide_save_button'] = true;
 				( new Filters_Tab() )->render();
 				break;
@@ -97,8 +97,8 @@ class Admin extends \WC_Settings_Page {
 	}
 
 	/**
-	 * Renderuje subsubsub sekcie.
-	 * Pri sekcii 'edit' navigáciu skryjeme — má vlastný back link.
+	 * Renders subsubsub sections.
+	 * When the 'edit' section is active, we hide the navigation — it has its own back link.
 	 *
 	 * @return void
 	 */
@@ -113,16 +113,16 @@ class Admin extends \WC_Settings_Page {
 	}
 
 	/**
-	 * Uloženie — nastavenia sa ukladajú cez AJAX (wc_sf_save_settings).
+	 * Saving — settings are saved via AJAX (wc_sf_save_settings).
 	 *
 	 * @return void
 	 */
 	public function save(): void {}
 
 	/**
-	 * Vráti base URL pre záložku.
+	 * Returns the base URL for the tab.
 	 *
-	 * @param string $section Sekcia (prázdna = filters).
+	 * @param string $section Section (empty = filters).
 	 * @return string
 	 */
 	public static function tab_url( string $section = '' ): string {
@@ -136,9 +136,9 @@ class Admin extends \WC_Settings_Page {
 	}
 
 	/**
-	 * Vráti URL pre editáciu konkrétneho filtra.
+	 * Returns the URL for editing a specific filter.
 	 *
-	 * @param int $filter_id ID filtra.
+	 * @param int $filter_id Filter ID.
 	 * @return string
 	 */
 	public static function filter_edit_url( int $filter_id ): string {
@@ -148,9 +148,9 @@ class Admin extends \WC_Settings_Page {
 	}
 
 	/**
-	 * Enqueue admin CSS a JS — iba na stránkach tohto pluginu.
+	 * Enqueue admin CSS and JS — only on plugin pages.
 	 *
-	 * @param string $hook_suffix Hook suffix aktuálnej admin stránky.
+	 * @param string $hook_suffix Hook suffix of the current admin page.
 	 * @return void
 	 */
 	public function enqueue_assets( string $hook_suffix ): void {
@@ -184,49 +184,49 @@ class Admin extends \WC_Settings_Page {
 			'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
 			'nonce'       => wp_create_nonce( 'wc_sf_admin_nonce' ),
 			'i18n'        => [
-				'confirmDelete' => __( 'Naozaj chcete zmazať tento filter?', 'wc-simple-filter' ),
-				'saving'        => __( 'Ukladám…', 'wc-simple-filter' ),
-				'saved'         => __( 'Uložené', 'wc-simple-filter' ),
-				'error'         => __( 'Chyba. Skúste znova.', 'wc-simple-filter' ),
-				'reindexing'    => __( 'Prebudovávam index…', 'wc-simple-filter' ),
-				'reindexDone'   => __( 'Index prebudovaný.', 'wc-simple-filter' ),
-				'addRangeRow'   => __( 'Pridať rozsah', 'wc-simple-filter' ),
-				'removeRow'     => __( 'Odstrániť', 'wc-simple-filter' ),
+				'confirmDelete' => __( 'Are you sure you want to delete this filter?', 'wc-simple-filter' ),
+				'saving'        => __( 'Saving…', 'wc-simple-filter' ),
+				'saved'         => __( 'Saved', 'wc-simple-filter' ),
+				'error'         => __( 'Error. Try again.', 'wc-simple-filter' ),
+				'reindexing'    => __( 'Rebuilding index…', 'wc-simple-filter' ),
+				'reindexDone'   => __( 'Index rebuilt.', 'wc-simple-filter' ),
+				'addRangeRow'   => __( 'Add range', 'wc-simple-filter' ),
+				'removeRow'     => __( 'Remove', 'wc-simple-filter' ),
 			],
 			'filterTypes' => $this->get_filter_types_for_js(),
 		] );
 	}
 
 	/**
-	 * Vráti zoznam typov filtrov + povolené štýly pre JS.
+	 * Returns a list of filter types + allowed styles for JS.
 	 *
 	 * @return array<string, array<string, mixed>>
 	 */
 	private function get_filter_types_for_js(): array {
 		$types = [
 			'brand' => [
-				'label'       => __( 'Značka', 'wc-simple-filter' ),
+				'label'       => __( 'Brand', 'wc-simple-filter' ),
 				'fixed_style' => false,
 				'styles'      => [ 'checkbox', 'radio', 'dropdown', 'multi_dropdown' ],
 			],
 			'status' => [
-				'label'       => __( 'Stav skladu', 'wc-simple-filter' ),
+				'label'       => __( 'Stock status', 'wc-simple-filter' ),
 				'fixed_style' => 'checkbox',
 				'styles'      => [ 'checkbox' ],
 			],
 			'sale' => [
-				'label'       => __( 'Zľava', 'wc-simple-filter' ),
+				'label'       => __( 'Sale', 'wc-simple-filter' ),
 				'fixed_style' => 'checkbox',
 				'styles'      => [ 'checkbox' ],
 			],
 			'price' => [
-				'label'       => __( 'Cena', 'wc-simple-filter' ),
+				'label'       => __( 'Price', 'wc-simple-filter' ),
 				'fixed_style' => false,
 				'styles'      => [ 'checkbox', 'radio', 'slider' ],
 			],
 		];
 
-		// WC atribúty.
+		// WC attributes.
 		$attributes = wc_get_attribute_taxonomies();
 
 		if ( is_array( $attributes ) ) {

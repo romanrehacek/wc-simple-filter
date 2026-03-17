@@ -1,6 +1,6 @@
 <?php
 /**
- * Frontend trieda — enqueue CSS/JS a registrácia frontend hookov.
+ * Frontend class — enqueue CSS/JS and register frontend hooks.
  *
  * @package WC_Simple_Filter
  */
@@ -12,17 +12,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trieda Frontend.
+ * Frontend class.
  *
- * Zodpovedá za:
- * - enqueue frontend CSS a JS
- * - lokalizáciu JS dát
- * - registráciu frontend hookov
+ * Responsible for:
+ * - enqueuing frontend CSS and JS
+ * - localizing JS data
+ * - registering frontend hooks
  */
 class Frontend {
 
 	/**
-	 * Inicializuje frontend hooky.
+	 * Initializes frontend hooks.
 	 *
 	 * @return void
 	 */
@@ -32,52 +32,52 @@ class Frontend {
 	}
 
 	/**
-	 * Aplikuje filter parametre na hlavný WooCommerce product query.
+	 * Applies filter parameters to the main WooCommerce product query.
 	 *
-	 * Spustí sa iba keď:
-	 *  - nie sme v admin
-	 *  - je to hlavný query (nie vedľajší, napr. widgety)
-	 *  - je to WC product archive, shop stránka alebo product taxonomy
-	 *  - hook wc_sf_apply_query_filter vracia true
+	 * Runs only when:
+	 *  - we are not in admin
+	 *  - it is the main query (not a secondary one, e.g. widgets)
+	 *  - it is a WC product archive, shop page, or product taxonomy
+	 *  - hook wc_sf_apply_query_filter returns true
 	 *
-	 * Stránkovanie sa rieši výhradne v JS (reset paged=1 pri zmene filtrov).
-	 * PHP len číta $_GET['wcsf'] — ak parameter nie je v URL, query sa nezmení.
+	 * Pagination is handled exclusively in JS (reset paged=1 when filters change).
+	 * PHP only reads $_GET['wcsf'] — if the parameter is not in the URL, the query does not change.
 	 *
-	 * @param  \WP_Query $query  Aktuálny WP_Query objekt (pass by reference).
+	 * @param  \WP_Query $query  Current WP_Query object (pass by reference).
 	 * @return void
 	 */
 	public function filter_main_query( \WP_Query $query ): void {
-		// Spustiť iba na fronte a na hlavnom query.
+		// Run only on the frontend and on the main query.
 		if ( is_admin() || ! $query->is_main_query() ) {
 			return;
 		}
 
-		// Spustiť iba na WC product archívoch / shop / product taxonomiách.
+		// Run only on WC product archives / shop / product taxonomies.
 		if ( ! $this->is_filterable_query( $query ) ) {
 			return;
 		}
 
 		/**
-		 * Filter umožňujúci vypnúť filtrovanie pre konkrétny query.
+		 * Filter allowing you to disable filtering for a specific query.
 		 *
-		 * @param bool      $apply  Aplikovať filtrovanie? Default true.
-		 * @param \WP_Query $query  Aktuálny WP_Query objekt.
+		 * @param bool      $apply  Apply filtering? Default true.
+		 * @param \WP_Query $query  Current WP_Query object.
 		 */
 		if ( ! (bool) apply_filters( 'wc_sf_apply_query_filter', true, $query ) ) {
 			return;
 		}
 
-		// Načítaj a sanitizuj parametre z URL.
+		// Load and sanitize parameters from the URL.
 		$params = Query_Builder::get_active_params();
 
 		if ( empty( $params ) ) {
 			return;
 		}
 
-		// Načítaj konfigurácie filtrov pre správnu AND/OR logiku.
+		// Load filter configurations for correct AND/OR logic.
 		$filter_configs = Filter_Manager::get_all();
 
-		// Zostrojí WP_Query args fragment.
+		// Build WP_Query args fragment.
 		$extra = Query_Builder::build( $params, $filter_configs );
 
 		if ( empty( $extra ) ) {
@@ -85,18 +85,18 @@ class Frontend {
 		}
 
 		/**
-		 * Akcia pred aplikovaním filtrovacích podmienok na query.
+		 * Action before applying filter conditions to the query.
 		 *
-		 * @param \WP_Query             $query  WP_Query objekt.
-		 * @param array<string, mixed>  $extra  Zostavené query args.
-		 * @param array<string, mixed>  $params Aktívne filter parametre.
+		 * @param \WP_Query             $query  WP_Query object.
+		 * @param array<string, mixed>  $extra  Built query args.
+		 * @param array<string, mixed>  $params Active filter parameters.
 		 */
 		do_action( 'wc_sf_before_filter_query', $query, $extra, $params );
 
 		// --- tax_query ---
 		if ( ! empty( $extra['tax_query'] ) ) {
 			$existing = $query->get( 'tax_query' ) ?: [];
-			// Zachovaj existujúce podmienky (napr. WC category archive).
+			// Keep existing conditions (e.g. WC category archive).
 			if ( ! empty( $existing ) ) {
 				$merged = [
 					'relation' => 'AND',
@@ -128,7 +128,7 @@ class Frontend {
 		if ( isset( $extra['post__in'] ) ) {
 			$existing = $query->get( 'post__in' ) ?: [];
 			if ( ! empty( $existing ) ) {
-				// Prienik — obe podmienky musia byť splnené.
+				// Intersection — both conditions must be met.
 				$intersected = array_intersect( $existing, $extra['post__in'] );
 				$query->set( 'post__in', ! empty( $intersected ) ? array_values( $intersected ) : [ 0 ] );
 			} else {
@@ -138,9 +138,9 @@ class Frontend {
 	}
 
 	/**
-	 * Skontroluje, či aktuálny query je filtrovateľný WC product query.
+	 * Checks whether the current query is a filterable WC product query.
 	 *
-	 * @param  \WP_Query $query  WP_Query objekt.
+	 * @param  \WP_Query $query  WP_Query object.
 	 * @return bool
 	 */
 	private function is_filterable_query( \WP_Query $query ): bool {
@@ -152,7 +152,7 @@ class Frontend {
 			return true;
 		}
 
-		// Product taxonomies (kategória, tag, atribúty...).
+		// Product taxonomies (category, tag, attributes...).
 		$product_taxonomies = get_object_taxonomies( 'product' );
 		if ( ! empty( $product_taxonomies ) && $query->is_tax( $product_taxonomies ) ) {
 			return true;
@@ -162,13 +162,13 @@ class Frontend {
 	}
 
 	/**
-	 * Enqueue frontend CSS a JS.
-	 * Načíta sa iba na frontend stránkach (nie v admin).
+	 * Enqueue frontend CSS and JS.
+	 * Loaded only on frontend pages (not in admin).
 	 *
 	 * @return void
 	 */
 	public function enqueue_assets(): void {
-		// Enqueue iba ak je shortcode na stránke alebo na shop/archive stránke.
+		// Enqueue only if shortcode is on the page or on shop/archive page.
 		if ( ! $this->should_enqueue() ) {
 			return;
 		}
@@ -181,7 +181,7 @@ class Frontend {
 			WC_SF_VERSION
 		);
 
-		// jQuery UI Slider (vstavaný vo WP — nepotrebuje externe CDN).
+		// jQuery UI Slider (built-in in WP — doesn't need external CDN).
 		wp_enqueue_script( 'jquery-ui-slider' );
 
 		// Frontend JS.
@@ -193,7 +193,7 @@ class Frontend {
 			true
 		);
 
-		// Lokalizácia JS dát.
+		// Localization of JS data.
 		wp_localize_script(
 			'wc-sf-frontend',
 			'WC_SF_Frontend',
@@ -202,7 +202,7 @@ class Frontend {
 	}
 
 	/**
-	 * Vráti pole dát pre lokalizáciu JS.
+	 * Returns an array of data for JS localization.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -214,27 +214,27 @@ class Frontend {
 			'nonce'          => wp_create_nonce( 'wc_sf_frontend_nonce' ),
 			'filterMode'     => $settings['filter_mode'] ?? 'ajax',
 			'i18n'           => [
-				'viewMore'     => __( 'Zobraziť viac', 'wc-simple-filter' ),
-				'viewLess'     => __( 'Zobraziť menej', 'wc-simple-filter' ),
-				'resetAll'     => $settings['reset_button_text'] ?? __( 'Zrušiť filtre', 'wc-simple-filter' ),
-				'closeLabel'   => __( 'Zavrieť', 'wc-simple-filter' ),
-				'removeFilter' => __( 'Odstrániť filter', 'wc-simple-filter' ),
+				'viewMore'     => __( 'Show more', 'wc-simple-filter' ),
+				'viewLess'     => __( 'Show less', 'wc-simple-filter' ),
+				'resetAll'     => $settings['reset_button_text'] ?? __( 'Reset filters', 'wc-simple-filter' ),
+				'closeLabel'   => __( 'Close', 'wc-simple-filter' ),
+				'removeFilter' => __( 'Remove filter', 'wc-simple-filter' ),
 			],
 		];
 	}
 
 	/**
-	 * Skontroluje, či sa majú načítať assets na aktuálnej stránke.
-	 * Vždy načíta — shortcode sa môže objaviť kdekoľvek.
-	 * Výkon sa rieši cez podmienené načítavanie v budúcnosti.
+	 * Checks whether assets should be loaded on the current page.
+	 * Always loads — shortcode can appear anywhere.
+	 * Performance is handled through conditional loading in the future.
 	 *
 	 * @return bool
 	 */
 	private function should_enqueue(): bool {
 		/**
-		 * Filter na kontrolu, či načítať frontend assets.
+		 * Filter to control whether to load frontend assets.
 		 *
-		 * @param bool $should Načítať assets? Default true.
+		 * @param bool $should Load assets? Default true.
 		 */
 		return (bool) apply_filters( 'wc_sf_enqueue_frontend_assets', true );
 	}

@@ -1,6 +1,6 @@
 <?php
 /**
- * Stránka editácie konkrétneho filtra.
+ * Individual filter edit page.
  *
  * @package WC_Simple_Filter
  */
@@ -14,14 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WC_Simple_Filter\Filter_Manager;
 
 /**
- * Trieda Filter_Edit.
+ * Filter_Edit class.
  */
 class Filter_Edit {
 
 	/**
-	 * Renderuje editačný formulár pre daný filter.
+	 * Renders the edit form for a given filter.
 	 *
-	 * @param int $filter_id ID filtra (0 = nový filter, no aktuálne len editácia).
+	 * @param int $filter_id Filter ID (0 = new filter, currently only editing).
 	 * @return void
 	 */
 	public function render( int $filter_id ): void {
@@ -34,8 +34,8 @@ class Filter_Edit {
 
 		if ( ! $filter ) {
 			wp_die(
-				esc_html__( 'Filter nebol nájdený.', 'wc-simple-filter' ),
-				esc_html__( 'Chyba', 'wc-simple-filter' ),
+				esc_html__( 'Filter not found.', 'wc-simple-filter' ),
+				esc_html__( 'Error', 'wc-simple-filter' ),
 				[ 'back_link' => true ]
 			);
 		}
@@ -47,12 +47,12 @@ class Filter_Edit {
 	}
 
 	/**
-	 * Načíta dostupné hodnoty pre daný filter_type.
+	 * Loads available values for a given filter_type.
 	 *
-	 * Vracia prázdne pole pre typy, kde výber hodnôt nie je relevantný
+	 * Returns an empty array for types where value selection is not relevant
 	 * (price, status, fixed styles).
 	 *
-	 * @param string $filter_type Typ filtra.
+	 * @param string $filter_type Filter type.
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function load_available_values( string $filter_type ): array {
@@ -70,14 +70,14 @@ class Filter_Edit {
 			return self::get_meta_values( $meta_key );
 		}
 
-		// Pre price, status, sale — výber hodnôt sa nerieši tu.
+		// For price, status, sale — value selection is not handled here.
 		return [];
 	}
 
 	/**
-	 * Načíta termy z taxonomie ako pole value/label/count.
+	 * Loads terms from a taxonomy as value/label/count array.
 	 *
-	 * @param string $taxonomy Taxonomia.
+	 * @param string $taxonomy Taxonomy.
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function get_term_values( string $taxonomy ): array {
@@ -106,9 +106,9 @@ class Filter_Edit {
 	}
 
 	/**
-	 * Načíta unikátne hodnoty meta kľúča pre produkty.
+	 * Loads unique values for a meta key from products.
 	 *
-	 * @param string $meta_key Meta kľúč.
+	 * @param string $meta_key Meta key.
 	 * @return array<int, array<string, string>>
 	 */
 	private static function get_meta_values( string $meta_key ): array {
@@ -140,9 +140,9 @@ class Filter_Edit {
 	}
 
 	/**
-	 * Vráti min a max cenu publikovaných produktov.
+	 * Returns min and max price of published products.
 	 *
-	 * @return array{min: float, max: float}|null  null ak nie sú žiadne produkty.
+	 * @return array{min: float, max: float}|null  null if no products exist.
 	 */
 	private static function get_price_range(): ?array {
 		global $wpdb;

@@ -1,13 +1,13 @@
 <?php
 /**
- * Template: Radio filter typ (vrátane cenových rozsahov).
+ * Template: Radio filter type (including price ranges).
  *
- * Premenné dostupné v tejto šablóne:
- * @var array<string, mixed>             $filter  Dáta filtra z DB.
- * @var array<int, array<string, mixed>> $values  Hodnoty filtra.
- * @var string                           $layout  Layout typ.
+ * Variables available in this template:
+ * @var array<string, mixed>             $filter  Filter data from DB.
+ * @var array<int, array<string, mixed>> $values  Filter values.
+ * @var string                           $layout  Layout type.
  *
- * Override: skopíruj do {tema}/wc-simple-filter/filter-types/radio.php
+ * Override: copy to {theme}/wc-simple-filter/filter-types/radio.php
  *
  * @package WC_Simple_Filter
  */
@@ -55,8 +55,8 @@ $has_more      = $total > $visible_count;
 		<?php
 		echo esc_html(
 			sprintf(
-				/* translators: %d: počet skrytých hodnôt */
-				__( 'Zobraziť viac (%d)', 'wc-simple-filter' ),
+				/* translators: %d: number of hidden values */
+				__( 'Show more (%d)', 'wc-simple-filter' ),
 				$total - $visible_count
 			)
 		);
