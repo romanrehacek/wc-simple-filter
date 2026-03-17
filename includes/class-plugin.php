@@ -62,6 +62,9 @@ class Plugin {
 		require_once WC_SF_PLUGIN_DIR . 'includes/class-filter-manager.php';
 		require_once WC_SF_PLUGIN_DIR . 'includes/class-index-manager.php';
 		require_once WC_SF_PLUGIN_DIR . 'includes/class-ajax-handler.php';
+		require_once WC_SF_PLUGIN_DIR . 'includes/class-template.php';
+		require_once WC_SF_PLUGIN_DIR . 'includes/class-shortcode.php';
+		require_once WC_SF_PLUGIN_DIR . 'includes/class-frontend.php';
 		// Admin triedy sa načítavajú neskôr — WC_Settings_Page musí byť dostupná.
 	}
 
@@ -81,6 +84,13 @@ class Plugin {
 		// Inkrementálny update indexu pri uložení produktu.
 		$index_manager = new Index_Manager();
 		$index_manager->register_hooks();
+
+		// Frontend shortcode + assets.
+		$shortcode = new Shortcode();
+		$shortcode->register_hooks();
+
+		$frontend = new Frontend();
+		$frontend->register_hooks();
 
 		// Admin UI — registrujeme cez woocommerce_get_settings_pages filter.
 		// Tento filter sa spúšťa keď WC_Settings_Page je už dostupná.

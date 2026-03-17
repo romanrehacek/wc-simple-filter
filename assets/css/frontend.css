@@ -1,0 +1,629 @@
+/**
+ * WC Simple Filter — Frontend styles
+ *
+ * BEM convention: .wcsf (root) → .wcsf__element → .wcsf--modifier
+ * CSS custom properties allow easy theme overriding.
+ *
+ * @package WC_Simple_Filter
+ */
+
+/* ==========================================================================
+   Custom Properties (override in theme to customise)
+   ========================================================================== */
+:root {
+	--wcsf-font-size:          0.875rem;       /* 14px */
+	--wcsf-line-height:        1.5;
+	--wcsf-gap:                0.75rem;        /* 12px */
+	--wcsf-color-text:         #333;
+	--wcsf-color-muted:        #666;
+	--wcsf-color-border:       #ddd;
+	--wcsf-color-bg:           #fff;
+	--wcsf-color-accent:       #2271b1;        /* WP admin blue */
+	--wcsf-color-accent-hover: #1a5c92;
+	--wcsf-color-disabled:     #ccc;
+	--wcsf-radius:             4px;
+	--wcsf-radius-pill:        999px;
+	--wcsf-transition:         0.2s ease;
+	--wcsf-shadow:             0 2px 8px rgba(0,0,0,0.12);
+	--wcsf-filter-title-size:  0.9375rem;      /* 15px */
+	--wcsf-filter-title-weight:600;
+	--wcsf-swatch-size:        28px;
+	--wcsf-slider-track-h:     4px;
+	--wcsf-slider-thumb-size:  16px;
+}
+
+/* ==========================================================================
+   Utility: visually-hidden (screen-reader-only)
+   ========================================================================== */
+.sr-only {
+	position: absolute !important;
+	width:    1px !important;
+	height:   1px !important;
+	padding:  0 !important;
+	margin:   -1px !important;
+	overflow: hidden !important;
+	clip:     rect(0, 0, 0, 0) !important;
+	white-space: nowrap !important;
+	border:   0 !important;
+}
+
+/* ==========================================================================
+   Root wrapper — shared
+   ========================================================================== */
+.wcsf {
+	font-size:   var(--wcsf-font-size);
+	line-height: var(--wcsf-line-height);
+	color:       var(--wcsf-color-text);
+	box-sizing:  border-box;
+}
+
+.wcsf *,
+.wcsf *::before,
+.wcsf *::after {
+	box-sizing: inherit;
+}
+
+/* ==========================================================================
+   Sidebar layout
+   ========================================================================== */
+.wcsf--sidebar .wcsf__filters {
+	display:        flex;
+	flex-direction: column;
+	gap:            0;
+}
+
+.wcsf--sidebar .wcsf__filter {
+	border-bottom: 1px solid var(--wcsf-color-border);
+	padding:       var(--wcsf-gap) 0;
+}
+
+.wcsf--sidebar .wcsf__filter:first-child {
+	border-top: 1px solid var(--wcsf-color-border);
+}
+
+/* ==========================================================================
+   Horizontal layout — pill-toggle bar
+   ========================================================================== */
+.wcsf--horizontal .wcsf__toggle-bar {
+	display:   flex;
+	flex-wrap: wrap;
+	gap:       0.5rem;
+	padding:   0.5rem 0;
+}
+
+.wcsf--horizontal .wcsf__active-bar {
+	display:    flex;
+	flex-wrap:  wrap;
+	gap:        0.375rem;
+	min-height: 0;
+	padding:    0.25rem 0;
+}
+
+.wcsf--horizontal .wcsf__filters {
+	position: relative;
+}
+
+/* Each filter panel is absolutely positioned in horizontal mode */
+.wcsf--horizontal .wcsf__filter {
+	position:   absolute;
+	top:        100%;
+	left:       0;
+	z-index:    100;
+	min-width:  220px;
+	background: var(--wcsf-color-bg);
+	border:     1px solid var(--wcsf-color-border);
+	border-radius: var(--wcsf-radius);
+	box-shadow: var(--wcsf-shadow);
+	padding:    var(--wcsf-gap);
+	/* Hidden by default; JS shows/hides via .wcsf__filter--open */
+	display:    none;
+}
+
+.wcsf--horizontal .wcsf__filter--open {
+	display: block;
+}
+
+/* In horizontal mode the inline filter-toggle button (collapsible) is hidden —
+   the toggle-bar pills serve that role. */
+.wcsf--horizontal .wcsf__filter-toggle,
+.wcsf--horizontal .wcsf__filter-header {
+	display: none;
+}
+
+/* ==========================================================================
+   Toggle pills (horizontal layout)
+   ========================================================================== */
+.wcsf__toggle-pill {
+	display:        inline-flex;
+	align-items:    center;
+	gap:            0.375rem;
+	padding:        0.375rem 0.875rem;
+	background:     var(--wcsf-color-bg);
+	border:         1px solid var(--wcsf-color-border);
+	border-radius:  var(--wcsf-radius-pill);
+	font-size:      var(--wcsf-font-size);
+	color:          var(--wcsf-color-text);
+	cursor:         pointer;
+	transition:     border-color var(--wcsf-transition), background var(--wcsf-transition);
+	white-space:    nowrap;
+}
+
+.wcsf__toggle-pill:hover,
+.wcsf__toggle-pill:focus-visible {
+	border-color: var(--wcsf-color-accent);
+	outline:      none;
+}
+
+.wcsf__toggle-pill[aria-expanded="true"] {
+	background:   var(--wcsf-color-accent);
+	border-color: var(--wcsf-color-accent);
+	color:        #fff;
+}
+
+.wcsf__toggle-pill-icon {
+	display:    inline-block;
+	width:      0.5rem;
+	height:     0.5rem;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform:  rotate(45deg) translateY(-2px);
+	transition: transform var(--wcsf-transition);
+}
+
+.wcsf__toggle-pill[aria-expanded="true"] .wcsf__toggle-pill-icon {
+	transform: rotate(225deg) translateY(-2px);
+}
+
+/* ==========================================================================
+   Filter header / collapsible toggle
+   ========================================================================== */
+.wcsf__filter-header {
+	padding: 0 0 var(--wcsf-gap);
+}
+
+.wcsf__filter-toggle {
+	display:         flex;
+	align-items:     center;
+	justify-content: space-between;
+	width:           100%;
+	padding:         0 0 var(--wcsf-gap);
+	background:      transparent;
+	border:          none;
+	cursor:          pointer;
+	text-align:      left;
+	color:           var(--wcsf-color-text);
+}
+
+.wcsf__filter-toggle:focus-visible {
+	outline:        2px solid var(--wcsf-color-accent);
+	outline-offset: 2px;
+	border-radius:  var(--wcsf-radius);
+}
+
+.wcsf__filter-title {
+	font-size:   var(--wcsf-filter-title-size);
+	font-weight: var(--wcsf-filter-title-weight);
+	line-height: 1.2;
+}
+
+/* Chevron icon */
+.wcsf__filter-toggle-icon {
+	display:       inline-block;
+	flex-shrink:   0;
+	width:         0.5rem;
+	height:        0.5rem;
+	border-right:  2px solid var(--wcsf-color-muted);
+	border-bottom: 2px solid var(--wcsf-color-muted);
+	transform:     rotate(45deg) translateY(-2px);
+	transition:    transform var(--wcsf-transition);
+}
+
+.wcsf__filter-toggle[aria-expanded="false"] .wcsf__filter-toggle-icon {
+	transform: rotate(-45deg) translateY(2px);
+}
+
+/* ==========================================================================
+   Filter body (collapsible)
+   ========================================================================== */
+.wcsf__filter-body {
+	overflow: hidden;
+	transition: max-height var(--wcsf-transition);
+}
+
+/* Collapsed state: JS sets max-height: 0; initial state handled by markup
+   aria-hidden="true". CSS alone provides the visual "closed" look. */
+.wcsf__filter--collapsed .wcsf__filter-body {
+	display: none;
+}
+
+.wcsf__filter-empty {
+	color:       var(--wcsf-color-muted);
+	font-size:   var(--wcsf-font-size);
+	font-style:  italic;
+	margin:      0;
+}
+
+/* ==========================================================================
+   Reset button
+   ========================================================================== */
+.wcsf__reset-wrapper {
+	padding: var(--wcsf-gap) 0 0;
+}
+
+.wcsf__reset-btn {
+	display:       inline-block;
+	padding:       0.375rem 1rem;
+	background:    transparent;
+	border:        1px solid var(--wcsf-color-border);
+	border-radius: var(--wcsf-radius);
+	font-size:     var(--wcsf-font-size);
+	color:         var(--wcsf-color-muted);
+	cursor:        not-allowed;    /* disabled in Phase 2a */
+	opacity:       0.6;
+	transition:    border-color var(--wcsf-transition), color var(--wcsf-transition);
+}
+
+/* Phase 2b: remove disabled attr, this becomes active */
+.wcsf__reset-btn:not([disabled]) {
+	color:   var(--wcsf-color-accent);
+	cursor:  pointer;
+	opacity: 1;
+}
+
+.wcsf__reset-btn:not([disabled]):hover {
+	border-color: var(--wcsf-color-accent);
+}
+
+/* ==========================================================================
+   Checkbox filter
+   ========================================================================== */
+.wcsf__checkbox-list {
+	list-style: none;
+	margin:     0;
+	padding:    0;
+	display:    flex;
+	flex-direction: column;
+	gap:        0.375rem;
+}
+
+.wcsf__checkbox-item--hidden {
+	display: none;
+}
+
+.wcsf__checkbox-label {
+	display:     flex;
+	align-items: center;
+	gap:         0.5rem;
+	cursor:      not-allowed;    /* disabled in Phase 2a */
+	user-select: none;
+}
+
+/* Hide native checkbox; show custom */
+.wcsf__checkbox-input {
+	position: absolute;
+	opacity:  0;
+	width:    0;
+	height:   0;
+}
+
+.wcsf__checkbox-custom {
+	display:       inline-flex;
+	flex-shrink:   0;
+	width:         16px;
+	height:        16px;
+	border:        2px solid var(--wcsf-color-border);
+	border-radius: 3px;
+	background:    var(--wcsf-color-bg);
+	transition:    border-color var(--wcsf-transition), background var(--wcsf-transition);
+}
+
+.wcsf__checkbox-input:checked + .wcsf__checkbox-custom {
+	background:   var(--wcsf-color-accent);
+	border-color: var(--wcsf-color-accent);
+	/* Checkmark via pseudo */
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3 4L11 1' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+	background-size:    10px 8px;
+	background-repeat:  no-repeat;
+	background-position:center;
+}
+
+.wcsf__checkbox-text {
+	color: var(--wcsf-color-text);
+}
+
+.wcsf__checkbox-count {
+	color:     var(--wcsf-color-muted);
+	font-size: 0.8125rem;
+}
+
+/* ==========================================================================
+   Radio filter
+   ========================================================================== */
+.wcsf__radio-list {
+	list-style: none;
+	margin:     0;
+	padding:    0;
+	display:    flex;
+	flex-direction: column;
+	gap:        0.375rem;
+}
+
+.wcsf__radio-item--hidden {
+	display: none;
+}
+
+.wcsf__radio-label {
+	display:     flex;
+	align-items: center;
+	gap:         0.5rem;
+	cursor:      not-allowed;
+	user-select: none;
+}
+
+.wcsf__radio-input {
+	position: absolute;
+	opacity:  0;
+	width:    0;
+	height:   0;
+}
+
+.wcsf__radio-custom {
+	display:       inline-flex;
+	flex-shrink:   0;
+	width:         16px;
+	height:        16px;
+	border:        2px solid var(--wcsf-color-border);
+	border-radius: 50%;
+	background:    var(--wcsf-color-bg);
+	transition:    border-color var(--wcsf-transition);
+	position:      relative;
+}
+
+.wcsf__radio-input:checked + .wcsf__radio-custom {
+	border-color: var(--wcsf-color-accent);
+}
+
+.wcsf__radio-input:checked + .wcsf__radio-custom::after {
+	content:       '';
+	position:      absolute;
+	top:           50%;
+	left:          50%;
+	transform:     translate(-50%, -50%);
+	width:         8px;
+	height:        8px;
+	border-radius: 50%;
+	background:    var(--wcsf-color-accent);
+}
+
+.wcsf__radio-text {
+	color: var(--wcsf-color-text);
+}
+
+/* ==========================================================================
+   Dropdown filter
+   ========================================================================== */
+.wcsf__dropdown-wrapper {
+	position: relative;
+}
+
+.wcsf__dropdown {
+	display:       block;
+	width:         100%;
+	padding:       0.375rem 2rem 0.375rem 0.625rem;
+	border:        1px solid var(--wcsf-color-border);
+	border-radius: var(--wcsf-radius);
+	background:    var(--wcsf-color-bg);
+	font-size:     var(--wcsf-font-size);
+	color:         var(--wcsf-color-text);
+	appearance:    none;
+	-webkit-appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+	background-repeat:   no-repeat;
+	background-position: right 0.625rem center;
+	background-size:     10px 6px;
+	cursor:        not-allowed;
+}
+
+.wcsf__dropdown--multi {
+	padding:       0.375rem 0.625rem;
+	background-image: none;
+	min-height:    80px;
+}
+
+.wcsf__dropdown-hint {
+	margin:    0.25rem 0 0;
+	font-size: 0.75rem;
+	color:     var(--wcsf-color-muted);
+}
+
+/* ==========================================================================
+   View-more button (checkbox / radio lists)
+   ========================================================================== */
+.wcsf__view-more-link {
+	display:    inline-block;
+	margin-top: 0.375rem;
+	padding:    0;
+	background: none;
+	border:     none;
+	font-size:  var(--wcsf-font-size);
+	color:      var(--wcsf-color-accent);
+	cursor:     pointer;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.wcsf__view-more-link:hover,
+.wcsf__view-more-link:focus-visible {
+	color:   var(--wcsf-color-accent-hover);
+	outline: none;
+}
+
+/* ==========================================================================
+   Slider filter (jQuery UI base)
+   ========================================================================== */
+.wcsf__slider-values {
+	display:         flex;
+	align-items:     center;
+	gap:             0.25rem;
+	font-size:       var(--wcsf-font-size);
+	font-weight:     600;
+	margin-bottom:   0.75rem;
+}
+
+.wcsf__slider-separator {
+	color: var(--wcsf-color-muted);
+}
+
+/* jQuery UI slider track */
+.wcsf__slider.ui-slider {
+	position:      relative;
+	height:        var(--wcsf-slider-track-h);
+	border:        none;
+	background:    var(--wcsf-color-border);
+	border-radius: var(--wcsf-radius-pill);
+	margin:        calc(var(--wcsf-slider-thumb-size) / 2) 0;
+}
+
+/* Filled range */
+.wcsf__slider.ui-slider .ui-slider-range {
+	position:      absolute;
+	height:        100%;
+	background:    var(--wcsf-color-accent);
+	border-radius: var(--wcsf-radius-pill);
+	border:        none;
+}
+
+/* Thumb handles */
+.wcsf__slider.ui-slider .ui-slider-handle {
+	position:      absolute;
+	top:           50%;
+	transform:     translate(-50%, -50%);
+	width:         var(--wcsf-slider-thumb-size);
+	height:        var(--wcsf-slider-thumb-size);
+	background:    var(--wcsf-color-bg);
+	border:        2px solid var(--wcsf-color-accent);
+	border-radius: 50%;
+	cursor:        default;    /* not interactive in Phase 2a */
+	outline:       none;
+	box-shadow:    0 1px 3px rgba(0,0,0,0.2);
+}
+
+.wcsf__slider.ui-slider .ui-slider-handle:focus-visible {
+	box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.3);
+}
+
+/* ==========================================================================
+   Color swatch filter
+   ========================================================================== */
+.wcsf__color-grid {
+	display:        flex;
+	flex-wrap:      wrap;
+	gap:            0.375rem;
+}
+
+.wcsf__color-item {
+	position: relative;
+	cursor:   not-allowed;    /* disabled in Phase 2a */
+}
+
+.wcsf__color-swatch {
+	display:       block;
+	width:         var(--wcsf-swatch-size);
+	height:        var(--wcsf-swatch-size);
+	border-radius: 50%;
+	border:        2px solid transparent;
+	box-shadow:    0 0 0 1px var(--wcsf-color-border);
+	transition:    box-shadow var(--wcsf-transition), border-color var(--wcsf-transition);
+}
+
+.wcsf__color-input:checked ~ .wcsf__color-swatch,
+.wcsf__color-item:hover .wcsf__color-swatch {
+	box-shadow:    0 0 0 2px var(--wcsf-color-accent);
+	border-color:  var(--wcsf-color-bg);
+}
+
+/* Tooltip */
+.wcsf__color-item::after {
+	content:    attr(data-tooltip);
+	position:   absolute;
+	bottom:     calc(100% + 6px);
+	left:       50%;
+	transform:  translateX(-50%);
+	background: rgba(0, 0, 0, 0.75);
+	color:      #fff;
+	font-size:  0.75rem;
+	padding:    0.2rem 0.5rem;
+	border-radius: var(--wcsf-radius);
+	white-space:   nowrap;
+	pointer-events:none;
+	opacity:    0;
+	transition: opacity var(--wcsf-transition);
+}
+
+.wcsf__color-item:hover::after,
+.wcsf__color-item:focus-within::after {
+	opacity: 1;
+}
+
+/* ==========================================================================
+   Active filter chips (Phase 2b placeholder)
+   ========================================================================== */
+.wcsf__active-bar:empty {
+	display: none;
+}
+
+.wcsf__active-chip {
+	display:       inline-flex;
+	align-items:   center;
+	gap:           0.25rem;
+	padding:       0.25rem 0.625rem;
+	background:    #e8f0f8;
+	border:        1px solid var(--wcsf-color-accent);
+	border-radius: var(--wcsf-radius-pill);
+	font-size:     0.8125rem;
+	color:         var(--wcsf-color-accent);
+}
+
+.wcsf__active-chip-remove {
+	background:  none;
+	border:      none;
+	padding:     0;
+	cursor:      pointer;
+	line-height: 1;
+	color:       inherit;
+	font-size:   1rem;
+}
+
+/* ==========================================================================
+   Responsive — mobile-first
+   ========================================================================== */
+
+/* On small screens: horizontal layout stacks vertically */
+@media (max-width: 600px) {
+	.wcsf--horizontal .wcsf__toggle-bar {
+		gap: 0.375rem;
+	}
+
+	.wcsf--horizontal .wcsf__toggle-pill {
+		font-size: 0.8125rem;
+		padding:   0.3rem 0.625rem;
+	}
+
+	.wcsf--horizontal .wcsf__filter {
+		position:  static;         /* full-width below the pill bar */
+		display:   none;
+		width:     100%;
+		box-shadow:none;
+	}
+
+	.wcsf--horizontal .wcsf__filter--open {
+		display: block;
+	}
+}
+
+/* Medium+ screens: horizontal filters anchor below their pill */
+@media (min-width: 601px) {
+	.wcsf--horizontal .wcsf__filters {
+		position: relative;
+	}
+}
