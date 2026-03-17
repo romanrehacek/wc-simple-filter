@@ -60,8 +60,9 @@ $back_url = Admin::tab_url();
 
 	<h2><?php esc_html_e( 'Nastavenia filtra', 'wc-simple-filter' ); ?></h2>
 
-	<form id="wc-sf-edit-form" method="post" data-filter-type="<?php echo esc_attr( $filter_type ); ?>">
+	<div id="wc-sf-edit-form" data-filter-type="<?php echo esc_attr( $filter_type ); ?>">
 		<input type="hidden" name="id" value="<?php echo esc_attr( $filter['id'] ); ?>" />
+		<input type="hidden" name="filter_type" value="<?php echo esc_attr( $filter_type ); ?>" />
 
 		<table class="form-table wc-sf-form-table">
 
@@ -432,13 +433,13 @@ $back_url = Admin::tab_url();
 
 		<!-- Tlačidlá formulára -->
 		<p class="submit">
-			<button type="submit" id="wc-sf-save-btn" class="button button-primary">
+			<button type="button" id="wc-sf-save-btn" class="button button-primary">
 				<?php esc_html_e( 'Uložiť filter', 'wc-simple-filter' ); ?>
 			</button>
 			<span class="wc-sf-spinner spinner"></span>
 			<span class="wc-sf-msg"></span>
 		</p>
 
-	</form>
+	</div>
 
 </div>

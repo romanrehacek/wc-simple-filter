@@ -546,10 +546,8 @@
 	   9. Edit formulár — AJAX uloženie
 	   ========================================================= */
 
-	$( '#wc-sf-edit-form' ).on( 'submit', function ( e ) {
-		e.preventDefault();
-
-		var $btn     = $( '#wc-sf-save-btn' );
+	$( '#wc-sf-save-btn' ).on( 'click', function () {
+		var $btn     = $( this );
 		var $spinner = $btn.siblings( '.wc-sf-spinner' );
 		var $msg     = $btn.siblings( '.wc-sf-msg' );
 
@@ -557,11 +555,11 @@
 		toggleSpinner( $spinner, true );
 		$btn.prop( 'disabled', true );
 
-		var formData = $( this ).serializeArray();
+		// Zber vstupov z #wc-sf-edit-form diva (namiesto <form> kvôli WC mainform wrapperu).
+		var formData = $( '#wc-sf-edit-form :input' ).serializeArray();
 		var postData = { action: 'wc_sf_save_filter', nonce: nonce };
 
 		formData.forEach( function ( item ) {
-			// Mapuj serialized array na postData (config[...] → nested).
 			postData[ item.name ] = item.value;
 		} );
 
