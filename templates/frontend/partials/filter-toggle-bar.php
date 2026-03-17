@@ -39,17 +39,3 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php endforeach; ?>
 </div>
 
-<div class="wcsf__active-bar" aria-live="polite" aria-label="<?php esc_attr_e( 'Aktívne filtre', 'wc-simple-filter' ); ?>">
-	<?php /* Aktívne chips — Fáza 2b; JS (Phase 2a) injects demo chips here */ ?>
-	<div class="wcsf__active-bar-chips" aria-live="polite"></div>
-	<?php
-	$settings    = get_option( 'wc_sf_settings', [] );
-	$show_reset  = (bool) apply_filters( 'wc_sf_show_reset_button', $settings['show_reset_button'] ?? true );
-	$reset_label = (string) apply_filters( 'wc_sf_reset_button_label', $settings['reset_button_text'] ?? __( 'Zrušiť filtre', 'wc-simple-filter' ) );
-	if ( $show_reset ) :
-		?>
-		<button type="button" class="wcsf__reset-btn wcsf__reset-btn--inline">
-			<?php echo esc_html( $reset_label ); ?>
-		</button>
-	<?php endif; ?>
-</div>
