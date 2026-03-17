@@ -481,6 +481,10 @@
 /* ==========================================================================
    Slider filter (jQuery UI base)
    ========================================================================== */
+.wcsf__slider-wrapper {
+	padding: 0 calc(var(--wcsf-slider-thumb-size) / 2);
+}
+
 .wcsf__slider-values {
 	display:         flex;
 	align-items:     center;
