@@ -37,7 +37,6 @@ $filter_type = $filter['filter_type'] ?? '';
 				id="<?php echo esc_attr( $input_id ); ?>"
 				name="wcsf[<?php echo esc_attr( $filter_type ); ?>][]"
 				value="<?php echo esc_attr( $value_slug ); ?>"
-				disabled
 			>
 			<span
 				class="wcsf__color-swatch"

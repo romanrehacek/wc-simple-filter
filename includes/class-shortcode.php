@@ -46,11 +46,11 @@ class Shortcode {
 	public function render( array|string $atts = [] ): string {
 		$atts = shortcode_atts(
 			[
-				'layout'      => 'sidebar',
+				'layout'      => 'vertical',
 				'filter_ids'  => '',
 				'exclude_ids' => '',
 				'collapsible' => 'true',
-				'collapsed'   => 'false',
+				'collapsed'   => 'true',
 			],
 			is_array( $atts ) ? $atts : [],
 			'wc_simple_filter'
@@ -70,11 +70,11 @@ class Shortcode {
 		$atts = wp_parse_args(
 			$args,
 			[
-				'layout'      => 'sidebar',
+				'layout'      => 'vertical',
 				'filter_ids'  => '',
 				'exclude_ids' => '',
 				'collapsible' => 'true',
-				'collapsed'   => 'false',
+				'collapsed'   => 'true',
 			]
 		);
 
@@ -102,9 +102,13 @@ class Shortcode {
 		}
 
 		// Normalizuj a ovaliduj parametre.
-		$layout      = in_array( $atts['layout'], [ 'sidebar', 'horizontal' ], true )
+		$layout      = in_array( $atts['layout'], [ 'sidebar', 'vertical', 'horizontal' ], true )
 			? $atts['layout']
-			: 'sidebar';
+			: 'vertical';
+		// 'vertical' je alias pre 'sidebar'.
+		if ( 'vertical' === $layout ) {
+			$layout = 'sidebar';
+		}
 		$collapsible = filter_var( $atts['collapsible'], FILTER_VALIDATE_BOOLEAN );
 		$collapsed   = filter_var( $atts['collapsed'], FILTER_VALIDATE_BOOLEAN );
 
@@ -246,13 +250,25 @@ class Shortcode {
 
 		// Rozsahy (radio/checkbox s manuálnymi rozsahmi).
 		if ( ! empty( $config['ranges'] ) && is_array( $config['ranges'] ) ) {
+			$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' )
+				? get_woocommerce_currency_symbol()
+				: '';
+
 			foreach ( $config['ranges'] as $range ) {
+				$min_val = isset( $range['min'] ) && '' !== $range['min'] ? (float) $range['min'] : null;
+				$max_val = isset( $range['max'] ) && '' !== $range['max'] ? (float) $range['max'] : null;
+
+				// Vygeneruj label ak nie je nastavený.
+				$label = isset( $range['label'] ) && '' !== trim( $range['label'] )
+					? $range['label']
+					: self::generate_range_label( $min_val, $max_val, $currency_symbol );
+
 				$values[] = [
 					'type'  => 'range',
-					'label' => $range['label'] ?? '',
-					'min'   => $range['min'] ?? null,
-					'max'   => $range['max'] ?? null,
-					'slug'  => 'range_' . ( $range['min'] ?? '0' ) . '_' . ( $range['max'] ?? 'inf' ),
+					'label' => $label,
+					'min'   => $min_val,
+					'max'   => $max_val,
+					'slug'  => 'range_' . ( $min_val ?? '0' ) . '_' . ( $max_val ?? 'inf' ),
 				];
 			}
 			return $values;
@@ -272,6 +288,25 @@ class Shortcode {
 
 		// Status filter.
 		if ( 'status' === $filter_type ) {
+			// Použi všetky hodnoty nakonfigurované v admin, nie len hardcoded 3.
+			$configured = $config['values'] ?? [];
+
+			if ( ! empty( $configured ) && is_array( $configured ) ) {
+				foreach ( $configured as $slug => $status_config ) {
+					// Preskočiť ak je explicitne disabled.
+					if ( isset( $status_config['enabled'] ) && ! filter_var( $status_config['enabled'], FILTER_VALIDATE_BOOLEAN ) ) {
+						continue;
+					}
+					$values[] = [
+						'type'  => 'status',
+						'slug'  => sanitize_key( $slug ),
+						'label' => $status_config['label'] ?? $slug,
+					];
+				}
+				return $values;
+			}
+
+			// Fallback na default 3 stavy ak nie je config.
 			$status_defaults = [
 				'instock'     => __( 'Na sklade', 'wc-simple-filter' ),
 				'outofstock'  => __( 'Vypredané', 'wc-simple-filter' ),
@@ -279,14 +314,10 @@ class Shortcode {
 			];
 
 			foreach ( $status_defaults as $slug => $default_label ) {
-				$status_config = $config['values'][ $slug ] ?? [];
-				if ( isset( $status_config['enabled'] ) && false === $status_config['enabled'] ) {
-					continue;
-				}
 				$values[] = [
 					'type'  => 'status',
 					'slug'  => $slug,
-					'label' => $status_config['label'] ?? $default_label,
+					'label' => $default_label,
 				];
 			}
 			return $values;
@@ -360,5 +391,36 @@ class Shortcode {
 		 * @param array<string, mixed>             $filter  Dáta filtra.
 		 */
 		return (array) apply_filters( 'wc_sf_filter_values', $values, $filter );
+	}
+
+	/**
+	 * Vygeneruje label pre cenový rozsah ak nie je manuálne nastavený.
+	 * Príklady: "0 – 100 €", "500 €+", "Do 100 €"
+	 *
+	 * @param float|null  $min             Minimálna hodnota (null = bez spodnej hranice).
+	 * @param float|null  $max             Maximálna hodnota (null = bez hornej hranice).
+	 * @param string      $currency_symbol Symbol meny.
+	 * @return string
+	 */
+	private static function generate_range_label( ?float $min, ?float $max, string $currency_symbol ): string {
+		$fmt = static function ( float $val ) use ( $currency_symbol ): string {
+			return number_format( $val, 0, ',', ' ' ) . ( $currency_symbol ? ' ' . $currency_symbol : '' );
+		};
+
+		if ( null === $min && null !== $max ) {
+			/* translators: %s: formatted max price */
+			return sprintf( __( 'Do %s', 'wc-simple-filter' ), $fmt( $max ) );
+		}
+
+		if ( null !== $min && null === $max ) {
+			/* translators: %s: formatted min price */
+			return sprintf( __( '%s+', 'wc-simple-filter' ), $fmt( $min ) );
+		}
+
+		if ( null !== $min && null !== $max ) {
+			return $fmt( $min ) . ' – ' . $fmt( $max );
+		}
+
+		return '';
 	}
 }

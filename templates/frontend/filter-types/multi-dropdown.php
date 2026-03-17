@@ -25,8 +25,7 @@ $label       = $filter['label'] ?? '';
 		class="wcsf__dropdown wcsf__dropdown--multi"
 		name="wcsf[<?php echo esc_attr( $filter_type ); ?>][]"
 		aria-label="<?php echo esc_attr( $label ); ?>"
-		multiple
-		disabled>
+		multiple>
 		<?php foreach ( $values as $value ) : ?>
 			<option value="<?php echo esc_attr( $value['slug'] ?? '' ); ?>">
 				<?php echo esc_html( $value['label'] ?? '' ); ?>

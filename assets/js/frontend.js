@@ -148,7 +148,9 @@
 	}
 
 	/**
-	 * Position a panel horizontally under its pill button (desktop).
+	 * Position a panel horizontally under its pill button.
+	 * Panels are inside .wcsf__filters which sits right below .wcsf__toggle-bar.
+	 * We just need to align the panel's left edge with the pill's left edge.
 	 *
 	 * @param {HTMLElement} panel  .wcsf__filter element.
 	 * @param {HTMLElement} pill   .wcsf__toggle-pill button.
@@ -160,14 +162,21 @@
 			return;
 		}
 
+		var filtersEl  = panel.parentElement;   // .wcsf__filters
+		var wcsfRoot   = filtersEl ? filtersEl.parentElement : null; // .wcsf
+
+		if ( ! filtersEl || ! wcsfRoot ) {
+			return;
+		}
+
 		var pillRect   = pill.getBoundingClientRect();
-		var filtersEl  = panel.parentElement;
-		var parentRect = filtersEl ? filtersEl.getBoundingClientRect() : { left: 0 };
-		var leftOffset = pillRect.left - parentRect.left;
+		var rootRect   = wcsfRoot.getBoundingClientRect();
+		var leftOffset = pillRect.left - rootRect.left;
+		var panelWidth = panel.offsetWidth || 220;
 
 		// Prevent overflow on the right edge.
-		var maxLeft    = ( filtersEl ? filtersEl.offsetWidth : window.innerWidth ) - panel.offsetWidth - 4;
-		panel.style.left = Math.min( leftOffset, maxLeft ) + 'px';
+		var maxLeft = wcsfRoot.offsetWidth - panelWidth - 4;
+		panel.style.left = Math.max( 0, Math.min( leftOffset, maxLeft ) ) + 'px';
 	}
 
 	/* =========================================================================
@@ -282,9 +291,6 @@
 					$maxIn.val( ui.values[ 1 ] );
 				},
 			} );
-
-			// Disable slider handles in Phase 2a.
-			$( sliderEl ).find( '.ui-slider-handle' ).attr( 'tabindex', '-1' );
 		} );
 	}
 

@@ -38,7 +38,6 @@ $has_more       = $total > $visible_count;
 					id="<?php echo esc_attr( $input_id ); ?>"
 					name="wcsf[<?php echo esc_attr( $filter_type ); ?>][]"
 					value="<?php echo esc_attr( $value['slug'] ?? '' ); ?>"
-					disabled
 				>
 				<span class="wcsf__checkbox-custom" aria-hidden="true"></span>
 				<span class="wcsf__checkbox-text"><?php echo esc_html( $value['label'] ?? '' ); ?></span>

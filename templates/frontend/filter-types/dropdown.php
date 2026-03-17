@@ -24,8 +24,7 @@ $label       = $filter['label'] ?? '';
 	<select
 		class="wcsf__dropdown"
 		name="wcsf[<?php echo esc_attr( $filter_type ); ?>]"
-		aria-label="<?php echo esc_attr( $label ); ?>"
-		disabled>
+		aria-label="<?php echo esc_attr( $label ); ?>">
 		<option value=""><?php esc_html_e( '— Vybrať —', 'wc-simple-filter' ); ?></option>
 		<?php foreach ( $values as $value ) : ?>
 			<option value="<?php echo esc_attr( $value['slug'] ?? '' ); ?>">

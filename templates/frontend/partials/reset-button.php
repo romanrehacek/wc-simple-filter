@@ -34,7 +34,7 @@ if ( ! $show_reset ) {
 $reset_label = (string) apply_filters( 'wc_sf_reset_button_label', $reset_label );
 ?>
 <div class="wcsf__reset-wrapper">
-	<button type="button" class="wcsf__reset-btn" disabled>
+	<button type="button" class="wcsf__reset-btn">
 		<?php echo esc_html( $reset_label ); ?>
 	</button>
 </div>
