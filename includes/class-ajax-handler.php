@@ -315,7 +315,14 @@ class Ajax_Handler {
 	 */
 	private function extract_filter_data(): array {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		$raw_config = isset( $_POST['config'] ) ? wp_unslash( $_POST['config'] ) : '{}';
+		$raw_config  = isset( $_POST['config'] ) ? wp_unslash( $_POST['config'] ) : '{}';
+		$filter_type = sanitize_text_field( wp_unslash( $_POST['filter_type'] ?? '' ) );
+		$label       = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
+
+		// Ak label nie je zadaný, vygenerujeme pekný defaultný názov.
+		if ( '' === $label ) {
+			$label = self::default_label_for_type( $filter_type );
+		}
 
 		// Ak prišlo ako string (JSON), dekódujeme. Ak ako array, berieme priamo.
 		if ( is_string( $raw_config ) ) {
@@ -325,12 +332,57 @@ class Ajax_Handler {
 		}
 
 		return [
-			'filter_type'  => sanitize_text_field( wp_unslash( $_POST['filter_type'] ?? '' ) ),
+			'filter_type'  => $filter_type,
 			'filter_style' => sanitize_text_field( wp_unslash( $_POST['filter_style'] ?? 'checkbox' ) ),
-			'label'        => sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) ),
+			'label'        => $label,
 			'show_label'   => isset( $_POST['show_label'] ) ? 1 : 0,
 			'config'       => $config,
 		];
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
+	}
+
+	/**
+	 * Vráti pekný defaultný názov filtra pre daný filter_type.
+	 *
+	 * Používa sa keď admin neposkytol vlastný názov.
+	 *
+	 * @param string $filter_type Typ filtra (napr. 'brand', 'price', 'attribute_pa_farba').
+	 * @return string
+	 */
+	public static function default_label_for_type( string $filter_type ): string {
+		// Základné typy.
+		$labels = [
+			'brand'  => __( 'Značka', 'wc-simple-filter' ),
+			'price'  => __( 'Cena', 'wc-simple-filter' ),
+			'status' => __( 'Dostupnosť', 'wc-simple-filter' ),
+			'sale'   => __( 'Akcia', 'wc-simple-filter' ),
+		];
+
+		if ( isset( $labels[ $filter_type ] ) ) {
+			return $labels[ $filter_type ];
+		}
+
+		// WC atribúty: attribute_pa_farba → načítame label z WC.
+		if ( str_starts_with( $filter_type, 'attribute_pa_' ) ) {
+			$attr_name = substr( $filter_type, strlen( 'attribute_pa_' ) );
+			$taxonomy  = wc_attribute_taxonomy_name( $attr_name );
+			$attribute = wc_get_attribute( wc_attribute_taxonomy_id_by_name( $taxonomy ) );
+
+			if ( $attribute && ! empty( $attribute->name ) ) {
+				return $attribute->name;
+			}
+
+			// Fallback: capitalize slug.
+			return ucfirst( str_replace( [ '_', '-' ], ' ', $attr_name ) );
+		}
+
+		// Custom meta: meta_my_key → "My key".
+		if ( str_starts_with( $filter_type, 'meta_' ) ) {
+			$key = substr( $filter_type, strlen( 'meta_' ) );
+			return ucfirst( str_replace( [ '_', '-' ], ' ', $key ) );
+		}
+
+		// Posledný fallback.
+		return ucfirst( str_replace( [ '_', '-' ], ' ', $filter_type ) );
 	}
 }

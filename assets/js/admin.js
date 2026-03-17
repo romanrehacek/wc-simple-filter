@@ -134,7 +134,7 @@
 		var isFixed   = ( 'status' === filter.filter_type || 'sale' === filter.filter_type );
 		var styleOpts = buildStyleOptions( filter.filter_type, filter.filter_style );
 		var editUrl   = getEditUrl( filter.id );
-		var label     = filter.label || '(bez názvu)';
+		var label     = filter.label || '';
 
 		var disabled = isFixed ? ' disabled' : '';
 
