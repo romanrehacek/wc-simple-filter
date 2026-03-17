@@ -385,7 +385,7 @@ class Query_Builder {
 	 *  - ['max' => y]             — <= max
 	 *  - pole range slugov        — OR z viacerých BETWEEN podmienok
 	 *
-	 * @param  mixed $values  Pole s kľúčmi min/max alebo pole range slugov.
+	 * @param  mixed $values  Pole s kľúčmi min/max, pole range slugov, alebo skalárny range slug.
 	 * @return array<string, mixed>
 	 */
 	private static function build_price_clause( mixed $values ): array {
@@ -393,6 +393,13 @@ class Query_Builder {
 		if ( is_array( $values ) && ( isset( $values['min'] ) || isset( $values['max'] ) ) ) {
 			$min = isset( $values['min'] ) ? (float) $values['min'] : null;
 			$max = isset( $values['max'] ) ? (float) $values['max'] : null;
+
+			return self::numeric_range_clause( '_price', $min, $max );
+		}
+
+		// Skalárny range slug z radio inputu: wcsf[price]=range_200_500.
+		if ( is_string( $values ) && str_starts_with( $values, 'range_' ) ) {
+			[ $min, $max ] = self::parse_range_slug( $values );
 
 			return self::numeric_range_clause( '_price', $min, $max );
 		}
