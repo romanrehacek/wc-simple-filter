@@ -83,8 +83,11 @@ class Query_Builder {
 				continue;
 			}
 
-			// Slider — price má podkľúče min/max.
-			if ( 'price' === $key && is_array( $raw_value ) ) {
+			// Slider — price má podkľúče min/max (wcsf[price][min], wcsf[price][max]).
+			// Range slugy (checkbox/radio) prichádzajú ako wcsf[price][] a nemajú
+			// kľúče min/max — v tom prípade nechaj hodnoty prejsť na generický
+			// handler pre pole nižšie.
+			if ( 'price' === $key && is_array( $raw_value ) && ( isset( $raw_value['min'] ) || isset( $raw_value['max'] ) ) ) {
 				$min = isset( $raw_value['min'] ) && '' !== $raw_value['min']
 					? (float) $raw_value['min']
 					: null;
@@ -565,7 +568,7 @@ class Query_Builder {
 		$max_raw = array_pop( $parts );
 		$min_raw = implode( '_', $parts );
 
-		$min = ( '' !== $min_raw && '0' !== $min_raw ) ? (float) $min_raw : (float) $min_raw;
+		$min = (float) $min_raw;
 		$max = ( 'inf' === $max_raw || '' === $max_raw ) ? null : (float) $max_raw;
 
 		return [ $min, $max ];
