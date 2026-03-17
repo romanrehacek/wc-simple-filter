@@ -31,10 +31,14 @@ $css_classes = [ 'wcsf__filter' ];
 $css_classes[] = 'wcsf__filter--' . esc_attr( $filter_style );
 $css_classes[] = 'wcsf__filter--type-' . esc_attr( str_replace( '_', '-', $filter_type ) );
 
-if ( $collapsible ) {
+// Collapsible triedy platia iba pre sidebar layout.
+// V horizontal layoute otváranie/zatváranie riadi JS cez toggle-bar pills.
+$is_horizontal = ( 'horizontal' === $layout );
+
+if ( $collapsible && ! $is_horizontal ) {
 	$css_classes[] = 'wcsf__filter--collapsible';
 }
-if ( $collapsible && $collapsed ) {
+if ( $collapsible && $collapsed && ! $is_horizontal ) {
 	$css_classes[] = 'wcsf__filter--collapsed';
 }
 
@@ -64,7 +68,7 @@ $body_id       = 'wcsf-filter-body-' . $filter_id;
 
 	<div class="wcsf__filter-body"
 		 id="<?php echo esc_attr( $body_id ); ?>"
-		 <?php if ( $collapsible && $collapsed ) : ?>aria-hidden="true"<?php endif; ?>>
+		 <?php if ( $collapsible && $collapsed && ! $is_horizontal ) : ?>aria-hidden="true"<?php endif; ?>>
 
 		<?php if ( ! empty( $values ) ) : ?>
 			<?php
