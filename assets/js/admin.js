@@ -9,7 +9,7 @@
  * 5. Záložka Nastavenia — uloženie (AJAX save_settings) + reindex
  * 6. Filter edit stránka — show/hide sekcií podľa zvoleného štýlu
  * 7. Ranges repeater — pridávanie/mazanie riadkov
- * 8. Values picker — načítanie dostupných hodnôt cez AJAX
+ * 8. Values picker — výber/zrušenie všetkých hodnôt
  */
 
 /* global wcSfAdmin, jQuery */
@@ -461,60 +461,8 @@
 	} );
 
 	/* =========================================================
-	   8. Values picker — načítanie dostupných hodnôt cez AJAX
+	   8. Values picker — select all / deselect all
 	   ========================================================= */
-
-	$( '#wc-sf-load-values' ).on( 'click', function () {
-		var $btn        = $( this );
-		var filterType  = $btn.data( 'filter-type' );
-		var $spinner    = $btn.siblings( '.wc-sf-spinner' );
-		var $container  = $( '#wc-sf-values-list' );
-		var $selectAll  = $( '#wc-sf-select-all-values' );
-		var $deselectAll = $( '#wc-sf-deselect-all-values' );
-
-		toggleSpinner( $spinner, true );
-		$btn.prop( 'disabled', true );
-
-		$.post( ajax, {
-			action:      'wc_sf_get_type_values',
-			nonce:       nonce,
-			filter_type: filterType
-		} )
-		.done( function ( response ) {
-			if ( ! response.success ) {
-				return;
-			}
-
-			var values      = response.data.values || [];
-			var selected    = getSelectedValues( $container );
-			var html        = '<div class="wc-sf-values-picker">';
-
-			values.forEach( function ( item ) {
-				var checked = selected.indexOf( item.value ) !== -1 ? ' checked' : '';
-				var label   = item.label + ( item.count !== undefined ? ' (' + item.count + ')' : '' );
-				html +=
-					'<label>' +
-						'<input type="checkbox" name="config[include_values][]" value="' + escHtml( item.value ) + '"' + checked + ' /> ' +
-						escHtml( label ) +
-					'</label>';
-			} );
-
-			html += '</div>';
-
-			$container.html( html );
-
-			// Zobraziť tlačidlá vybrať/zrušiť všetky.
-			$selectAll.show();
-			$deselectAll.show();
-		} )
-		.fail( function () {
-			// Ticho zlyhanie — hodnoty ostanú ako sú.
-		} )
-		.always( function () {
-			toggleSpinner( $spinner, false );
-			$btn.prop( 'disabled', false );
-		} );
-	} );
 
 	// Vybrať všetky hodnoty.
 	$( '#wc-sf-select-all-values' ).on( 'click', function () {
@@ -525,22 +473,6 @@
 	$( '#wc-sf-deselect-all-values' ).on( 'click', function () {
 		$( '#wc-sf-values-list input[name="config[include_values][]"]' ).prop( 'checked', false );
 	} );
-
-	/**
-	 * Získa aktuálne zaškrtnuté hodnoty z containera.
-	 *
-	 * @param  {jQuery} $container  Container s hodnotami.
-	 * @return {string[]}
-	 */
-	function getSelectedValues( $container ) {
-		var selected = [];
-		$container.find( 'input[name="config[include_values][]"]' ).each( function () {
-			if ( $( this ).is( ':checked' ) || $( this ).attr( 'type' ) === 'hidden' ) {
-				selected.push( $( this ).val() );
-			}
-		} );
-		return selected;
-	}
 
 	/* =========================================================
 	   9. Edit formulár — AJAX uloženie
@@ -556,11 +488,48 @@
 		$btn.prop( 'disabled', true );
 
 		// Zber vstupov z #wc-sf-edit-form diva (namiesto <form> kvôli WC mainform wrapperu).
-		var formData = $( '#wc-sf-edit-form :input' ).serializeArray();
-		var postData = { action: 'wc_sf_save_filter', nonce: nonce };
+		var postData = {
+			action: 'wc_sf_save_filter',
+			nonce:  nonce
+		};
 
-		formData.forEach( function ( item ) {
-			postData[ item.name ] = item.value;
+		// Spracuj formulárové polia — serializeArray() vracia pole objektov {name, value}.
+		// Potrebujeme to rozparsovať na štrúktúru kde config[include_values][] = 'val1'
+		// bude postData['config[include_values][]'] = 'val1'.
+		$( '#wc-sf-edit-form :input' ).each( function () {
+			var $field = $( this );
+			var name   = $field.attr( 'name' );
+			var type   = $field.attr( 'type' );
+
+			if ( ! name ) {
+				return;
+			}
+
+			// Checkboxy — len zaškrtnuté
+			if ( 'checkbox' === type ) {
+				if ( ! $field.is( ':checked' ) ) {
+					return;
+				}
+			}
+
+			// Radio — len vybraný
+			if ( 'radio' === type ) {
+				if ( ! $field.is( ':checked' ) ) {
+					return;
+				}
+			}
+
+			var value = $field.val();
+
+			// Ak existuje v postData, prekonvertuj na pole.
+			if ( postData[ name ] !== undefined ) {
+				if ( ! Array.isArray( postData[ name ] ) ) {
+					postData[ name ] = [ postData[ name ] ];
+				}
+				postData[ name ].push( value );
+			} else {
+				postData[ name ] = value;
+			}
 		} );
 
 		$.post( ajax, postData )
@@ -580,5 +549,49 @@
 			$btn.prop( 'disabled', false );
 		} );
 	} );
+
+	/**
+	 * Zostaví post dáta z formulárových vstupov,
+	 * správne spracúva polia ako config[include_values][].
+	 *
+	 * @param {jQuery} $inputs  jQuery zberka vstupov.
+	 * @return {Object}
+	 */
+	function buildFormData( $inputs ) {
+		var postData = {
+			action: 'wc_sf_save_filter',
+			nonce:  nonce
+		};
+
+		var fields = {};
+
+		$inputs.each( function () {
+			var $field = $( this );
+			var name   = $field.attr( 'name' );
+			var value  = $field.val();
+			var type   = $field.attr( 'type' );
+
+			if ( ! name ) {
+				return;
+			}
+
+			// Checkboxy — len zaškrtnuté
+			if ( 'checkbox' === type || 'radio' === type ) {
+				if ( ! $field.is( ':checked' ) ) {
+					return;
+				}
+			}
+
+			// Spracuj name ako config[include_values][],config[ranges][0][min] atď.
+			fields[ name ] = value;
+		} );
+
+		// Merge fields do postData (jQuery to rozparsuje správne).
+		Object.keys( fields ).forEach( function ( key ) {
+			postData[ key ] = fields[ key ];
+		} );
+
+		return postData;
+	}
 
 } )( jQuery );

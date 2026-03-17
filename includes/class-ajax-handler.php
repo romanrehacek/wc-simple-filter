@@ -60,6 +60,9 @@ class Ajax_Handler {
 		$id     = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 		$data   = $this->extract_filter_data();
 
+		// Debug log — overí sa, či config správne prišiel.
+		error_log( 'WC_SF save_filter: ' . wp_json_encode( $data ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+
 		if ( empty( $data['filter_type'] ) ) {
 			wp_send_json_error( [ 'message' => __( 'Typ filtra je povinný.', 'wc-simple-filter' ) ] );
 		}
@@ -656,7 +659,7 @@ class Ajax_Handler {
 	 */
 	private function extract_filter_data(): array {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		$raw_config  = isset( $_POST['config'] ) ? wp_unslash( $_POST['config'] ) : '{}';
+		$raw_config  = isset( $_POST['config'] ) ? wp_unslash( $_POST['config'] ) : [];
 		$filter_type = sanitize_text_field( wp_unslash( $_POST['filter_type'] ?? '' ) );
 		$label       = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
 
@@ -666,10 +669,19 @@ class Ajax_Handler {
 		}
 
 		// Ak prišlo ako string (JSON), dekódujeme. Ak ako array, berieme priamo.
+		// Keď príde zo serialize() formuláru, $raw_config bude array.
 		if ( is_string( $raw_config ) ) {
 			$config = json_decode( $raw_config, true ) ?? [];
 		} else {
 			$config = (array) $raw_config;
+		}
+
+		// Sanitizuj config rekurzívne.
+		$config = self::sanitize_config( $config );
+
+		// Pre status filter — explicitne nastaviť `enabled = false` pre stavy, ktoré sa neposlali.
+		if ( 'status' === $filter_type ) {
+			$config = self::process_status_config( $config );
 		}
 
 		return [
@@ -680,6 +692,59 @@ class Ajax_Handler {
 			'config'       => $config,
 		];
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
+	}
+
+	/**
+	 * Spracuje config pre status filter — nastaví `enabled = false`
+	 * pre stavy, ktoré sa neposlali.
+	 *
+	 * @param array<string, mixed> $config Config pole.
+	 * @return array<string, mixed>
+	 */
+	private static function process_status_config( array $config ): array {
+		$stock_statuses = wc_get_product_stock_status_options();
+
+		// Inicializuj všetky stavy s enabled = false.
+		$values = [];
+		foreach ( $stock_statuses as $status_key => $label ) {
+			$values[ $status_key ] = [
+				'enabled' => false,
+				'label'   => $label,
+			];
+		}
+
+		// Merge so submitnutými hodnotami — tie čo sa poslali budú mať enabled = 1.
+		if ( isset( $config['values'] ) && is_array( $config['values'] ) ) {
+			foreach ( $config['values'] as $status_key => $data ) {
+				if ( isset( $values[ $status_key ] ) ) {
+					$values[ $status_key ] = array_merge(
+						$values[ $status_key ],
+						(array) $data
+					);
+				}
+			}
+		}
+
+		$config['values'] = $values;
+		return $config;
+	}
+
+	/**
+	 * Sanitizuje config pole rekurzívne.
+	 *
+	 * @param mixed $data Nesanitizované dáta.
+	 * @return mixed
+	 */
+	private static function sanitize_config( $data ) {
+		if ( is_array( $data ) ) {
+			return array_map( [ self::class, 'sanitize_config' ], $data );
+		}
+
+		if ( is_string( $data ) ) {
+			return sanitize_text_field( $data );
+		}
+
+		return $data;
 	}
 
 	/**

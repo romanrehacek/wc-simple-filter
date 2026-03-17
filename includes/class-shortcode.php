@@ -338,7 +338,7 @@ class Shortcode {
 		if ( 'brand' === $filter_type || str_starts_with( $filter_type, 'attribute_' ) ) {
 			$taxonomy = 'brand' === $filter_type
 				? 'product_brand'
-				: 'pa_' . substr( $filter_type, strlen( 'attribute_' ) );
+				: substr( $filter_type, strlen( 'attribute_' ) );
 
 			$terms = get_terms(
 				[

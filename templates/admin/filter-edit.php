@@ -147,7 +147,7 @@ $back_url = Admin::tab_url();
 							type="checkbox"
 							name="config[hide_empty]"
 							value="1"
-							<?php checked( $config['hide_empty'] ?? true ); ?>
+							<?php checked( $config['hide_empty'] ?? false ); ?>
 						/>
 						<?php esc_html_e( 'Nezobrazovať hodnoty bez produktov', 'wc-simple-filter' ); ?>
 					</label>
@@ -169,7 +169,7 @@ $back_url = Admin::tab_url();
 				// Načítame všetky registrované stavy vrátane custom (cez woocommerce_product_stock_status_options).
 				$status_options = wc_get_product_stock_status_options();
 				foreach ( $status_options as $status_key => $default_label ) :
-					$enabled = $config['values'][ $status_key ]['enabled'] ?? true;
+					$enabled = $config['values'][ $status_key ]['enabled'] ?? false;
 					$label   = $config['values'][ $status_key ]['label'] ?? $default_label;
 				?>
 				<tr>
@@ -369,43 +369,43 @@ $back_url = Admin::tab_url();
 			</p>
 
 			<p>
-				<button type="button" id="wc-sf-load-values" class="button"
-						data-filter-type="<?php echo esc_attr( $filter_type ); ?>">
-					<?php esc_html_e( 'Načítať dostupné hodnoty', 'wc-simple-filter' ); ?>
-				</button>
-				<button type="button" id="wc-sf-select-all-values" class="button" style="display:none;">
+				<button type="button" id="wc-sf-select-all-values" class="button"<?php echo empty( $available_values ) ? ' style="display:none;"' : ''; ?>>
 					<?php esc_html_e( 'Vybrať všetky', 'wc-simple-filter' ); ?>
 				</button>
-				<button type="button" id="wc-sf-deselect-all-values" class="button" style="display:none;">
+				<button type="button" id="wc-sf-deselect-all-values" class="button"<?php echo empty( $available_values ) ? ' style="display:none;"' : ''; ?>>
 					<?php esc_html_e( 'Zrušiť všetky', 'wc-simple-filter' ); ?>
 				</button>
 				<span class="wc-sf-spinner spinner"></span>
 			</p>
 
 			<div id="wc-sf-values-list">
-				<?php
-				$include_values = $config['include_values'] ?? [];
-				if ( ! empty( $include_values ) ) :
-				?>
+				<?php if ( ! empty( $available_values ) ) : ?>
+				<div class="wc-sf-values-picker">
+					<?php
+					$include_values = $config['include_values'] ?? [];
+					foreach ( $available_values as $item ) :
+						$checked = in_array( $item['value'], $include_values, true );
+						$label   = esc_html( $item['label'] );
+						if ( isset( $item['count'] ) ) {
+							$label .= ' (' . (int) $item['count'] . ')';
+						}
+					?>
+					<label>
+						<input
+							type="checkbox"
+							name="config[include_values][]"
+							value="<?php echo esc_attr( $item['value'] ); ?>"
+							<?php checked( $checked ); ?>
+						/>
+						<?php echo $label; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- label je escapovaný vyššie ?>
+					</label>
+					<?php endforeach; ?>
+				</div>
+				<?php else : ?>
 				<p class="description">
-					<?php
-					echo esc_html(
-						sprintf(
-							/* translators: %d: počet hodnôt */
-							__( 'Aktuálne zahrnuté: %d hodnôt. Kliknite „Načítať" pre editáciu.', 'wc-simple-filter' ),
-							count( $include_values )
-						)
-					);
-					?>
+					<?php esc_html_e( 'Pre tento typ filtra neboli nájdené žiadne hodnoty.', 'wc-simple-filter' ); ?>
 				</p>
-				<?php
-				foreach ( $include_values as $val ) :
-					?>
-					<input type="hidden" name="config[include_values][]" value="<?php echo esc_attr( $val ); ?>" />
-					<?php
-				endforeach;
-				endif;
-				?>
+				<?php endif; ?>
 			</div>
 
 			<table class="form-table">
