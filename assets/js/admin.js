@@ -348,9 +348,17 @@
 
 		// Pridaj action a nonce.
 		var postData = { action: 'wc_sf_save_settings', nonce: nonce };
+		
+		// Spracuj dáta na vytvorenie vnoreného objektu settings{...}
+		var settings = {};
 		data.forEach( function ( item ) {
-			postData[ item.name ] = item.value;
+			// Parsuj "settings[key]" → settings.key = value
+			var match = item.name.match( /^settings\[([^\]]+)\]$/ );
+			if ( match ) {
+				settings[ match[1] ] = item.value;
+			}
 		} );
+		postData.settings = settings;
 
 		$.post( ajax, postData )
 		.done( function ( response ) {
