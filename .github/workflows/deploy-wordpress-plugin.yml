@@ -1,0 +1,326 @@
+name: Deploy to WordPress.org
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Deploying version: $VERSION"
+
+      - name: Validate version format
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
+            echo "Invalid version format: $VERSION"
+            echo "Expected format: X.Y.Z or X.Y.Z-beta"
+            exit 1
+          fi
+          echo "✓ Version format valid: $VERSION"
+
+      - name: Install required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion rsync
+
+      - name: Checkout SVN repository
+        env:
+          SVN_USERNAME: ${{ secrets.WP_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WP_SVN_PASSWORD }}
+        run: |
+          SVN_URL="https://plugins.svn.wordpress.org/wc-simple-filter"
+          mkdir -p /tmp/svn
+
+          # Configure SVN auth
+          mkdir -p ~/.subversion
+          cat > ~/.subversion/servers <<EOF
+          [global]
+          store-passwords = no
+          store-plaintext-passwords = no
+          EOF
+
+          # Checkout SVN repo
+          svn checkout "$SVN_URL" /tmp/svn \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache || {
+            echo "SVN checkout failed"
+            exit 1
+          }
+
+      - name: Clean repository and sync to trunk
+        run: |
+          # Remove old trunk content
+          rm -rf /tmp/svn/trunk/*
+
+          # Comprehensive exclusions for WordPress.org deployment
+          # Only development, test, config, and documentation files are excluded
+          # Production code is kept clean
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='.gitattributes' \
+            --exclude='.editorconfig' \
+            --exclude='.env' \
+            --exclude='.env.local' \
+            --exclude='.env.*.local' \
+            --exclude='node_modules' \
+            --exclude='vendor' \
+            --exclude='tests' \
+            --exclude='test' \
+            --exclude='__tests__' \
+            --exclude='.jest' \
+            --exclude='.mocha' \
+            --exclude='.nyc_output' \
+            --exclude='coverage' \
+            --exclude='dist' \
+            --exclude='build' \
+            --exclude='.cache' \
+            --exclude='cache' \
+            --exclude='tmp' \
+            --exclude='temp' \
+            --exclude='logs' \
+            --exclude='*.log' \
+            --exclude='.DS_Store' \
+            --exclude='Thumbs.db' \
+            --exclude='composer.lock' \
+            --exclude='composer.json' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='yarn.lock' \
+            --exclude='pnpm-lock.yaml' \
+            --exclude='phpcs.xml' \
+            --exclude='phpcs.xml.dist' \
+            --exclude='phpunit.xml' \
+            --exclude='phpunit.xml.dist' \
+            --exclude='.phpcs.xml.dist' \
+            --exclude='.phpstan.neon' \
+            --exclude='phpstan.neon' \
+            --exclude='phpstan.neon.dist' \
+            --exclude='.eslintrc' \
+            --exclude='.eslintrc.js' \
+            --exclude='.eslintrc.cjs' \
+            --exclude='.eslintrc.yaml' \
+            --exclude='.eslintrc.yml' \
+            --exclude='.eslintignore' \
+            --exclude='.prettierrc' \
+            --exclude='.prettierrc.js' \
+            --exclude='.prettierrc.yaml' \
+            --exclude='.prettierrc.yml' \
+            --exclude='.prettierignore' \
+            --exclude='webpack.config.js' \
+            --exclude='webpack.config.prod.js' \
+            --exclude='webpack.config.dev.js' \
+            --exclude='gulpfile.js' \
+            --exclude='Gruntfile.js' \
+            --exclude='Gulpfile.js' \
+            --exclude='tsconfig.json' \
+            --exclude='tsconfig.*.json' \
+            --exclude='vite.config.js' \
+            --exclude='vite.config.ts' \
+            --exclude='rollup.config.js' \
+            --exclude='rollup.config.ts' \
+            --exclude='babel.config.js' \
+            --exclude='.babelrc' \
+            --exclude='.babelrc.js' \
+            --exclude='.babelrc.json' \
+            --exclude='esbuild.config.js' \
+            --exclude='jest.config.js' \
+            --exclude='jest.config.json' \
+            --exclude='.jestrc' \
+            --exclude='.jestrc.js' \
+            --exclude='karma.conf.js' \
+            --exclude='mocha.opts' \
+            --exclude='.mocharc.js' \
+            --exclude='.mocharc.json' \
+            --exclude='docker-compose.yml' \
+            --exclude='docker-compose.yaml' \
+            --exclude='Dockerfile' \
+            --exclude='.dockerignore' \
+            --exclude='.travis.yml' \
+            --exclude='.gitlab-ci.yml' \
+            --exclude='azure-pipelines.yml' \
+            --exclude='circle.yml' \
+            --exclude='.circleci' \
+            --exclude='Makefile' \
+            --exclude='makefile' \
+            --exclude='.nvmrc' \
+            --exclude='.ruby-version' \
+            --exclude='.python-version' \
+            --exclude='.go-version' \
+            --exclude='version' \
+            --exclude='VERSION' \
+            --exclude='AGENTS.md' \
+            --exclude='TRANSLATION_DICTIONARY_SK.md' \
+            --exclude='RELEASE_GUIDE.md' \
+            --exclude='SETUP_SUMMARY_SK.md' \
+            --exclude='CI_CD_SETUP_COMPLETE.md' \
+            --exclude='README.md' \
+            --exclude='readme.md' \
+            --exclude='.editorconfig' \
+            --exclude='CHANGELOG.md' \
+            --exclude='CONTRIBUTING.md' \
+            --exclude='CODE_OF_CONDUCT.md' \
+            --exclude='SECURITY.md' \
+            --exclude='LICENSE.md' \
+            --exclude='*.md' \
+            --exclude='version-bump.sh' \
+            ./ /tmp/svn/trunk/
+
+          echo "✓ Code synced to trunk"
+
+      - name: Copy assets to WordPress.org assets folder
+        run: |
+          if [ -d "assets" ]; then
+            mkdir -p /tmp/svn/assets
+            rsync -av --delete assets/ /tmp/svn/assets/
+            echo "✓ Assets copied to SVN assets folder"
+          else
+            echo "⚠ No assets directory found (this is optional)"
+          fi
+
+      - name: Handle SVN changes (add new files)
+        run: |
+          cd /tmp/svn/trunk
+
+          # Add new files
+          svn status | grep '^\?' | awk '{print $2}' | xargs -r svn add --force || true
+
+          echo "✓ New files added to SVN"
+
+      - name: Handle SVN changes (remove deleted files)
+        run: |
+          cd /tmp/svn/trunk
+
+          # Remove deleted files
+          svn status | grep '^\!' | awk '{print $2}' | xargs -r svn rm --force || true
+
+          echo "✓ Deleted files removed from SVN"
+
+      - name: Verify plugin file exists in trunk
+        run: |
+          if [ ! -f "/tmp/svn/trunk/wc-simple-filter.php" ]; then
+            echo "❌ Plugin file not found in trunk!"
+            exit 1
+          fi
+          echo "✓ Plugin file verified in trunk"
+
+      - name: Commit trunk to WordPress.org
+        env:
+          SVN_USERNAME: ${{ secrets.WP_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WP_SVN_PASSWORD }}
+        run: |
+          cd /tmp/svn
+
+          # Check if there are changes to commit
+          if [ -z "$(svn status trunk)" ]; then
+            echo "ℹ No changes in trunk, skipping commit"
+            exit 0
+          fi
+
+          svn commit trunk \
+            -m "Deploy version ${{ steps.version.outputs.version }} from GitHub (commit: ${GITHUB_SHA:0:7})" \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache
+
+          echo "✓ Trunk committed to WordPress.org"
+
+      - name: Create SVN tag
+        env:
+          SVN_USERNAME: ${{ secrets.WP_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WP_SVN_PASSWORD }}
+        run: |
+          cd /tmp/svn
+          TAG_NAME=${{ steps.version.outputs.version }}
+
+          # Check if tag already exists
+          if svn list "$SVN_URL/tags/$TAG_NAME" >/dev/null 2>&1; then
+            echo "⚠ Tag $TAG_NAME already exists on WordPress.org"
+            exit 0
+          fi
+
+          # Copy trunk to tags
+          svn copy trunk "tags/$TAG_NAME" \
+            -m "Tag version $TAG_NAME from GitHub release" \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache
+
+          echo "✓ SVN tag created: $TAG_NAME"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Version ${{ steps.version.outputs.version }}
+          body: |
+            **Version ${{ steps.version.outputs.version }}**
+
+            Plugin deployment completed successfully!
+
+            🔗 **Links:**
+            - [View on WordPress.org](https://wordpress.org/plugins/wc-simple-filter/)
+            - [WordPress.org SVN Repository](https://plugins.svn.wordpress.org/wc-simple-filter/)
+
+            ⏱️ **Timeline:**
+            - SVN deployment: Just completed
+            - WordPress.org search index: May take 1-2 hours to update
+            - Plugin available for download: Immediately
+
+            📝 **Check GitHub Actions for details:**
+            - All exclusions applied (node_modules, tests, vendor, etc.)
+            - Only production files deployed to WordPress.org
+            - Assets synced to WordPress.org assets folder
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deployment summary
+        run: |
+          echo "========================================="
+          echo "✓ WordPress Plugin Deployment Complete"
+          echo "========================================="
+          echo "Plugin: WC Simple Filter"
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo "Tag: ${{ steps.version.outputs.tag }}"
+          echo ""
+          echo "Deployment Details:"
+          echo "  • Code cleaned (excluded: node_modules, tests, vendor, etc.)"
+          echo "  • Plugin files synced to WordPress.org trunk"
+          echo "  • Assets copied to WordPress.org assets folder"
+          echo "  • SVN tag created: tags/${{ steps.version.outputs.version }}"
+          echo "  • GitHub Release created"
+          echo ""
+          echo "Plugin Page:"
+          echo "  https://wordpress.org/plugins/wc-simple-filter/"
+          echo ""
+          echo "SVN Repository:"
+          echo "  https://plugins.svn.wordpress.org/wc-simple-filter/"
+          echo ""
+          echo "Monitor status: GitHub Actions → This workflow"
+          echo "========================================="
