@@ -96,15 +96,26 @@ class Filter_Manager {
 	public static function get_all(): array {
 		global $wpdb;
 
+		// Try cache first.
+		$cache_key = 'wc_sf_filters_all';
+		$cached    = wp_cache_get( $cache_key );
+
+		if ( false !== $cached ) {
+			return $cached;
+		}
+
 		$table = $wpdb->prefix . self::TABLE_FILTERS;
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY sort_order ASC, id ASC", ARRAY_A );
 
 		if ( ! is_array( $rows ) ) {
+			wp_cache_set( $cache_key, [], '', 3600 );
 			return [];
 		}
 
-		return array_map( [ self::class, 'parse_row' ], $rows );
+		$result = array_map( [ self::class, 'parse_row' ], $rows );
+		wp_cache_set( $cache_key, $result, '', 3600 );
+		return $result;
 	}
 
 	/**
@@ -116,17 +127,29 @@ class Filter_Manager {
 	public static function get( int $id ): ?array {
 		global $wpdb;
 
+		// Try cache first.
+		$cache_key = 'wc_sf_filter_' . $id;
+		$cached    = wp_cache_get( $cache_key );
+
+		if ( false !== $cached ) {
+			return 'null' === $cached ? null : $cached;
+		}
+
 		$table = $wpdb->prefix . self::TABLE_FILTERS;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row   = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ), // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->prepare( "SELECT * FROM $table WHERE id = %d", $id ), // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is constructed and safe
 			ARRAY_A
 		);
 
-		if ( ! $row ) {
+		if ( ! is_array( $row ) ) {
+			wp_cache_set( $cache_key, 'null', '', 3600 );
 			return null;
 		}
 
-		return self::parse_row( $row );
+		$result = self::parse_row( $row );
+		wp_cache_set( $cache_key, $result, '', 3600 );
+		return $result;
 	}
 
 	/**
@@ -139,7 +162,8 @@ class Filter_Manager {
 		global $wpdb;
 
 		$table      = $wpdb->prefix . self::TABLE_FILTERS;
-		$max_order  = (int) $wpdb->get_var( "SELECT MAX(sort_order) FROM {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$max_order  = (int) $wpdb->get_var( "SELECT MAX(sort_order) FROM {$table}" );
 
 		$insert = [
 			'sort_order'   => $max_order + 1,
@@ -150,11 +174,15 @@ class Filter_Manager {
 			'config'       => wp_json_encode( $data['config'] ?? new \stdClass() ),
 		];
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$result = $wpdb->insert( $table, $insert );
 
 		if ( false === $result ) {
 			return false;
 		}
+
+		// Flush cache after insert.
+		wp_cache_delete( 'wc_sf_filters_all' );
 
 		return (int) $wpdb->insert_id;
 	}
@@ -193,11 +221,18 @@ class Filter_Manager {
 			return false;
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = $wpdb->update(
 			$table,
 			$update,
 			[ 'id' => $id ]
 		);
+
+		if ( false !== $result ) {
+			// Flush cache after update.
+			wp_cache_delete( 'wc_sf_filters_all' );
+			wp_cache_delete( 'wc_sf_filter_' . $id );
+		}
 
 		return false !== $result;
 	}
@@ -212,7 +247,14 @@ class Filter_Manager {
 		global $wpdb;
 
 		$table  = $wpdb->prefix . self::TABLE_FILTERS;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = $wpdb->delete( $table, [ 'id' => $id ], [ '%d' ] );
+
+		if ( false !== $result ) {
+			// Flush cache after delete.
+			wp_cache_delete( 'wc_sf_filters_all' );
+			wp_cache_delete( 'wc_sf_filter_' . $id );
+		}
 
 		return false !== $result;
 	}
@@ -229,6 +271,7 @@ class Filter_Manager {
 		$table = $wpdb->prefix . self::TABLE_FILTERS;
 
 		foreach ( $ordered_ids as $position => $id ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->update(
 				$table,
 				[ 'sort_order' => $position ],
@@ -237,6 +280,9 @@ class Filter_Manager {
 				[ '%d' ]
 			);
 		}
+
+		// Flush cache after reorder.
+		wp_cache_delete( 'wc_sf_filters_all' );
 
 		return true;
 	}
@@ -264,7 +310,8 @@ class Filter_Manager {
 	public static function uninstall(): void {
 		global $wpdb;
 
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . self::TABLE_FILTERS ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+		$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . self::TABLE_FILTERS );
 
 		delete_option( 'wc_sf_db_version' );
 		delete_option( 'wc_sf_settings' );

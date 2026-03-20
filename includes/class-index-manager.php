@@ -81,7 +81,8 @@ class Index_Manager {
 	public static function uninstall(): void {
 		global $wpdb;
 
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . self::TABLE_INDEX ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+		$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . self::TABLE_INDEX );
 		self::flush_all_cache();
 	}
 
@@ -103,9 +104,10 @@ class Index_Manager {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_INDEX;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT value, product_count FROM {$table} WHERE filter_type = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT value, product_count FROM {$table} WHERE filter_type = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is constructed and safe
 				$filter_type
 			),
 			ARRAY_A
@@ -119,8 +121,7 @@ class Index_Manager {
 			}
 		}
 
-		set_transient( $cache_key, $counts, self::CACHE_TTL );
-
+		set_transient( $cache_key, $counts, 3600 );
 		return $counts;
 	}
 
@@ -227,6 +228,7 @@ class Index_Manager {
 	private static function compute_meta_counts( string $meta_key ): array {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT pm.meta_value, COUNT(DISTINCT p.ID) as cnt
@@ -265,6 +267,7 @@ class Index_Manager {
 		$counts   = [];
 
 		foreach ( $statuses as $status ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$count = (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(DISTINCT p.ID)
@@ -312,6 +315,7 @@ class Index_Manager {
 	private static function count_published_products_with_term( int $term_id, string $taxonomy ): int {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(DISTINCT p.ID)
@@ -343,9 +347,11 @@ class Index_Manager {
 		$table = $wpdb->prefix . self::TABLE_INDEX;
 
 		// First delete old records for this filter_type.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->delete( $table, [ 'filter_type' => $filter_type ], [ '%s' ] );
 
 		foreach ( $counts as $value => $count ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->replace(
 				$table,
 				[
@@ -431,8 +437,9 @@ class Index_Manager {
 	public static function flush_all_cache(): void {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$wpdb->query(
-			"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_wc_sf_index_%' OR option_name LIKE '_transient_timeout_wc_sf_index_%'" // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_wc_sf_index_%' OR option_name LIKE '_transient_timeout_wc_sf_index_%'"
 		);
 	}
 }

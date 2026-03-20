@@ -67,7 +67,7 @@ class Query_Builder {
 			return [];
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$raw    = (array) wp_unslash( $_GET['wcsf'] );
 		$params = [];
 

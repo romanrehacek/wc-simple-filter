@@ -115,8 +115,8 @@ class Ajax_Handler {
 	public function reorder_filters(): void {
 		$this->verify();
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		$raw_order = isset( $_POST['order'] ) ? (array) $_POST['order'] : [];
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$raw_order = isset( $_POST['order'] ) ? (array) wp_unslash( $_POST['order'] ) : [];
 		$order     = array_map( 'absint', $raw_order );
 		$order     = array_filter( $order );
 
@@ -182,7 +182,7 @@ class Ajax_Handler {
 	public function save_settings(): void {
 		$this->verify();
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$posted = isset( $_POST['settings'] ) ? (array) wp_unslash( $_POST['settings'] ) : [];
 
 		$current  = get_option( 'wc_sf_settings', Filter_Manager::default_settings() );
@@ -200,11 +200,11 @@ class Ajax_Handler {
 			}
 
 			$settings[ $key ] = match ( $key ) {
-				'filter_mode'         => in_array( $posted[ $key ], [ 'ajax', 'submit', 'reload' ], true ) ? $posted[ $key ] : 'ajax',
+				'filter_mode'         => in_array( sanitize_text_field( $posted[ $key ] ), [ 'ajax', 'submit', 'reload' ], true ) ? sanitize_text_field( $posted[ $key ] ) : 'ajax', // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized via sanitize_text_field()
 				'show_reset_button',
 				'hide_empty',
-				'delete_on_uninstall' => (bool) $posted[ $key ],
-				default               => sanitize_text_field( $posted[ $key ] ),
+				'delete_on_uninstall' => (bool) $posted[ $key ], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- safe to cast to bool
+				default               => sanitize_text_field( $posted[ $key ] ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized via sanitize_text_field()
 			};
 		}
 
@@ -295,20 +295,33 @@ class Ajax_Handler {
 	private function get_meta_values( string $meta_key ): array {
 		global $wpdb;
 
-		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT DISTINCT pm.meta_value as value
-				FROM {$wpdb->postmeta} pm
-				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-				WHERE pm.meta_key = %s
-				AND pm.meta_value != ''
-				AND p.post_type = 'product'
-				AND p.post_status = 'publish'
-				ORDER BY pm.meta_value ASC",
-				$meta_key
-			),
-			ARRAY_A
-		);
+		// Try to get from cache first.
+		$cache_key = 'wc_sf_meta_values_' . md5( $meta_key );
+		$rows      = wp_cache_get( $cache_key );
+
+		if ( false === $rows ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT DISTINCT pm.meta_value as value
+					FROM {$wpdb->postmeta} pm
+					INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+					WHERE pm.meta_key = %s
+					AND pm.meta_value != ''
+					AND p.post_type = 'product'
+					AND p.post_status = 'publish'
+					ORDER BY pm.meta_value ASC",
+					$meta_key
+				),
+				ARRAY_A
+			);
+
+			if ( is_array( $rows ) ) {
+				wp_cache_set( $cache_key, $rows, '', 3600 );
+			} else {
+				$rows = [];
+			}
+		}
 
 		if ( ! is_array( $rows ) ) {
 			return [];
@@ -351,8 +364,8 @@ class Ajax_Handler {
 		// Filter parameters — same mechanism as for $_GET, but from $_POST.
 		// Temporarily move wcsf from POST to GET so Query_Builder::get_active_params() works,
 		// but prefer direct sanitization code to avoid modifying globals.
-		$raw_wcsf = isset( $_POST['wcsf'] ) && is_array( $_POST['wcsf'] )
-			? (array) wp_unslash( $_POST['wcsf'] )
+		$raw_wcsf = isset( $_POST['wcsf'] ) && is_array( $_POST['wcsf'] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- values sanitized in sanitize_frontend_params()
+			? (array) wp_unslash( $_POST['wcsf'] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized via sanitize_frontend_params()
 			: [];
 
 		$params = $this->sanitize_frontend_params( $raw_wcsf );
@@ -659,7 +672,7 @@ class Ajax_Handler {
 	 */
 	private function extract_filter_data(): array {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		$raw_config  = isset( $_POST['config'] ) ? wp_unslash( $_POST['config'] ) : [];
+		$raw_config  = isset( $_POST['config'] ) ? (array) wp_unslash( $_POST['config'] ) : []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized in Config_Validator
 		$filter_type = sanitize_text_field( wp_unslash( $_POST['filter_type'] ?? '' ) );
 		$label       = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
 

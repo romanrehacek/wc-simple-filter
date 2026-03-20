@@ -389,21 +389,34 @@ class Shortcode {
 
 			global $wpdb;
 
-			// Load unique values of meta key for products.
-			$rows = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT DISTINCT pm.meta_value AS value
-					FROM {$wpdb->postmeta} pm
-					INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-					WHERE pm.meta_key = %s
-					AND pm.meta_value != ''
-					AND p.post_type = 'product'
-					AND p.post_status = 'publish'
-					ORDER BY pm.meta_value ASC",
-					$meta_key
-				),
-				ARRAY_A
-			);
+			// Try cache first.
+			$cache_key = 'wc_sf_meta_values_' . md5( $meta_key );
+			$rows      = wp_cache_get( $cache_key );
+
+			if ( false === $rows ) {
+				// Load unique values of meta key for products.
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT DISTINCT pm.meta_value AS value
+						FROM {$wpdb->postmeta} pm
+						INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+						WHERE pm.meta_key = %s
+						AND pm.meta_value != ''
+						AND p.post_type = 'product'
+						AND p.post_status = 'publish'
+						ORDER BY pm.meta_value ASC",
+						$meta_key
+					),
+					ARRAY_A
+				);
+
+				if ( is_array( $rows ) ) {
+					wp_cache_set( $cache_key, $rows, '', 3600 );
+				} else {
+					$rows = [];
+				}
+			}
 
 			if ( ! is_array( $rows ) || empty( $rows ) ) {
 				return [];
