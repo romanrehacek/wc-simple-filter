@@ -6,10 +6,10 @@
  * It uses apply_filters() exclusively so external behavior can be modified
  * without needing to override the entire class.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter;
+namespace Simple_Product_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -250,7 +250,7 @@ class Query_Builder {
 			 * @param array<string, mixed> $params       Active filter parameters.
 			 * @param array<mixed>         $config_index Index of filter configurations.
 			 */
-			$args['tax_query'] = (array) apply_filters( 'wc_sf_tax_query', $tax_query, $params, $config_index ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			$args['tax_query'] = (array) apply_filters( 'spf_tax_query', $tax_query, $params, $config_index ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		}
 
 		if ( ! empty( $meta_query ) ) {
@@ -262,7 +262,7 @@ class Query_Builder {
 			 * @param array<string, mixed> $params       Active filter parameters.
 			 * @param array<mixed>         $config_index Index of filter configurations.
 			 */
-			$args['meta_query'] = (array) apply_filters( 'wc_sf_meta_query', $meta_query, $params, $config_index ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			$args['meta_query'] = (array) apply_filters( 'spf_meta_query', $meta_query, $params, $config_index ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 		}
 
 		if ( null !== $post__in ) {
@@ -276,7 +276,7 @@ class Query_Builder {
 		 * @param array<string, mixed> $args    Built args.
 		 * @param array<string, mixed> $params  Active filter parameters.
 		 */
-		return (array) apply_filters( 'wc_sf_query_args', $args, $params );
+		return (array) apply_filters( 'spf_query_args', $args, $params );
 	}
 
 	// -------------------------------------------------------------------------
@@ -323,7 +323,7 @@ class Query_Builder {
 		 * @param array<string>       $slugs       Selected values.
 		 * @param array<string,mixed> $config      Filter config.
 		 */
-		return (array) apply_filters( 'wc_sf_tax_query_clause', $clause, $filter_type, $slugs, $config );
+		return (array) apply_filters( 'spf_tax_query_clause', $clause, $filter_type, $slugs, $config );
 	}
 
 	/**
@@ -463,7 +463,7 @@ class Query_Builder {
 			 * @param mixed               $values      Active values.
 			 * @param array<string,mixed> $config      Filter config.
 			 */
-			return (array) apply_filters( 'wc_sf_meta_query_clause', $clause, $filter_type, $values, $config );
+			return (array) apply_filters( 'spf_meta_query_clause', $clause, $filter_type, $values, $config );
 		}
 
 		// Array of range slugs.
@@ -487,7 +487,7 @@ class Query_Builder {
 				? $clauses[0]
 				: array_merge( [ 'relation' => 'OR' ], $clauses );
 
-			return (array) apply_filters( 'wc_sf_meta_query_clause', $result, $filter_type, $values, $config );
+			return (array) apply_filters( 'spf_meta_query_clause', $result, $filter_type, $values, $config );
 		}
 
 		// Array of text values.
@@ -505,7 +505,7 @@ class Query_Builder {
 			'compare' => ( 'and' === $logic ) ? 'AND' : 'IN',
 		];
 
-		return (array) apply_filters( 'wc_sf_meta_query_clause', $clause, $filter_type, $values, $config );
+		return (array) apply_filters( 'spf_meta_query_clause', $clause, $filter_type, $values, $config );
 	}
 
 	// -------------------------------------------------------------------------

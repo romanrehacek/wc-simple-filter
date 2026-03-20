@@ -2,16 +2,16 @@
 /**
  * "Filters" tab — list of filters with repeater.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter\Admin;
+namespace Simple_Product_Filter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WC_Simple_Filter\Filter_Manager;
+use Simple_Product_Filter\Filter_Manager;
 
 /**
  * Filters_Tab class.

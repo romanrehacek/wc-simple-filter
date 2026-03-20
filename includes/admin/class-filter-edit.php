@@ -2,16 +2,16 @@
 /**
  * Individual filter edit page.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter\Admin;
+namespace Simple_Product_Filter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WC_Simple_Filter\Filter_Manager;
+use Simple_Product_Filter\Filter_Manager;
 
 /**
  * Filter_Edit class.
@@ -34,8 +34,8 @@ class Filter_Edit {
 
 		if ( ! $filter ) {
 			wp_die(
-				esc_html__( 'Filter not found.', 'wc-simple-filter' ),
-				esc_html__( 'Error', 'wc-simple-filter' ),
+				esc_html__( 'Filter not found.', 'simple-product-filter' ),
+				esc_html__( 'Error', 'simple-product-filter' ),
 				[ 'back_link' => true ]
 			);
 		}
@@ -115,7 +115,7 @@ class Filter_Edit {
 		global $wpdb;
 
 		// Try cache first.
-		$cache_key = 'wc_sf_meta_values_' . md5( $meta_key );
+		$cache_key = 'spf_meta_values_' . md5( $meta_key );
 		$rows      = wp_cache_get( $cache_key );
 
 		if ( false === $rows ) {
@@ -161,7 +161,7 @@ class Filter_Edit {
 		global $wpdb;
 
 		// Try cache first.
-		$cache_key = 'wc_sf_price_range';
+		$cache_key = 'spf_price_range';
 		$cached    = wp_cache_get( $cache_key );
 
 		if ( false !== $cached ) {

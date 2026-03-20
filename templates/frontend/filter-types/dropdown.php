@@ -7,7 +7,7 @@
  * @var array<int, array<string, mixed>> $values  Filter values.
  * @var string                           $layout  Layout type.
  *
- * Override: copy to {theme}/wc-simple-filter/filter-types/dropdown.php
+ * Override: copy to {theme}/simple-product-filter/filter-types/dropdown.php
  *
  * @package WC_Simple_Filter
  */
@@ -25,7 +25,7 @@ $label       = $filter['label'] ?? '';
 		class="wcsf__dropdown"
 		name="wcsf[<?php echo esc_attr( $filter_type ); ?>]"
 		aria-label="<?php echo esc_attr( $label ); ?>">
-		<option value=""><?php esc_html_e( '— Select —', 'wc-simple-filter' ); ?></option>
+		<option value=""><?php esc_html_e( '— Select —', 'simple-product-filter' ); ?></option>
 		<?php foreach ( $values as $value ) : ?>
 			<option value="<?php echo esc_attr( $value['slug'] ?? '' ); ?>">
 				<?php echo esc_html( $value['label'] ?? '' ); ?>

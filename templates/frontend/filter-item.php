@@ -9,7 +9,7 @@
  * @var bool                             $collapsed   Whether filter is collapsed by default.
  * @var array<int, array<string, mixed>> $values      Filter values.
  *
- * Override: copy to {theme}/wc-simple-filter/filter-item.php
+ * Override: copy to {theme}/simple-product-filter/filter-item.php
  *
  * @package WC_Simple_Filter
  */
@@ -77,7 +77,7 @@ $body_id       = 'wcsf-filter-body-' . $filter_id;
 		Template::get_template( $type_template, compact( 'filter', 'values', 'layout' ) );
 		?>
 	<?php else : ?>
-		<p class="wcsf__filter-empty"><?php esc_html_e( 'No values', 'wc-simple-filter' ); ?></p>
+		<p class="wcsf__filter-empty"><?php esc_html_e( 'No values', 'simple-product-filter' ); ?></p>
 	<?php endif; ?>
 
 	</div>

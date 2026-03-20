@@ -1,17 +1,17 @@
-# AGENTS.md - WC Simple Filter
+# AGENTS.md - Simple Product Filter
 
 ## Project Overview
 
 WordPress/WooCommerce plugin for displaying configurable product filters on the
-shop page (and any archive). Filters are inserted via shortcode `[wc_simple_filter]`
-or the PHP helper `wc_simple_filter()`. The plugin is **read-only** with respect
+shop page (and any archive). Filters are inserted via shortcode `[simple_product_filter]`
+or the PHP helper `simple_product_filter()`. The plugin is **read-only** with respect
 to WooCommerce products -- it never modifies or deletes them.
 
 - **Language:** PHP (>= 8.0)
 - **Platform:** WordPress >= 6.x, WooCommerce >= 7.x
 - **Admin location:** WooCommerce > Nastavenia > Filtre (tab added to WC settings)
-- **Plugin slug:** `wc-simple-filter`
-- **Text domain:** `wc-simple-filter`
+- **Plugin slug:** `simple-product-filter`
+- **Text domain:** `simple-product-filter`
 - **Status:** Early development. `PRD.md` has full requirements. `.opencode/plans/`
   contains the detailed implementation plan.
 
@@ -77,17 +77,17 @@ Reference: https://developer.wordpress.org/coding-standards/wordpress-coding-sta
 
 ### Naming Conventions
 - **Files:** lowercase kebab-case: `class-filter-manager.php`, `admin-page.php`
-- **Classes:** `Upper_Snake_Case` per WP convention: `class WC_Simple_Filter {}`
+- **Classes:** `Upper_Snake_Case` per WP convention: `class Simple_Product_Filter {}`
 - **Methods/Functions:** `snake_case`: `function get_filter_config() {}`
 - **Variables:** `snake_case`: `$filter_id`, `$filter_type` (never camelCase)
-- **Constants:** `UPPER_SNAKE_CASE`: `define( 'WC_SF_VERSION', '1.0.0' );`
-- **Hooks:** prefix with plugin slug: `wc_sf_before_filters`, `wc_sf_filter_output`
+- **Constants:** `UPPER_SNAKE_CASE`: `define( 'SPF_VERSION', '1.0.0' );`
+- **Hooks:** prefix with plugin slug: `spf_before_filters`, `spf_filter_output`
 - **Database tables:**
-  - `{$wpdb->prefix}wc_sf_filters` — filter configuration (repeater rows)
-  - `{$wpdb->prefix}wc_sf_index`   — value index (term/meta → product count)
-- **Nonces:** descriptive action names: `wc_sf_save_filters`, `wc_sf_save_settings`
-- **Text domain:** `wc-simple-filter`
-- **Option names:** `wc_sf_filters` (serialized array), `wc_sf_settings`
+  - `{$wpdb->prefix}spf_filters` — filter configuration (repeater rows)
+  - `{$wpdb->prefix}spf_index`   — value index (term/meta → product count)
+- **Nonces:** descriptive action names: `spf_save_filters`, `spf_save_settings`
+- **Text domain:** `simple-product-filter`
+- **Option names:** `spf_filters` (serialized array), `spf_settings`
 
 ### PHP Version and Type Usage
 - Target **PHP 8.0+**. Use union types, named arguments, `match`, and `null-safe`
@@ -98,7 +98,7 @@ Reference: https://developer.wordpress.org/coding-standards/wordpress-coding-sta
 
 ### Imports and Autoloading
 - Use **Composer PSR-4 autoloading** when `composer.json` is present.
-- Namespace: `WC_Simple_Filter\`
+- Namespace: `Simple_Product_Filter\`
 - If not using Composer, use `require_once` and guard with `defined( 'ABSPATH' )`.
 
 ### WordPress Security (mandatory)
@@ -123,18 +123,18 @@ Reference: https://developer.wordpress.org/coding-standards/wordpress-coding-sta
 ### Internationalization (i18n)
 - Wrap all user-facing strings:
   ```php
-  __( 'Filter name', 'wc-simple-filter' )
-  esc_html__( 'No values', 'wc-simple-filter' )
+  __( 'Filter name', 'simple-product-filter' )
+  esc_html__( 'No values', 'simple-product-filter' )
   ```
 - Use `_n()` for plurals, `_x()` for context-disambiguated strings.
 
 ### Architecture
 - Use **OOP with single-responsibility classes**.
-- Main plugin file (`wc-simple-filter.php`) should only bootstrap.
+- Main plugin file (`simple-product-filter.php`) should only bootstrap.
 - Suggested directory structure:
   ```
-  wc-simple-filter/
-  ├── wc-simple-filter.php          # Plugin header + bootstrap
+  simple-product-filter/
+  ├── simple-product-filter.php          # Plugin header + bootstrap
   ├── uninstall.php                 # Cleanup on uninstall
   ├── includes/
   │   ├── class-plugin.php          # Main orchestrator / hook loader
@@ -147,7 +147,7 @@ Reference: https://developer.wordpress.org/coding-standards/wordpress-coding-sta
   │   ├── class-filter-manager.php  # CRUD for filter config (DB)
   │   ├── class-index-manager.php   # Build/query the value index table
   │   ├── class-ajax-handler.php    # AJAX endpoints (save, reindex)
-  │   └── class-shortcode.php       # [wc_simple_filter] shortcode + PHP helper
+  │   └── class-shortcode.php       # [simple_product_filter] shortcode + PHP helper
   ├── assets/
   │   ├── css/
   │   │   └── admin.css
@@ -165,8 +165,8 @@ Reference: https://developer.wordpress.org/coding-standards/wordpress-coding-sta
   ```
 
 ### Database
-- `{$wpdb->prefix}wc_sf_filters` — one row per filter, stores type, style, config JSON.
-- `{$wpdb->prefix}wc_sf_index`   — maps (filter_type, value) → product_count for fast
+- `{$wpdb->prefix}spf_filters` — one row per filter, stores type, style, config JSON.
+- `{$wpdb->prefix}spf_index`   — maps (filter_type, value) → product_count for fast
   hide-empty logic. Rebuilt via AJAX or on WooCommerce product save.
 - Tables created on activation via `dbDelta()`.
 - Always use `$wpdb->prepare()` for parameterised queries.

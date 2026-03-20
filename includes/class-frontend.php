@@ -2,10 +2,10 @@
 /**
  * Frontend class — enqueue CSS/JS and register frontend hooks.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter;
+namespace Simple_Product_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -38,7 +38,7 @@ class Frontend {
 	 *  - we are not in admin
 	 *  - it is the main query (not a secondary one, e.g. widgets)
 	 *  - it is a WC product archive, shop page, or product taxonomy
-	 *  - hook wc_sf_apply_query_filter returns true
+	 *  - hook spf_apply_query_filter returns true
 	 *
 	 * Pagination is handled exclusively in JS (reset paged=1 when filters change).
 	 * PHP only reads $_GET['wcsf'] — if the parameter is not in the URL, the query does not change.
@@ -63,7 +63,7 @@ class Frontend {
 		 * @param bool      $apply  Apply filtering? Default true.
 		 * @param \WP_Query $query  Current WP_Query object.
 		 */
-		if ( ! (bool) apply_filters( 'wc_sf_apply_query_filter', true, $query ) ) {
+		if ( ! (bool) apply_filters( 'spf_apply_query_filter', true, $query ) ) {
 			return;
 		}
 
@@ -91,7 +91,7 @@ class Frontend {
 		 * @param array<string, mixed>  $extra  Built query args.
 		 * @param array<string, mixed>  $params Active filter parameters.
 		 */
-		do_action( 'wc_sf_before_filter_query', $query, $extra, $params );
+		do_action( 'spf_before_filter_query', $query, $extra, $params );
 
 		// --- tax_query ---
 		if ( ! empty( $extra['tax_query'] ) ) {
@@ -207,18 +207,18 @@ class Frontend {
 	 * @return array<string, mixed>
 	 */
 	private function get_js_data(): array {
-		$settings = get_option( 'wc_sf_settings', [] );
+		$settings = get_option( 'spf_settings', [] );
 
 		return [
 			'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
-			'nonce'          => wp_create_nonce( 'wc_sf_frontend_nonce' ),
+			'nonce'          => wp_create_nonce( 'spf_frontend_nonce' ),
 			'filterMode'     => $settings['filter_mode'] ?? 'ajax',
 			'i18n'           => [
-				'viewMore'     => __( 'Show more', 'wc-simple-filter' ),
-				'viewLess'     => __( 'Show less', 'wc-simple-filter' ),
-				'resetAll'     => $settings['reset_button_text'] ?? __( 'Reset filters', 'wc-simple-filter' ),
-				'closeLabel'   => __( 'Close', 'wc-simple-filter' ),
-				'removeFilter' => __( 'Remove filter', 'wc-simple-filter' ),
+				'viewMore'     => __( 'Show more', 'simple-product-filter' ),
+				'viewLess'     => __( 'Show less', 'simple-product-filter' ),
+				'resetAll'     => $settings['reset_button_text'] ?? __( 'Reset filters', 'simple-product-filter' ),
+				'closeLabel'   => __( 'Close', 'simple-product-filter' ),
+				'removeFilter' => __( 'Remove filter', 'simple-product-filter' ),
 			],
 		];
 	}
@@ -236,6 +236,6 @@ class Frontend {
 		 *
 		 * @param bool $should Load assets? Default true.
 		 */
-		return (bool) apply_filters( 'wc_sf_enqueue_frontend_assets', true );
+		return (bool) apply_filters( 'spf_enqueue_frontend_assets', true );
 	}
 }

@@ -7,7 +7,7 @@
  * @var array<int, array<string, mixed>> $values  Filter values.
  * @var string                           $layout  Layout type.
  *
- * Override: copy to {theme}/wc-simple-filter/filter-types/color.php
+ * Override: copy to {theme}/simple-product-filter/filter-types/color.php
  *
  * @package WC_Simple_Filter
  */

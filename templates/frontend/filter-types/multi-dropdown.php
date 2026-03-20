@@ -7,7 +7,7 @@
  * @var array<int, array<string, mixed>> $values  Filter values.
  * @var string                           $layout  Layout type.
  *
- * Override: copy to {theme}/wc-simple-filter/filter-types/multi-dropdown.php
+ * Override: copy to {theme}/simple-product-filter/filter-types/multi-dropdown.php
  *
  * @package WC_Simple_Filter
  */
@@ -35,5 +35,5 @@ $label       = $filter['label'] ?? '';
 			</option>
 		<?php endforeach; ?>
 	</select>
-	<p class="wcsf__dropdown-hint"><?php esc_html_e( 'Ctrl/Cmd + click for multiple values', 'wc-simple-filter' ); ?></p>
+	<p class="wcsf__dropdown-hint"><?php esc_html_e( 'Ctrl/Cmd + click for multiple values', 'simple-product-filter' ); ?></p>
 </div>

@@ -7,7 +7,7 @@
  * @var string $value_slug Filter value (slug).
  * @var string $filter_type Filter type.
  *
- * Override: copy to {theme}/wc-simple-filter/partials/active-chip.php
+ * Override: copy to {theme}/simple-product-filter/partials/active-chip.php
  *
  * Note: Fully functional only in Phase 2b (filtering).
  *
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<button type="button"
 			class="wcsf__active-chip-remove"
 			<?php /* translators: %s: active filter label. */ ?>
-			aria-label="<?php echo esc_attr( sprintf( __( 'Remove filter: %s', 'wc-simple-filter' ), $label ?? '' ) ); ?>">
+			aria-label="<?php echo esc_attr( sprintf( __( 'Remove filter: %s', 'simple-product-filter' ), $label ?? '' ) ); ?>">
 		<span aria-hidden="true">&times;</span>
 	</button>
 </span>

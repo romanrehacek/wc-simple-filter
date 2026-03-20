@@ -2,10 +2,10 @@
 /**
  * Shortcode [wc_simple_filter] and PHP helper wc_simple_filter().
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter;
+namespace Simple_Product_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -34,7 +34,7 @@ class Shortcode {
 	 */
 	public function register_hooks(): void {
 		add_shortcode( 'wc_simple_filter', [ $this, 'render' ] );
-		add_action( 'wc_sf_render_filters', [ $this, 'render_from_action' ] );
+		add_action( 'spf_render_filters', [ $this, 'render_from_action' ] );
 	}
 
 	/**
@@ -60,7 +60,7 @@ class Shortcode {
 	}
 
 	/**
-	 * Callback for action wc_sf_render_filters (PHP helper).
+	 * Callback for action spf_render_filters (PHP helper).
 	 *
 	 * @param array<string, mixed> $args Arguments.
 	 * @return void
@@ -98,7 +98,7 @@ class Shortcode {
 		 *
 		 * @param string $html Empty HTML output.
 		 */
-			return (string) apply_filters( 'wc_sf_no_filters_html', '' );
+			return (string) apply_filters( 'spf_no_filters_html', '' );
 		}
 
 		// Normalize and validate parameters.
@@ -119,7 +119,7 @@ class Shortcode {
 		 * @param string                           $layout   Layout type.
 		 * @param array<string, mixed>             $atts     Shortcode attributes.
 		 */
-		$filters = (array) apply_filters( 'wc_sf_render_filters_data', $filters, $layout, $atts );
+		$filters = (array) apply_filters( 'spf_render_filters_data', $filters, $layout, $atts );
 
 		// Prepare template args.
 		$template_args = [
@@ -136,7 +136,7 @@ class Shortcode {
 		 * @param array<int, array<string, mixed>> $filters List of filters.
 		 * @param string                           $layout  Layout type.
 		 */
-		do_action( 'wc_sf_before_filters', $filters, $layout );
+		do_action( 'spf_before_filters', $filters, $layout );
 
 		$html = Template::get_template( 'filter-wrapper.php', $template_args, true );
 
@@ -146,7 +146,7 @@ class Shortcode {
 		 * @param array<int, array<string, mixed>> $filters List of filters.
 		 * @param string                           $layout  Layout type.
 		 */
-		do_action( 'wc_sf_after_filters', $filters, $layout );
+		do_action( 'spf_after_filters', $filters, $layout );
 
 		return $html;
 	}
@@ -206,7 +206,7 @@ class Shortcode {
 		 *
 		 * @param array<string, mixed> $filter Filter data.
 		 */
-		do_action( 'wc_sf_before_filter_item', $filter );
+		do_action( 'spf_before_filter_item', $filter );
 
 		$args = [
 			'filter'      => $filter,
@@ -224,14 +224,14 @@ class Shortcode {
 		 * @param string               $html   HTML output.
 		 * @param array<string, mixed> $filter Filter data.
 		 */
-		$html = (string) apply_filters( 'wc_sf_filter_item_html', $html, $filter );
+		$html = (string) apply_filters( 'spf_filter_item_html', $html, $filter );
 
 		/**
 		 * Action after individual filter.
 		 *
 		 * @param array<string, mixed> $filter Filter data.
 		 */
-		do_action( 'wc_sf_after_filter_item', $filter );
+		do_action( 'spf_after_filter_item', $filter );
 
 		return $html;
 	}
@@ -308,9 +308,9 @@ class Shortcode {
 
 			// Fallback to default 3 statuses if no config.
 			$status_defaults = [
-				'instock'     => __( 'In stock', 'wc-simple-filter' ),
-				'outofstock'  => __( 'Out of stock', 'wc-simple-filter' ),
-				'onbackorder' => __( 'On backorder', 'wc-simple-filter' ),
+				'instock'     => __( 'In stock', 'simple-product-filter' ),
+				'outofstock'  => __( 'Out of stock', 'simple-product-filter' ),
+				'onbackorder' => __( 'On backorder', 'simple-product-filter' ),
 			];
 
 			foreach ( $status_defaults as $slug => $default_label ) {
@@ -329,7 +329,7 @@ class Shortcode {
 				[
 					'type'  => 'sale',
 					'slug'  => 'on_sale',
-					'label' => __( 'On sale', 'wc-simple-filter' ),
+					'label' => __( 'On sale', 'simple-product-filter' ),
 				],
 			];
 		}
@@ -390,7 +390,7 @@ class Shortcode {
 			global $wpdb;
 
 			// Try cache first.
-			$cache_key = 'wc_sf_meta_values_' . md5( $meta_key );
+			$cache_key = 'spf_meta_values_' . md5( $meta_key );
 			$rows      = wp_cache_get( $cache_key );
 
 			if ( false === $rows ) {
@@ -439,7 +439,7 @@ class Shortcode {
 		 * @param array<int, array<string, mixed>> $values  Empty array.
 		 * @param array<string, mixed>             $filter  Filter data.
 		 */
-		return (array) apply_filters( 'wc_sf_filter_values', $values, $filter );
+		return (array) apply_filters( 'spf_filter_values', $values, $filter );
 	}
 
 	/**
@@ -458,12 +458,12 @@ class Shortcode {
 
 		if ( null === $min && null !== $max ) {
 			/* translators: %s: formatted max price */
-			return sprintf( __( 'Up to %s', 'wc-simple-filter' ), $fmt( $max ) );
+			return sprintf( __( 'Up to %s', 'simple-product-filter' ), $fmt( $max ) );
 		}
 
 		if ( null !== $min && null === $max ) {
 			/* translators: %s: formatted min price */
-			return sprintf( __( '%s+', 'wc-simple-filter' ), $fmt( $min ) );
+			return sprintf( __( '%s+', 'simple-product-filter' ), $fmt( $min ) );
 		}
 
 		if ( null !== $min && null !== $max ) {

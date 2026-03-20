@@ -10,7 +10,7 @@
  * @var bool                             $collapsible Whether filters are collapsible.
  * @var bool                             $collapsed   Whether filters are collapsed by default.
  *
- * Override: copy to {theme}/wc-simple-filter/partials/filter-toggle-bar.php
+ * Override: copy to {theme}/simple-product-filter/partials/filter-toggle-bar.php
  *
  * @package WC_Simple_Filter
  */
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="wcsf__toggle-bar" role="group" aria-label="<?php esc_attr_e( 'Product filters', 'wc-simple-filter' ); ?>">
+<div class="wcsf__toggle-bar" role="group" aria-label="<?php esc_attr_e( 'Product filters', 'simple-product-filter' ); ?>">
 	<?php foreach ( $filters as $filter ) : ?>
 		<?php
 		$filter_id    = (int) ( $filter['id'] ?? 0 );

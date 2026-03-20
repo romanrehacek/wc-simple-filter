@@ -7,7 +7,7 @@
  * @var array<int, array<string, mixed>> $values  Filter values.
  * @var string                           $layout  Layout type.
  *
- * Override: copy to {theme}/wc-simple-filter/filter-types/checkbox.php
+ * Override: copy to {theme}/simple-product-filter/filter-types/checkbox.php
  *
  * @package WC_Simple_Filter
  */
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $filter_id      = (int) ( $filter['id'] ?? 0 );
 $filter_type    = $filter['filter_type'] ?? '';
-$visible_count  = apply_filters( 'wc_sf_values_visible_count', 5, $filter );
+$visible_count  = apply_filters( 'spf_values_visible_count', 5, $filter );
 $total          = count( $values );
 $has_more       = $total > $visible_count;
 ?>
@@ -59,7 +59,7 @@ $has_more       = $total > $visible_count;
 		echo esc_html(
 			sprintf(
 				/* translators: %d: number of hidden values */
-				__( 'Show more (%d)', 'wc-simple-filter' ),
+				__( 'Show more (%d)', 'simple-product-filter' ),
 				$total - $visible_count
 			)
 		);

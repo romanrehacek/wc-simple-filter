@@ -7,10 +7,10 @@
  *   or from the plugin directory:
  *   {plugin}/templates/frontend/{template}.php
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter;
+namespace Simple_Product_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -27,7 +27,7 @@ class Template {
 	/**
 	 * Template directory in theme (relative to theme root).
 	 */
-	const THEME_DIR = 'wc-simple-filter';
+	const THEME_DIR = 'simple-product-filter';
 
 	/**
 	 * Template directory in plugin (relative to plugin root).
@@ -70,7 +70,7 @@ class Template {
 		 * @param string $template      Absolute path to template.
 		 * @param string $template_name Relative template path.
 		 */
-		return (string) apply_filters( 'wc_sf_locate_template', $template, $template_name );
+		return (string) apply_filters( 'spf_locate_template', $template, $template_name );
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Template {
 		 * @param string               $template_name Relative template path.
 		 * @param array<string, mixed> $args          Template variables.
 		 */
-		do_action( 'wc_sf_before_template', $template_name, $args );
+		do_action( 'spf_before_template', $template_name, $args );
 
 		if ( $return ) {
 			ob_start();
@@ -114,7 +114,7 @@ class Template {
 		 * @param string               $template_name Relative template path.
 		 * @param array<string, mixed> $args          Template variables.
 		 */
-		do_action( 'wc_sf_after_template', $template_name, $args );
+		do_action( 'spf_after_template', $template_name, $args );
 
 		if ( $return ) {
 			return (string) ob_get_clean();

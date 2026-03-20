@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# WC Simple Filter - Complete Release Automation Script
+# Simple Product Filter - Complete Release Automation Script
 #
 # This script handles the COMPLETE release workflow:
 # 1. Validates version format (semantic versioning)
@@ -26,7 +26,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Configuration
-PLUGIN_FILE="wc-simple-filter.php"
+PLUGIN_FILE="simple-product-filter.php"
 README_FILE="readme.txt"
 PACKAGE_FILE="package.json"
 
@@ -168,8 +168,8 @@ update_version_in_files() {
     # Update Version header
     eval $sed_cmd "\"s/ \* Version:.*/ * Version:     $new_version/\"" "$PLUGIN_FILE"
 
-    # Update WC_SF_VERSION constant
-    eval $sed_cmd "\"s/define( 'WC_SF_VERSION', '[^']*'/define( 'WC_SF_VERSION', '$new_version'/\"" "$PLUGIN_FILE"
+    # Update SPF_VERSION constant
+    eval $sed_cmd "\"s/define( 'SPF_VERSION', '[^']*'/define( 'SPF_VERSION', '$new_version'/\"" "$PLUGIN_FILE"
 
     print_success "$PLUGIN_FILE updated (Version + Constant)"
 
@@ -298,7 +298,7 @@ create_and_push_tag() {
 
     echo ""
     echo -e "${GREEN}🚀 GitHub Actions workflow triggered!${NC}"
-    echo -e "Monitor deployment at: ${CYAN}https://github.com/romanrehacek/wc-simple-filter/actions${NC}"
+    echo -e "Monitor deployment at: ${CYAN}https://github.com/romanrehacek/simple-product-filter/actions${NC}"
 }
 
 show_what_happens_next() {
@@ -321,8 +321,8 @@ show_what_happens_next() {
     echo "  • Plugin appears on WordPress.org: ~1-2 hours (cache)"
     echo ""
     echo -e "${BLUE}Check status:${NC}"
-    echo "  GitHub: https://github.com/romanrehacek/wc-simple-filter/actions"
-    echo "  WordPress.org: https://wordpress.org/plugins/wc-simple-filter/"
+    echo "  GitHub: https://github.com/romanrehacek/simple-product-filter/actions"
+    echo "  WordPress.org: https://wordpress.org/plugins/simple-product-filter/"
     echo ""
 }
 

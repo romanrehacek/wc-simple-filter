@@ -3,7 +3,7 @@
  * Template: "Settings" tab.
  *
  * Available variables:
- *   $settings    array        Settings from wp_options (wc_sf_settings)
+ *   $settings    array        Settings from wp_options (spf_settings)
  *   $index_time  string|null  Time of the last index rebuild
  *
  * @package WC_Simple_Filter
@@ -23,25 +23,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Filtering method -->
 		<tr>
 			<th scope="row">
-				<?php esc_html_e( 'Filtering method', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Filtering method', 'simple-product-filter' ); ?>
 			</th>
 			<td>
 				<label>
 					<input type="radio" name="settings[filter_mode]" value="ajax"
 						<?php checked( $settings['filter_mode'] ?? 'ajax', 'ajax' ); ?> />
-					<?php esc_html_e( 'AJAX — instantly without page load', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'AJAX — instantly without page load', 'simple-product-filter' ); ?>
 				</label>
 				<br />
 				<label>
 					<input type="radio" name="settings[filter_mode]" value="submit"
 						<?php checked( $settings['filter_mode'] ?? 'ajax', 'submit' ); ?> />
-					<?php esc_html_e( 'Button — form submission', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Button — form submission', 'simple-product-filter' ); ?>
 				</label>
 				<br />
 				<label>
 					<input type="radio" name="settings[filter_mode]" value="reload"
 						<?php checked( $settings['filter_mode'] ?? 'ajax', 'reload' ); ?> />
-					<?php esc_html_e( 'Reload — page refresh on every change', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Reload — page refresh on every change', 'simple-product-filter' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -50,7 +50,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tr>
 			<th scope="row">
 				<label for="wc-sf-filter-btn-text">
-					<?php esc_html_e( '"Filter" button text', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( '"Filter" button text', 'simple-product-filter' ); ?>
 				</label>
 			</th>
 			<td>
@@ -58,11 +58,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 					type="text"
 					id="wc-sf-filter-btn-text"
 					name="settings[filter_button_text]"
-					value="<?php echo esc_attr( $settings['filter_button_text'] ?? __( 'Filter', 'wc-simple-filter' ) ); ?>"
+					value="<?php echo esc_attr( $settings['filter_button_text'] ?? __( 'Filter', 'simple-product-filter' ) ); ?>"
 					class="regular-text"
 				/>
 				<p class="description">
-					<?php esc_html_e( 'Displayed in "Button" mode.', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Displayed in "Button" mode.', 'simple-product-filter' ); ?>
 				</p>
 			</td>
 		</tr>
@@ -70,7 +70,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Reset button -->
 		<tr>
 			<th scope="row">
-				<?php esc_html_e( 'Reset button', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Reset button', 'simple-product-filter' ); ?>
 			</th>
 			<td>
 				<label>
@@ -80,7 +80,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						value="1"
 						<?php checked( ! empty( $settings['show_reset_button'] ) ); ?>
 					/>
-					<?php esc_html_e( 'Display "Clear filters" button', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Display "Clear filters" button', 'simple-product-filter' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -89,7 +89,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tr>
 			<th scope="row">
 				<label for="wc-sf-reset-btn-text">
-					<?php esc_html_e( 'Reset button text', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Reset button text', 'simple-product-filter' ); ?>
 				</label>
 			</th>
 			<td>
@@ -97,7 +97,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					type="text"
 					id="wc-sf-reset-btn-text"
 					name="settings[reset_button_text]"
-					value="<?php echo esc_attr( $settings['reset_button_text'] ?? __( 'Clear filters', 'wc-simple-filter' ) ); ?>"
+					value="<?php echo esc_attr( $settings['reset_button_text'] ?? __( 'Clear filters', 'simple-product-filter' ) ); ?>"
 					class="regular-text"
 				/>
 			</td>
@@ -106,7 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Hide empty values globally -->
 		<tr>
 			<th scope="row">
-				<?php esc_html_e( 'Hide empty values', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Hide empty values', 'simple-product-filter' ); ?>
 			</th>
 			<td>
 				<label>
@@ -116,7 +116,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						value="1"
 						<?php checked( ! empty( $settings['hide_empty'] ) ); ?>
 					/>
-					<?php esc_html_e( 'Do not display filter values without products (global default)', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Do not display filter values without products (global default)', 'simple-product-filter' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -124,7 +124,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<!-- Delete data on uninstall -->
 		<tr>
 			<th scope="row">
-				<?php esc_html_e( 'Uninstallation', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Uninstallation', 'simple-product-filter' ); ?>
 			</th>
 			<td>
 				<label>
@@ -134,10 +134,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 						value="1"
 						<?php checked( ! empty( $settings['delete_on_uninstall'] ) ); ?>
 					/>
-					<?php esc_html_e( 'Delete all plugin data on uninstall', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Delete all plugin data on uninstall', 'simple-product-filter' ); ?>
 				</label>
 				<p class="description wc-sf-danger-text">
-					<?php esc_html_e( 'Warning: this action is irreversible. DB tables, settings, and cache will be deleted.', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Warning: this action is irreversible. DB tables, settings, and cache will be deleted.', 'simple-product-filter' ); ?>
 				</p>
 			</td>
 		</tr>
@@ -146,7 +146,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<p class="submit">
 		<button type="button" id="wc-sf-save-settings-btn" class="button button-primary">
-			<?php esc_html_e( 'Save settings', 'wc-simple-filter' ); ?>
+			<?php esc_html_e( 'Save settings', 'simple-product-filter' ); ?>
 		</button>
 		<span class="wc-sf-spinner spinner"></span>
 		<span class="wc-sf-msg"></span>
@@ -158,9 +158,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <!-- Index section -->
 <div class="wc-sf-index-section">
-	<h3><?php esc_html_e( 'Filter value index', 'wc-simple-filter' ); ?></h3>
+	<h3><?php esc_html_e( 'Filter value index', 'simple-product-filter' ); ?></h3>
 	<p class="description">
-		<?php esc_html_e( 'The index stores product counts for each filter value. It is used to hide empty values (hide-empty).', 'wc-simple-filter' ); ?>
+		<?php esc_html_e( 'The index stores product counts for each filter value. It is used to hide empty values (hide-empty).', 'simple-product-filter' ); ?>
 	</p>
 	<p>
 		<?php if ( $index_time ) : ?>
@@ -168,18 +168,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 			echo esc_html(
 				sprintf(
 					/* translators: %s: time of last update */
-					__( 'Last recalculated: %s', 'wc-simple-filter' ),
+					__( 'Last recalculated: %s', 'simple-product-filter' ),
 					$index_time
 				)
 			);
 			?>
 		<?php else : ?>
-			<?php esc_html_e( 'Index has not been recalculated yet.', 'wc-simple-filter' ); ?>
+			<?php esc_html_e( 'Index has not been recalculated yet.', 'simple-product-filter' ); ?>
 		<?php endif; ?>
 	</p>
 	<p>
 		<button type="button" id="wc-sf-reindex-btn" class="button button-secondary">
-			<?php esc_html_e( 'Recalculate index', 'wc-simple-filter' ); ?>
+			<?php esc_html_e( 'Recalculate index', 'simple-product-filter' ); ?>
 		</button>
 		<span class="wc-sf-spinner spinner"></span>
 		<span class="wc-sf-msg" id="wc-sf-reindex-msg"></span>

@@ -2,10 +2,10 @@
 /**
  * Main plugin orchestrator — registers all hooks.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter;
+namespace Simple_Product_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

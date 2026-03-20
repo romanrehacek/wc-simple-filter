@@ -2,17 +2,17 @@
 /**
  * "Settings" tab — general plugin settings.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter\Admin;
+namespace Simple_Product_Filter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WC_Simple_Filter\Filter_Manager;
-use WC_Simple_Filter\Index_Manager;
+use Simple_Product_Filter\Filter_Manager;
+use Simple_Product_Filter\Index_Manager;
 
 /**
  * Settings_Tab class.
@@ -25,7 +25,7 @@ class Settings_Tab {
 	 * @return void
 	 */
 	public function render(): void {
-		$settings   = get_option( 'wc_sf_settings', Filter_Manager::default_settings() );
+		$settings   = get_option( 'spf_settings', Filter_Manager::default_settings() );
 		$index_time = $this->get_last_index_time();
 		include WC_SF_PLUGIN_DIR . 'templates/admin/settings-tab.php';
 	}
@@ -38,7 +38,7 @@ class Settings_Tab {
 	private function get_last_index_time(): ?string {
 		global $wpdb;
 
-		$cache_key = 'wc_sf_last_index_time';
+		$cache_key = 'spf_last_index_time';
 		$cached    = wp_cache_get( $cache_key );
 
 		if ( false !== $cached ) {

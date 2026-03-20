@@ -1,4 +1,4 @@
-=== WC Simple Filter ===
+=== Simple Product Filter ===
 Contributors: romanrehacek
 Donate link:
 Tags: woocommerce, product filter, ajax filter, filter products, woo commerce
@@ -13,7 +13,7 @@ Lightweight WooCommerce product filters with easy setup and flexible filter type
 
 == Description ==
 
-WC Simple Filter enables shop managers to add powerful, customizable product filters to their WooCommerce stores with minimal effort. Filters can be displayed via shortcode `[wc_simple_filter]` or the PHP helper function `wc_simple_filter()`.
+Simple Product Filter enables shop managers to add powerful, customizable product filters to their WooCommerce stores with minimal effort. Filters can be displayed via shortcode `[simple_product_filter]` or the PHP helper function `simple_product_filter()`.
 
 This plugin provides an intuitive interface for creating and managing product filters without requiring code modifications or product edits. It's built with performance in mind, using efficient database indexing for fast filter queries.
 
@@ -32,9 +32,9 @@ This plugin provides an intuitive interface for creating and managing product fi
 == Installation ==
 
 1. Download the plugin from WordPress.org or install directly from your WordPress admin
-2. Activate "WC Simple Filter" from the Plugins menu
+2. Activate "Simple Product Filter" from the Plugins menu
 3. Navigate to **WooCommerce > Settings > Filters** to configure your filters
-4. Use the shortcode `[wc_simple_filter]` on any page or post where you want filters to appear
+4. Use the shortcode `[simple_product_filter]` on any page or post where you want filters to appear
 
 == Usage ==
 
@@ -42,15 +42,15 @@ This plugin provides an intuitive interface for creating and managing product fi
 
 Add this shortcode to any page, post, or template:
 
-`[wc_simple_filter]`
+`[simple_product_filter]`
 
 = Using PHP Function =
 
 Add this function to your theme template or custom plugin:
 
 `<?php
-if ( function_exists( 'wc_simple_filter' ) ) {
-    wc_simple_filter();
+if ( function_exists( 'simple_product_filter' ) ) {
+    simple_product_filter();
 }
 ?>`
 
@@ -76,7 +76,7 @@ This plugin requires:
 
 = Will this plugin modify my products? =
 
-No. WC Simple Filter is read-only and never modifies or deletes any WooCommerce products or product data.
+No. Simple Product Filter is read-only and never modifies or deletes any WooCommerce products or product data.
 
 = Can I use this on a multisite network? =
 
@@ -117,11 +117,11 @@ Yes, the plugin is fully translation-ready with `.pot` files included for transl
 == Upgrade Notice ==
 
 = 0.1.0 =
-Initial release of WC Simple Filter. Install and activate to start creating product filters.
+Initial release of Simple Product Filter. Install and activate to start creating product filters.
 
 == Support ==
 
-For issues, feature requests, or support, please visit the [GitHub repository](https://github.com/romanrehacek/wc-simple-filter/issues).
+For issues, feature requests, or support, please visit the [GitHub repository](https://github.com/romanrehacek/simple-product-filter/issues).
 
 == License ==
 
@@ -136,19 +136,19 @@ Developed by Roman Rehacek
 = Database Tables =
 
 The plugin creates two custom tables:
-* `{prefix}wc_sf_filters` - Stores filter configurations
-* `{prefix}wc_sf_index` - Stores product count index for performance
+* `{prefix}spf_filters` - Stores filter configurations
+* `{prefix}spf_index` - Stores product count index for performance
 
 These tables are created automatically on plugin activation and cleaned up on uninstall.
 
 = Hooks & Filters =
 
-* `wc_sf_before_filters` - Fired before filters render on frontend
-* `wc_sf_after_filters` - Fired after filters render on frontend
-* `wc_sf_filter_registered` - Fired when a new filter is saved
-* `wc_sf_filter_output` - Modifies filter HTML output
-* `wc_sf_filter_config` - Modifies filter configuration before rendering
-* `wc_sf_index_count` - Customizes product count calculations
+* `spf_before_filters` - Fired before filters render on frontend
+* `spf_after_filters` - Fired after filters render on frontend
+* `spf_filter_registered` - Fired when a new filter is saved
+* `spf_filter_output` - Modifies filter HTML output
+* `spf_filter_config` - Modifies filter configuration before rendering
+* `spf_index_count` - Customizes product count calculations
 
 = Security =
 

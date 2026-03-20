@@ -2,8 +2,8 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WC Simple Filter 0.1.0\n"
-"Report-Msgid-Bugs-To: https://github.com/romanrehacek/wc-simple-filter/issues\n"
+"Project-Id-Version: Simple Product Filter 0.1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/romanrehacek/simple-product-filter/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,30 +12,30 @@ msgstr ""
 "POT-Creation-Date: 2026-03-17T21:30:28+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: wc-simple-filter\n"
+"X-Domain: simple-product-filter\n"
 
 #. Plugin Name of the plugin
-#: wc-simple-filter.php
-msgid "WC Simple Filter"
+#: simple-product-filter.php
+msgid "Simple Product Filter"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: wc-simple-filter.php
-msgid "https://github.com/romanrehacek/wc-simple-filter"
+#: simple-product-filter.php
+msgid "https://github.com/romanrehacek/simple-product-filter"
 msgstr ""
 
 #. Description of the plugin
-#: wc-simple-filter.php
-msgid "Configurable product filters for WooCommerce shop. Insert via shortcode [wc_simple_filter] or PHP function wc_simple_filter()."
+#: simple-product-filter.php
+msgid "Configurable product filters for WooCommerce shop. Insert via shortcode [simple_product_filter] or PHP function simple_product_filter()."
 msgstr ""
 
 #. Author of the plugin
-#: wc-simple-filter.php
+#: simple-product-filter.php
 msgid "Roman Rehacek"
 msgstr ""
 
 #. Author URI of the plugin
-#: wc-simple-filter.php
+#: simple-product-filter.php
 msgid "https://github.com/romanrehacek"
 msgstr ""
 
@@ -479,7 +479,7 @@ msgid "+ Add filter"
 msgstr ""
 
 #: templates/admin/help-tab.php:15
-msgid "How to use WC Simple Filter"
+msgid "How to use Simple Product Filter"
 msgstr ""
 
 #: templates/admin/help-tab.php:18
@@ -705,11 +705,11 @@ msgstr ""
 msgid "Remove filter: %s"
 msgstr ""
 
-#: wc-simple-filter.php:42
-#: wc-simple-filter.php:81
-msgid "WC Simple Filter requires an active WooCommerce plugin."
+#: simple-product-filter.php:42
+#: simple-product-filter.php:81
+msgid "Simple Product Filter requires an active WooCommerce plugin."
 msgstr ""
 
-#: wc-simple-filter.php:82
+#: simple-product-filter.php:82
 msgid "Activation Error"
 msgstr ""

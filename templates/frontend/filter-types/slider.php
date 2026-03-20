@@ -7,7 +7,7 @@
  * @var array<int, array<string, mixed>> $values  Filter values (1 item with slider configuration).
  * @var string                           $layout  Layout type.
  *
- * Override: copy to {theme}/wc-simple-filter/filter-types/slider.php
+ * Override: copy to {theme}/simple-product-filter/filter-types/slider.php
  *
  * @package WC_Simple_Filter
  */

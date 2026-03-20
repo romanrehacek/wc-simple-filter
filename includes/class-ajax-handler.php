@@ -2,10 +2,10 @@
 /**
  * AJAX handler — processes all admin AJAX requests for the plugin.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter;
+namespace Simple_Product_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -23,16 +23,16 @@ class Ajax_Handler {
 	 */
 	public function register_hooks(): void {
 		// Admin AJAX endpoints.
-		add_action( 'wp_ajax_wc_sf_save_filter',     [ $this, 'save_filter' ] );
-		add_action( 'wp_ajax_wc_sf_delete_filter',   [ $this, 'delete_filter' ] );
-		add_action( 'wp_ajax_wc_sf_reorder_filters', [ $this, 'reorder_filters' ] );
-		add_action( 'wp_ajax_wc_sf_reindex',         [ $this, 'reindex' ] );
-		add_action( 'wp_ajax_wc_sf_get_type_values', [ $this, 'get_type_values' ] );
-		add_action( 'wp_ajax_wc_sf_save_settings',   [ $this, 'save_settings' ] );
+		add_action( 'wp_ajax_spf_save_filter',     [ $this, 'save_filter' ] );
+		add_action( 'wp_ajax_spf_delete_filter',   [ $this, 'delete_filter' ] );
+		add_action( 'wp_ajax_spf_reorder_filters', [ $this, 'reorder_filters' ] );
+		add_action( 'wp_ajax_spf_reindex',         [ $this, 'reindex' ] );
+		add_action( 'wp_ajax_spf_get_type_values', [ $this, 'get_type_values' ] );
+		add_action( 'wp_ajax_spf_save_settings',   [ $this, 'save_settings' ] );
 
 		// Frontend AJAX endpoint — available to both authenticated and unauthenticated users.
-		add_action( 'wp_ajax_wc_sf_filter_products',        [ $this, 'filter_products' ] );
-		add_action( 'wp_ajax_nopriv_wc_sf_filter_products', [ $this, 'filter_products' ] );
+		add_action( 'wp_ajax_spf_filter_products',        [ $this, 'filter_products' ] );
+		add_action( 'wp_ajax_nopriv_spf_filter_products', [ $this, 'filter_products' ] );
 	}
 
 	/**
@@ -41,10 +41,10 @@ class Ajax_Handler {
 	 * @return void
 	 */
 	private function verify(): void {
-		check_ajax_referer( 'wc_sf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'spf_admin_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_send_json_error( [ 'message' => __( 'You do not have permission.', 'wc-simple-filter' ) ], 403 );
+			wp_send_json_error( [ 'message' => __( 'You do not have permission.', 'simple-product-filter' ) ], 403 );
 		}
 	}
 
@@ -64,7 +64,7 @@ class Ajax_Handler {
 		error_log( 'WC_SF save_filter: ' . wp_json_encode( $data ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 
 		if ( empty( $data['filter_type'] ) ) {
-			wp_send_json_error( [ 'message' => __( 'Filter type is required.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Filter type is required.', 'simple-product-filter' ) ] );
 		}
 
 		if ( $id > 0 ) {
@@ -77,7 +77,7 @@ class Ajax_Handler {
 		}
 
 		if ( ! $success || ! $filter ) {
-			wp_send_json_error( [ 'message' => __( 'Error saving filter.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Error saving filter.', 'simple-product-filter' ) ] );
 		}
 
 		wp_send_json_success( [ 'filter' => $filter ] );
@@ -95,13 +95,13 @@ class Ajax_Handler {
 		$id = absint( $_POST['id'] ?? 0 );
 
 		if ( $id <= 0 ) {
-			wp_send_json_error( [ 'message' => __( 'Invalid filter ID.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Invalid filter ID.', 'simple-product-filter' ) ] );
 		}
 
 		$success = Filter_Manager::delete( $id );
 
 		if ( ! $success ) {
-			wp_send_json_error( [ 'message' => __( 'Error deleting filter.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Error deleting filter.', 'simple-product-filter' ) ] );
 		}
 
 		wp_send_json_success();
@@ -121,7 +121,7 @@ class Ajax_Handler {
 		$order     = array_filter( $order );
 
 		if ( empty( $order ) ) {
-			wp_send_json_error( [ 'message' => __( 'Invalid order.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Invalid order.', 'simple-product-filter' ) ] );
 		}
 
 		Filter_Manager::reorder( $order );
@@ -139,7 +139,7 @@ class Ajax_Handler {
 		$filters = Filter_Manager::get_all();
 
 		if ( empty( $filters ) ) {
-			wp_send_json_success( [ 'count' => 0, 'message' => __( 'No filters to index.', 'wc-simple-filter' ) ] );
+			wp_send_json_success( [ 'count' => 0, 'message' => __( 'No filters to index.', 'simple-product-filter' ) ] );
 		}
 
 		$filter_types = array_unique( array_column( $filters, 'filter_type' ) );
@@ -149,7 +149,7 @@ class Ajax_Handler {
 			'count'   => $total,
 			'message' => sprintf(
 				/* translators: %d: number of records */
-				__( 'Index rebuilt. Processed: %d records.', 'wc-simple-filter' ),
+				__( 'Index rebuilt. Processed: %d records.', 'simple-product-filter' ),
 				$total
 			),
 		] );
@@ -167,7 +167,7 @@ class Ajax_Handler {
 		$filter_type = sanitize_text_field( wp_unslash( $_POST['filter_type'] ?? '' ) );
 
 		if ( empty( $filter_type ) ) {
-			wp_send_json_error( [ 'message' => __( 'Filter type is missing.', 'wc-simple-filter' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Filter type is missing.', 'simple-product-filter' ) ] );
 		}
 
 		$values = $this->load_available_values( $filter_type );
@@ -185,7 +185,7 @@ class Ajax_Handler {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$posted = isset( $_POST['settings'] ) ? (array) wp_unslash( $_POST['settings'] ) : [];
 
-		$current  = get_option( 'wc_sf_settings', Filter_Manager::default_settings() );
+		$current  = get_option( 'spf_settings', Filter_Manager::default_settings() );
 		$allowed  = array_keys( Filter_Manager::default_settings() );
 		$settings = $current;
 
@@ -208,8 +208,8 @@ class Ajax_Handler {
 			};
 		}
 
-		update_option( 'wc_sf_settings', $settings );
-		wp_send_json_success( [ 'message' => __( 'Settings saved.', 'wc-simple-filter' ) ] );
+		update_option( 'spf_settings', $settings );
+		wp_send_json_success( [ 'message' => __( 'Settings saved.', 'simple-product-filter' ) ] );
 	}
 
 	/**
@@ -242,8 +242,8 @@ class Ajax_Handler {
 
 		if ( 'sale' === $filter_type ) {
 			return [
-				[ 'value' => 'on_sale',  'label' => __( 'On sale', 'wc-simple-filter' ) ],
-				[ 'value' => 'off_sale', 'label' => __( 'No discount', 'wc-simple-filter' ) ],
+				[ 'value' => 'on_sale',  'label' => __( 'On sale', 'simple-product-filter' ) ],
+				[ 'value' => 'off_sale', 'label' => __( 'No discount', 'simple-product-filter' ) ],
 			];
 		}
 
@@ -296,7 +296,7 @@ class Ajax_Handler {
 		global $wpdb;
 
 		// Try to get from cache first.
-		$cache_key = 'wc_sf_meta_values_' . md5( $meta_key );
+		$cache_key = 'spf_meta_values_' . md5( $meta_key );
 		$rows      = wp_cache_get( $cache_key );
 
 		if ( false === $rows ) {
@@ -337,7 +337,7 @@ class Ajax_Handler {
 	 * AJAX endpoint for filtering products (frontend).
 	 *
 	 * Available to both authenticated and unauthenticated users.
-	 * Verification: frontend nonce (wc_sf_frontend_nonce).
+	 * Verification: frontend nonce (spf_frontend_nonce).
 	 *
 	 * Input (POST):
 	 *  - nonce    string  Verification nonce.
@@ -357,7 +357,7 @@ class Ajax_Handler {
 	public function filter_products(): void {
 		// Verify frontend nonce — CSRF protection.
 		// Capability check not needed (endpoint is public, read-only).
-		check_ajax_referer( 'wc_sf_frontend_nonce', 'nonce' );
+		check_ajax_referer( 'spf_frontend_nonce', 'nonce' );
 
 		// --- Input sanitization ---
 
@@ -393,7 +393,7 @@ class Ajax_Handler {
 		 * @param int $per_page Number of products.
 		 */
 		$per_page = (int) apply_filters(
-			'wc_sf_ajax_per_page',
+			'spf_ajax_per_page',
 			(int) get_option( 'posts_per_page', 12 )
 		);
 
@@ -419,7 +419,7 @@ class Ajax_Handler {
 		 * @param int                  $paged         Page number.
 		 * @param string               $orderby       Sorting.
 		 */
-		$query_args = (array) apply_filters( 'wc_sf_ajax_query_args', $query_args, $params, $paged, $orderby );
+		$query_args = (array) apply_filters( 'spf_ajax_query_args', $query_args, $params, $paged, $orderby );
 
 		// --- Run query and render ---
 
@@ -490,7 +490,7 @@ class Ajax_Handler {
 		 * @param \WP_Query            $query   WP_Query object.
 		 * @param array<string, mixed> $params  Active filter parameters.
 		 */
-		do_action( 'wc_sf_after_products_render', $query, $params );
+		do_action( 'spf_after_products_render', $query, $params );
 
 		wp_send_json_success( [
 			'html'        => $products_html,
@@ -771,10 +771,10 @@ class Ajax_Handler {
 	public static function default_label_for_type( string $filter_type ): string {
 		// Basic types.
 		$labels = [
-			'brand'  => __( 'Brand', 'wc-simple-filter' ),
-			'price'  => __( 'Price', 'wc-simple-filter' ),
-			'status' => __( 'Availability', 'wc-simple-filter' ),
-			'sale'   => __( 'Sale', 'wc-simple-filter' ),
+			'brand'  => __( 'Brand', 'simple-product-filter' ),
+			'price'  => __( 'Price', 'simple-product-filter' ),
+			'status' => __( 'Availability', 'simple-product-filter' ),
+			'sale'   => __( 'Sale', 'simple-product-filter' ),
 		];
 
 		if ( isset( $labels[ $filter_type ] ) ) {

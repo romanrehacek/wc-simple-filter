@@ -2,10 +2,10 @@
 /**
  * Filter management — CRUD operations and database installation.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter;
+namespace Simple_Product_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -16,14 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Responsible for:
  * - creating database tables on plugin activation
- * - CRUD operations on the wc_sf_filters table
+ * - CRUD operations on the spf_filters table
  */
 class Filter_Manager {
 
 	/**
 	 * Table name for filters (without prefix).
 	 */
-	const TABLE_FILTERS = 'wc_sf_filters';
+	const TABLE_FILTERS = 'spf_filters';
 
 	/**
 	 * Database schema version.
@@ -64,11 +64,11 @@ class Filter_Manager {
 		Index_Manager::install();
 
 		// Store schema version.
-		update_option( 'wc_sf_db_version', self::DB_VERSION );
+		update_option( 'spf_db_version', self::DB_VERSION );
 
 		// Store default settings if they don't exist yet.
-		if ( false === get_option( 'wc_sf_settings' ) ) {
-			add_option( 'wc_sf_settings', self::default_settings() );
+		if ( false === get_option( 'spf_settings' ) ) {
+			add_option( 'spf_settings', self::default_settings() );
 		}
 	}
 
@@ -80,9 +80,9 @@ class Filter_Manager {
 	public static function default_settings(): array {
 		return [
 			'filter_mode'          => 'ajax',
-			'filter_button_text'   => __( 'Filter', 'wc-simple-filter' ),
+			'filter_button_text'   => __( 'Filter', 'simple-product-filter' ),
 			'show_reset_button'    => true,
-			'reset_button_text'    => __( 'Reset filters', 'wc-simple-filter' ),
+			'reset_button_text'    => __( 'Reset filters', 'simple-product-filter' ),
 			'hide_empty'           => true,
 			'delete_on_uninstall'  => false,
 		];
@@ -97,7 +97,7 @@ class Filter_Manager {
 		global $wpdb;
 
 		// Try cache first.
-		$cache_key = 'wc_sf_filters_all';
+		$cache_key = 'spf_filters_all';
 		$cached    = wp_cache_get( $cache_key );
 
 		if ( false !== $cached ) {
@@ -128,7 +128,7 @@ class Filter_Manager {
 		global $wpdb;
 
 		// Try cache first.
-		$cache_key = 'wc_sf_filter_' . $id;
+		$cache_key = 'spf_filter_' . $id;
 		$cached    = wp_cache_get( $cache_key );
 
 		if ( false !== $cached ) {
@@ -182,7 +182,7 @@ class Filter_Manager {
 		}
 
 		// Flush cache after insert.
-		wp_cache_delete( 'wc_sf_filters_all' );
+		wp_cache_delete( 'spf_filters_all' );
 
 		return (int) $wpdb->insert_id;
 	}
@@ -230,8 +230,8 @@ class Filter_Manager {
 
 		if ( false !== $result ) {
 			// Flush cache after update.
-			wp_cache_delete( 'wc_sf_filters_all' );
-			wp_cache_delete( 'wc_sf_filter_' . $id );
+			wp_cache_delete( 'spf_filters_all' );
+			wp_cache_delete( 'spf_filter_' . $id );
 		}
 
 		return false !== $result;
@@ -252,8 +252,8 @@ class Filter_Manager {
 
 		if ( false !== $result ) {
 			// Flush cache after delete.
-			wp_cache_delete( 'wc_sf_filters_all' );
-			wp_cache_delete( 'wc_sf_filter_' . $id );
+			wp_cache_delete( 'spf_filters_all' );
+			wp_cache_delete( 'spf_filter_' . $id );
 		}
 
 		return false !== $result;
@@ -282,7 +282,7 @@ class Filter_Manager {
 		}
 
 		// Flush cache after reorder.
-		wp_cache_delete( 'wc_sf_filters_all' );
+		wp_cache_delete( 'spf_filters_all' );
 
 		return true;
 	}
@@ -313,7 +313,7 @@ class Filter_Manager {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
 		$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . self::TABLE_FILTERS );
 
-		delete_option( 'wc_sf_db_version' );
-		delete_option( 'wc_sf_settings' );
+		delete_option( 'spf_db_version' );
+		delete_option( 'spf_settings' );
 	}
 }

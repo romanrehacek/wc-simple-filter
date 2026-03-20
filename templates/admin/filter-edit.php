@@ -31,11 +31,11 @@ $has_ranges      = isset( $config['ranges'] ) && is_array( $config['ranges'] );
 $show_ranges = $is_price && ! $is_slider;
 
 $style_labels = [
-	'checkbox'       => __( 'Checkboxes', 'wc-simple-filter' ),
-	'radio'          => __( 'Radio buttons', 'wc-simple-filter' ),
-	'dropdown'       => __( 'Dropdown', 'wc-simple-filter' ),
-	'multi_dropdown' => __( 'Multi-dropdown', 'wc-simple-filter' ),
-	'slider'         => __( 'Slider', 'wc-simple-filter' ),
+	'checkbox'       => __( 'Checkboxes', 'simple-product-filter' ),
+	'radio'          => __( 'Radio buttons', 'simple-product-filter' ),
+	'dropdown'       => __( 'Dropdown', 'simple-product-filter' ),
+	'multi_dropdown' => __( 'Multi-dropdown', 'simple-product-filter' ),
+	'slider'         => __( 'Slider', 'simple-product-filter' ),
 ];
 
 // Allowed styles for the given type.
@@ -54,11 +54,11 @@ $back_url = Admin::tab_url();
 
 	<p>
 		<a href="<?php echo esc_url( $back_url ); ?>" class="page-title-action">
-			&larr; <?php esc_html_e( 'Back to filter list', 'wc-simple-filter' ); ?>
+			&larr; <?php esc_html_e( 'Back to filter list', 'simple-product-filter' ); ?>
 		</a>
 	</p>
 
-	<h2><?php esc_html_e( 'Filter settings', 'wc-simple-filter' ); ?></h2>
+	<h2><?php esc_html_e( 'Filter settings', 'simple-product-filter' ); ?></h2>
 
 	<div id="wc-sf-edit-form" data-filter-type="<?php echo esc_attr( $filter_type ); ?>">
 		<input type="hidden" name="id" value="<?php echo esc_attr( $filter['id'] ); ?>" />
@@ -69,7 +69,7 @@ $back_url = Admin::tab_url();
 		<!-- Filter name -->
 		<tr>
 			<th scope="row">
-				<label for="wc-sf-label"><?php esc_html_e( 'Filter name', 'wc-simple-filter' ); ?></label>
+				<label for="wc-sf-label"><?php esc_html_e( 'Filter name', 'simple-product-filter' ); ?></label>
 			</th>
 				<td>
 					<input
@@ -85,7 +85,7 @@ $back_url = Admin::tab_url();
 		<!-- Display label -->
 		<tr>
 			<th scope="row">
-				<?php esc_html_e( 'Display label', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Display label', 'simple-product-filter' ); ?>
 			</th>
 			<td>
 				<label>
@@ -95,7 +95,7 @@ $back_url = Admin::tab_url();
 						value="1"
 						<?php checked( ! empty( $filter['show_label'] ) ); ?>
 					/>
-					<?php esc_html_e( 'Display filter name above the filter', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Display filter name above the filter', 'simple-product-filter' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -103,7 +103,7 @@ $back_url = Admin::tab_url();
 		<!-- Filter type (info) -->
 		<tr>
 			<th scope="row">
-				<?php esc_html_e( 'Filter type', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Filter type', 'simple-product-filter' ); ?>
 			</th>
 				<td>
 					<code><?php echo esc_html( $filter_type ); ?></code>
@@ -113,13 +113,13 @@ $back_url = Admin::tab_url();
 		<!-- Display style -->
 		<tr>
 			<th scope="row">
-				<label for="wc-sf-style"><?php esc_html_e( 'Display style', 'wc-simple-filter' ); ?></label>
+				<label for="wc-sf-style"><?php esc_html_e( 'Display style', 'simple-product-filter' ); ?></label>
 			</th>
 			<td>
 				<?php if ( $is_fixed_style ) : ?>
 					<code><?php echo esc_html( $style_labels[ $filter_style ] ?? $filter_style ); ?></code>
 					<p class="description">
-						<?php esc_html_e( 'Style is fixed for this filter type.', 'wc-simple-filter' ); ?>
+						<?php esc_html_e( 'Style is fixed for this filter type.', 'simple-product-filter' ); ?>
 					</p>
 					<input type="hidden" name="filter_style" value="<?php echo esc_attr( $filter_style ); ?>" />
 				<?php else : ?>
@@ -139,7 +139,7 @@ $back_url = Admin::tab_url();
 		<?php if ( ! $is_fixed_style ) : ?>
 		<tr class="wc-sf-row-hide-empty">
 			<th scope="row">
-				<?php esc_html_e( 'Hide empty', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Hide empty', 'simple-product-filter' ); ?>
 			</th>
 			<td>
 				<label>
@@ -149,7 +149,7 @@ $back_url = Admin::tab_url();
 						value="1"
 						<?php checked( $config['hide_empty'] ?? false ); ?>
 					/>
-					<?php esc_html_e( 'Do not display values without products', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Do not display values without products', 'simple-product-filter' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -160,9 +160,9 @@ $back_url = Admin::tab_url();
 	<!-- Section: Status filter (fixed configuration of stock statuses) -->
 	<?php if ( $is_status ) : ?>
 	<div class="wc-sf-section wc-sf-section-status">
-		<h3><?php esc_html_e( 'Stock statuses', 'wc-simple-filter' ); ?></h3>
+		<h3><?php esc_html_e( 'Stock statuses', 'simple-product-filter' ); ?></h3>
 		<p class="description">
-			<?php esc_html_e( 'Configure the display and description of individual stock statuses.', 'wc-simple-filter' ); ?>
+			<?php esc_html_e( 'Configure the display and description of individual stock statuses.', 'simple-product-filter' ); ?>
 		</p>
 		<table class="form-table">
 			<?php
@@ -184,7 +184,7 @@ $back_url = Admin::tab_url();
 							value="1"
 							<?php checked( $enabled ); ?>
 						/>
-						<?php esc_html_e( 'Display', 'wc-simple-filter' ); ?>
+						<?php esc_html_e( 'Display', 'simple-product-filter' ); ?>
 					</label>
 					&nbsp;
 					<input
@@ -203,7 +203,7 @@ $back_url = Admin::tab_url();
 
 	<!-- Section: Slider -->
 	<div class="wc-sf-section wc-sf-section-slider" style="<?php echo ( $is_slider ? '' : 'display:none;' ); ?>">
-		<h3><?php esc_html_e( 'Slider settings', 'wc-simple-filter' ); ?></h3>
+		<h3><?php esc_html_e( 'Slider settings', 'simple-product-filter' ); ?></h3>
 
 		<?php if ( ! empty( $price_range ) ) : ?>
 		<p class="description">
@@ -211,7 +211,7 @@ $back_url = Admin::tab_url();
 			echo wp_kses_post(
 				sprintf(
 					/* translators: %1$s: minimum price, %2$s: maximum price */
-					__( 'Current values in the shop: from %1$s to %2$s', 'wc-simple-filter' ),
+					__( 'Current values in the shop: from %1$s to %2$s', 'simple-product-filter' ),
 					wc_price( $price_range['min'] ),
 					wc_price( $price_range['max'] )
 				)
@@ -228,7 +228,7 @@ $back_url = Admin::tab_url();
 		<table class="form-table">
 			<tr>
 				<th scope="row">
-					<label for="wc-sf-slider-min"><?php esc_html_e( 'Minimum value', 'wc-simple-filter' ); ?></label>
+					<label for="wc-sf-slider-min"><?php esc_html_e( 'Minimum value', 'simple-product-filter' ); ?></label>
 				</th>
 				<td>
 					<input
@@ -243,7 +243,7 @@ $back_url = Admin::tab_url();
 			</tr>
 			<tr>
 				<th scope="row">
-					<label for="wc-sf-slider-max"><?php esc_html_e( 'Maximum value', 'wc-simple-filter' ); ?></label>
+					<label for="wc-sf-slider-max"><?php esc_html_e( 'Maximum value', 'simple-product-filter' ); ?></label>
 				</th>
 				<td>
 					<input
@@ -258,7 +258,7 @@ $back_url = Admin::tab_url();
 			</tr>
 			<tr>
 				<th scope="row">
-					<label for="wc-sf-slider-step"><?php esc_html_e( 'Step', 'wc-simple-filter' ); ?></label>
+					<label for="wc-sf-slider-step"><?php esc_html_e( 'Step', 'simple-product-filter' ); ?></label>
 				</th>
 				<td>
 					<input
@@ -271,7 +271,7 @@ $back_url = Admin::tab_url();
 						step="any"
 					/>
 					<p class="description">
-						<?php esc_html_e( 'Leave empty for free range.', 'wc-simple-filter' ); ?>
+						<?php esc_html_e( 'Leave empty for free range.', 'simple-product-filter' ); ?>
 					</p>
 				</td>
 			</tr>
@@ -280,7 +280,7 @@ $back_url = Admin::tab_url();
 
 	<!-- Section: Price ranges (for price with checkbox/radio) -->
 	<div class="wc-sf-section wc-sf-section-ranges" style="<?php echo ( $show_ranges ? '' : 'display:none;' ); ?>">
-		<h3><?php esc_html_e( 'Price ranges', 'wc-simple-filter' ); ?></h3>
+		<h3><?php esc_html_e( 'Price ranges', 'simple-product-filter' ); ?></h3>
 
 		<?php if ( $is_price && ! empty( $price_range ) ) : ?>
 		<p class="description">
@@ -288,7 +288,7 @@ $back_url = Admin::tab_url();
 			echo wp_kses_post(
 				sprintf(
 					/* translators: %1$s: minimum price, %2$s: maximum price */
-					__( 'Product prices in the shop: from %1$s to %2$s', 'wc-simple-filter' ),
+					__( 'Product prices in the shop: from %1$s to %2$s', 'simple-product-filter' ),
 					wc_price( $price_range['min'] ),
 					wc_price( $price_range['max'] )
 				)
@@ -298,14 +298,14 @@ $back_url = Admin::tab_url();
 		<?php endif; ?>
 
 		<p class="description">
-			<?php esc_html_e( 'Define price ranges. Leave "To" empty for unlimited upper limit.', 'wc-simple-filter' ); ?>
+			<?php esc_html_e( 'Define price ranges. Leave "To" empty for unlimited upper limit.', 'simple-product-filter' ); ?>
 		</p>
 		<table class="wc-sf-ranges-table widefat">
 			<thead>
 				<tr>
-					<th><?php esc_html_e( 'From', 'wc-simple-filter' ); ?></th>
-					<th><?php esc_html_e( 'To', 'wc-simple-filter' ); ?></th>
-					<th><?php esc_html_e( 'Description (optional)', 'wc-simple-filter' ); ?></th>
+					<th><?php esc_html_e( 'From', 'simple-product-filter' ); ?></th>
+					<th><?php esc_html_e( 'To', 'simple-product-filter' ); ?></th>
+					<th><?php esc_html_e( 'Description (optional)', 'simple-product-filter' ); ?></th>
 					<th></th>
 				</tr>
 			</thead>
@@ -340,12 +340,12 @@ $back_url = Admin::tab_url();
 								name="config[ranges][<?php echo esc_attr( $i ); ?>][label]"
 								value="<?php echo esc_attr( $range['label'] ?? '' ); ?>"
 								class="regular-text"
-								placeholder="<?php esc_attr_e( 'e.g., Up to 100 €', 'wc-simple-filter' ); ?>"
+								placeholder="<?php esc_attr_e( 'e.g., Up to 100 €', 'simple-product-filter' ); ?>"
 							/>
 						</td>
 						<td>
 							<button type="button" class="button button-small wc-sf-remove-range">
-								<?php esc_html_e( 'Remove', 'wc-simple-filter' ); ?>
+								<?php esc_html_e( 'Remove', 'simple-product-filter' ); ?>
 							</button>
 						</td>
 					</tr>
@@ -355,7 +355,7 @@ $back_url = Admin::tab_url();
 		</table>
 		<p>
 			<button type="button" id="wc-sf-add-range" class="button">
-				+ <?php esc_html_e( 'Add range', 'wc-simple-filter' ); ?>
+				+ <?php esc_html_e( 'Add range', 'simple-product-filter' ); ?>
 			</button>
 		</p>
 	</div>
@@ -363,17 +363,17 @@ $back_url = Admin::tab_url();
 	<!-- Section: Value selection (for taxonomy/meta with style other than slider/ranges) -->
 	<?php if ( ! $is_fixed_style && ! $is_price ) : ?>
 	<div class="wc-sf-section wc-sf-section-values" style="<?php echo ( $is_slider ? 'display:none;' : '' ); ?>">
-		<h3><?php esc_html_e( 'Value selection', 'wc-simple-filter' ); ?></h3>
+		<h3><?php esc_html_e( 'Value selection', 'simple-product-filter' ); ?></h3>
 		<p class="description">
-			<?php esc_html_e( 'Check values to display. If you don\'t check anything, all values will be displayed.', 'wc-simple-filter' ); ?>
+			<?php esc_html_e( 'Check values to display. If you don\'t check anything, all values will be displayed.', 'simple-product-filter' ); ?>
 		</p>
 
 		<p>
 			<button type="button" id="wc-sf-select-all-values" class="button"<?php echo empty( $available_values ) ? ' style="display:none;"' : ''; ?>>
-				<?php esc_html_e( 'Select all', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Select all', 'simple-product-filter' ); ?>
 			</button>
 			<button type="button" id="wc-sf-deselect-all-values" class="button"<?php echo empty( $available_values ) ? ' style="display:none;"' : ''; ?>>
-				<?php esc_html_e( 'Deselect all', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'Deselect all', 'simple-product-filter' ); ?>
 			</button>
 			<span class="wc-sf-spinner spinner"></span>
 		</p>
@@ -403,7 +403,7 @@ $back_url = Admin::tab_url();
 			</div>
 			<?php else : ?>
 			<p class="description">
-				<?php esc_html_e( 'No values were found for this filter type.', 'wc-simple-filter' ); ?>
+				<?php esc_html_e( 'No values were found for this filter type.', 'simple-product-filter' ); ?>
 			</p>
 			<?php endif; ?>
 		</div>
@@ -411,40 +411,40 @@ $back_url = Admin::tab_url();
 		<table class="form-table">
 			<tr>
 				<th scope="row">
-					<label for="wc-sf-sort-by"><?php esc_html_e( 'Sorting', 'wc-simple-filter' ); ?></label>
+					<label for="wc-sf-sort-by"><?php esc_html_e( 'Sorting', 'simple-product-filter' ); ?></label>
 				</th>
 				<td>
 					<select id="wc-sf-sort-by" name="config[sort_by]">
 						<option value="name" <?php selected( $config['sort_by'] ?? 'name', 'name' ); ?>>
-							<?php esc_html_e( 'By name A→Z', 'wc-simple-filter' ); ?>
+							<?php esc_html_e( 'By name A→Z', 'simple-product-filter' ); ?>
 						</option>
 						<option value="name_desc" <?php selected( $config['sort_by'] ?? '', 'name_desc' ); ?>>
-							<?php esc_html_e( 'By name Z→A', 'wc-simple-filter' ); ?>
+							<?php esc_html_e( 'By name Z→A', 'simple-product-filter' ); ?>
 						</option>
 						<option value="count" <?php selected( $config['sort_by'] ?? '', 'count' ); ?>>
-							<?php esc_html_e( 'By count ↑', 'wc-simple-filter' ); ?>
+							<?php esc_html_e( 'By count ↑', 'simple-product-filter' ); ?>
 						</option>
 						<option value="count_desc" <?php selected( $config['sort_by'] ?? '', 'count_desc' ); ?>>
-							<?php esc_html_e( 'By count ↓', 'wc-simple-filter' ); ?>
+							<?php esc_html_e( 'By count ↓', 'simple-product-filter' ); ?>
 						</option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<th scope="row">
-					<?php esc_html_e( 'Filter logic', 'wc-simple-filter' ); ?>
+					<?php esc_html_e( 'Filter logic', 'simple-product-filter' ); ?>
 				</th>
 				<td>
 					<label>
 						<input type="radio" name="config[logic]" value="or"
 							<?php checked( ( $config['logic'] ?? 'or' ) === 'or' ); ?> />
-						<?php esc_html_e( 'OR — display products with at least one value', 'wc-simple-filter' ); ?>
+						<?php esc_html_e( 'OR — display products with at least one value', 'simple-product-filter' ); ?>
 					</label>
 					<br />
 					<label>
 						<input type="radio" name="config[logic]" value="and"
 							<?php checked( ( $config['logic'] ?? 'or' ) === 'and' ); ?> />
-						<?php esc_html_e( 'AND — display only products with all values', 'wc-simple-filter' ); ?>
+						<?php esc_html_e( 'AND — display only products with all values', 'simple-product-filter' ); ?>
 					</label>
 				</td>
 			</tr>
@@ -455,7 +455,7 @@ $back_url = Admin::tab_url();
 	<!-- Form buttons -->
 	<p class="submit">
 		<button type="button" id="wc-sf-save-btn" class="button button-primary">
-			<?php esc_html_e( 'Save filter', 'wc-simple-filter' ); ?>
+			<?php esc_html_e( 'Save filter', 'simple-product-filter' ); ?>
 		</button>
 		<span class="wc-sf-spinner spinner"></span>
 		<span class="wc-sf-msg"></span>

@@ -2,10 +2,10 @@
 /**
  * Index Manager: cache for hide-empty filtering logic.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter;
+namespace Simple_Product_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Index_Manager class.
  *
  * Responsible for:
- * - building and updating the wc_sf_index table
+ * - building and updating the spf_index table
  * - transient cache over the index
  * - incremental updates on product changes
  */
@@ -24,7 +24,7 @@ class Index_Manager {
 	/**
 	 * Index table name (without prefix).
 	 */
-	const TABLE_INDEX = 'wc_sf_index';
+	const TABLE_INDEX = 'spf_index';
 
 	/**
 	 * Transient cache TTL in seconds (12 hours).
@@ -34,7 +34,7 @@ class Index_Manager {
 	/**
 	 * Prefix for transient keys.
 	 */
-	const CACHE_PREFIX = 'wc_sf_index_';
+	const CACHE_PREFIX = 'spf_index_';
 
 	/**
 	 * Registers WordPress hooks for incremental updates.
@@ -439,7 +439,7 @@ class Index_Manager {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		$wpdb->query(
-			"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_wc_sf_index_%' OR option_name LIKE '_transient_timeout_wc_sf_index_%'"
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_spf_index_%' OR option_name LIKE '_transient_timeout_spf_index_%'"
 		);
 	}
 }

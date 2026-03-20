@@ -2,16 +2,16 @@
 /**
  * Integration into WooCommerce Settings — inherits WC_Settings_Page.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-namespace WC_Simple_Filter\Admin;
+namespace Simple_Product_Filter\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WC_Simple_Filter\Filter_Manager;
+use Simple_Product_Filter\Filter_Manager;
 
 /**
  * Admin class.
@@ -26,7 +26,7 @@ class Admin extends \WC_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id    = 'wc_sf';
-		$this->label = __( 'Filters', 'wc-simple-filter' );
+		$this->label = __( 'Filters', 'simple-product-filter' );
 
 		// Parent constructor registers:
 		// - woocommerce_settings_tabs_array (add tab)
@@ -54,9 +54,9 @@ class Admin extends \WC_Settings_Page {
 	 */
 	protected function get_own_sections(): array {
 		return [
-			''         => __( 'Filters', 'wc-simple-filter' ),
-			'settings' => __( 'Settings', 'wc-simple-filter' ),
-			'help'     => __( 'Help', 'wc-simple-filter' ),
+			''         => __( 'Filters', 'simple-product-filter' ),
+			'settings' => __( 'Settings', 'simple-product-filter' ),
+			'help'     => __( 'Help', 'simple-product-filter' ),
 		];
 	}
 
@@ -113,7 +113,7 @@ class Admin extends \WC_Settings_Page {
 	}
 
 	/**
-	 * Saving — settings are saved via AJAX (wc_sf_save_settings).
+	 * Saving — settings are saved via AJAX (spf_save_settings).
 	 *
 	 * @return void
 	 */
@@ -182,16 +182,16 @@ class Admin extends \WC_Settings_Page {
 
 		wp_localize_script( 'wc-sf-admin', 'wcSfAdmin', [
 			'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
-			'nonce'       => wp_create_nonce( 'wc_sf_admin_nonce' ),
+			'nonce'       => wp_create_nonce( 'spf_admin_nonce' ),
 			'i18n'        => [
-				'confirmDelete' => __( 'Are you sure you want to delete this filter?', 'wc-simple-filter' ),
-				'saving'        => __( 'Saving…', 'wc-simple-filter' ),
-				'saved'         => __( 'Saved', 'wc-simple-filter' ),
-				'error'         => __( 'Error. Try again.', 'wc-simple-filter' ),
-				'reindexing'    => __( 'Rebuilding index…', 'wc-simple-filter' ),
-				'reindexDone'   => __( 'Index rebuilt.', 'wc-simple-filter' ),
-				'addRangeRow'   => __( 'Add range', 'wc-simple-filter' ),
-				'removeRow'     => __( 'Remove', 'wc-simple-filter' ),
+				'confirmDelete' => __( 'Are you sure you want to delete this filter?', 'simple-product-filter' ),
+				'saving'        => __( 'Saving…', 'simple-product-filter' ),
+				'saved'         => __( 'Saved', 'simple-product-filter' ),
+				'error'         => __( 'Error. Try again.', 'simple-product-filter' ),
+				'reindexing'    => __( 'Rebuilding index…', 'simple-product-filter' ),
+				'reindexDone'   => __( 'Index rebuilt.', 'simple-product-filter' ),
+				'addRangeRow'   => __( 'Add range', 'simple-product-filter' ),
+				'removeRow'     => __( 'Remove', 'simple-product-filter' ),
 			],
 			'filterTypes' => $this->get_filter_types_for_js(),
 		] );
@@ -205,22 +205,22 @@ class Admin extends \WC_Settings_Page {
 	private function get_filter_types_for_js(): array {
 		$types = [
 			'brand' => [
-				'label'       => __( 'Brand', 'wc-simple-filter' ),
+				'label'       => __( 'Brand', 'simple-product-filter' ),
 				'fixed_style' => false,
 				'styles'      => [ 'checkbox', 'radio', 'dropdown', 'multi_dropdown' ],
 			],
 			'status' => [
-				'label'       => __( 'Stock status', 'wc-simple-filter' ),
+				'label'       => __( 'Stock status', 'simple-product-filter' ),
 				'fixed_style' => 'checkbox',
 				'styles'      => [ 'checkbox' ],
 			],
 			'sale' => [
-				'label'       => __( 'Sale', 'wc-simple-filter' ),
+				'label'       => __( 'Sale', 'simple-product-filter' ),
 				'fixed_style' => 'checkbox',
 				'styles'      => [ 'checkbox' ],
 			],
 			'price' => [
-				'label'       => __( 'Price', 'wc-simple-filter' ),
+				'label'       => __( 'Price', 'simple-product-filter' ),
 				'fixed_style' => false,
 				'styles'      => [ 'checkbox', 'radio', 'slider' ],
 			],
