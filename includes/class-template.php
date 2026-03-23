@@ -3,7 +3,7 @@
  * Template loader with WooCommerce-style override system.
  *
  * Templates can be overridden from a theme:
- *   {theme}/wc-simple-filter/{template}.php
+ *   {theme}/simple-product-filter/{template}.php
  *   or from the plugin directory:
  *   {plugin}/templates/frontend/{template}.php
  *

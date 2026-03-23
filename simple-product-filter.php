@@ -113,3 +113,14 @@ function simple_product_filter( array $args = [] ): void {
 	}
 	do_action( 'spf_render_filters', $args );
 }
+
+/**
+ * Backward-compatible alias for the legacy helper name.
+ *
+ * @param array<string, mixed> $args Arguments (reserved for Phase 2).
+ */
+if ( ! function_exists( 'wc_simple_filter' ) ) {
+	function wc_simple_filter( array $args = [] ): void {
+		simple_product_filter( $args );
+	}
+}

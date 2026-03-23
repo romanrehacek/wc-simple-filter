@@ -1,6 +1,6 @@
 <?php
 /**
- * Shortcode [wc_simple_filter] and PHP helper wc_simple_filter().
+ * Shortcode [simple_product_filter] and PHP helper simple_product_filter().
  *
  * @package Simple_Product_Filter
  */
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Shortcode class.
  *
  * Responsible for:
- * - registering the [wc_simple_filter] shortcode
+ * - registering the [simple_product_filter] shortcode
  * - parsing shortcode attributes
  * - loading filters from the database
  * - rendering filters through the template system
@@ -33,12 +33,13 @@ class Shortcode {
 	 * @return void
 	 */
 	public function register_hooks(): void {
+		add_shortcode( 'simple_product_filter', [ $this, 'render' ] );
 		add_shortcode( 'wc_simple_filter', [ $this, 'render' ] );
 		add_action( 'spf_render_filters', [ $this, 'render_from_action' ] );
 	}
 
 	/**
-	 * Callback for the [wc_simple_filter] shortcode.
+	 * Callback for the [simple_product_filter] shortcode.
 	 *
 	 * @param array<string, string>|string $atts Shortcode attributes.
 	 * @return string HTML output.
@@ -53,7 +54,7 @@ class Shortcode {
 				'collapsed'   => 'true',
 			],
 			is_array( $atts ) ? $atts : [],
-			'wc_simple_filter'
+			'simple_product_filter'
 		);
 
 		return $this->render_filters( $atts );

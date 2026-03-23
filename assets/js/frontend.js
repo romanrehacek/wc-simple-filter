@@ -1,5 +1,5 @@
 /**
- * WC Simple Filter — Frontend JavaScript
+ * Simple Product Filter — Frontend JavaScript
  *
  * Phase 2a responsibilities (display):
  *  1. Sidebar: collapsible filter sections.
@@ -10,7 +10,7 @@
  * Phase 2b responsibilities (filtering):
  *  5. Collect filter state from all wcsf inputs.
  *  6. Dispatch filter via ajax / submit / reload mode.
- *  7. AJAX: POST to wc_sf_filter_products, swap product HTML.
+ *  7. AJAX: POST to spf_filter_products, swap product HTML.
  *  8. Reload: build URL with wcsf[] params, navigate.
  *  9. Submit: native form submit (GET).
  * 10. Push/pop state for browser history (ajax + reload modes).
@@ -19,15 +19,15 @@
  * 13. Pagination intercept in AJAX mode.
  * 14. Debounce (300 ms) on filter changes.
  *
- * @package WC_Simple_Filter
+ * @package Simple_Product_Filter
  */
 
-/* global jQuery, WC_SF_Frontend */
+/* global jQuery, spfFrontend */
 ( function ( $ ) {
 	'use strict';
 
 	// Config injected via wp_localize_script().
-	var cfg = ( typeof WC_SF_Frontend !== 'undefined' ) ? WC_SF_Frontend : {};
+	var cfg = ( typeof spfFrontend !== 'undefined' ) ? spfFrontend : {};
 
 	// Debounce timer handle.
 	var debounceTimer = null;
@@ -600,7 +600,7 @@
 	}
 
 	/**
-	 * AJAX mode: POST to wc_sf_filter_products and swap product HTML.
+	 * AJAX mode: POST to spf_filter_products and swap product HTML.
 	 *
 	 * @param {HTMLElement} root   .wcsf element.
 	 * @param {Object}      state  Filter state.
@@ -623,7 +623,7 @@
 		// unless we do it manually. We send wcsf as a nested object and let
 		// WordPress decode it (php://input / $_POST).
 		var postData = {
-			action:  'wc_sf_filter_products',
+			action:  'spf_filter_products',
 			nonce:   cfg.nonce || '',
 			paged:   paged,
 			orderby: getCurrentOrderby(),

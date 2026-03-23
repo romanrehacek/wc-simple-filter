@@ -1,5 +1,5 @@
 /**
- * WC Simple Filter — Admin JavaScript
+ * Simple Product Filter — Admin JavaScript
  *
  * Pokrýva:
  * 1. Repeater filtrov — pridávanie nového filtra (AJAX save)
@@ -12,15 +12,15 @@
  * 8. Values picker — výber/zrušenie všetkých hodnôt
  */
 
-/* global wcSfAdmin, jQuery */
+/* global spfAdmin, jQuery */
 
 ( function ( $ ) {
 	'use strict';
 
-	var ajax    = wcSfAdmin.ajaxUrl;
-	var nonce   = wcSfAdmin.nonce;
-	var i18n    = wcSfAdmin.i18n;
-	var types   = wcSfAdmin.filterTypes || {};
+	var ajax    = spfAdmin.ajaxUrl;
+	var nonce   = spfAdmin.nonce;
+	var i18n    = spfAdmin.i18n;
+	var types   = spfAdmin.filterTypes || {};
 
 	/* =========================================================
 	   Pomocné funkcie
@@ -87,7 +87,7 @@
 		$btn.prop( 'disabled', true );
 
 		$.post( ajax, {
-			action:       'wc_sf_save_filter',
+			action:       'spf_save_filter',
 			nonce:        nonce,
 			filter_type:  type,
 			filter_style: style,
@@ -219,7 +219,7 @@
 		$btn.prop( 'disabled', true );
 
 		$.post( ajax, {
-			action: 'wc_sf_delete_filter',
+			action: 'spf_delete_filter',
 			nonce:  nonce,
 			id:     id
 		} )
@@ -259,7 +259,7 @@
 				} );
 
 				$.post( ajax, {
-					action: 'wc_sf_reorder_filters',
+					action: 'spf_reorder_filters',
 					nonce:  nonce,
 					order:  order
 				} );
@@ -323,7 +323,7 @@
 		var style   = $select.val();
 
 		$.post( ajax, {
-			action:       'wc_sf_save_filter',
+			action:       'spf_save_filter',
 			nonce:        nonce,
 			id:           id,
 			filter_style: style
@@ -344,7 +344,7 @@
 		$btn.prop( 'disabled', true );
 
 		// Serializuj všetky inputy v settings div-e a pridaj action + nonce.
-		var postData = $( '#wc-sf-settings-form :input' ).serialize() + '&action=wc_sf_save_settings&nonce=' + encodeURIComponent( nonce );
+		var postData = $( '#wc-sf-settings-form :input' ).serialize() + '&action=spf_save_settings&nonce=' + encodeURIComponent( nonce );
 
 		$.post( ajax, postData )
 		.done( function ( response ) {
@@ -377,7 +377,7 @@
 		$btn.prop( 'disabled', true );
 
 		$.post( ajax, {
-			action: 'wc_sf_reindex',
+			action: 'spf_reindex',
 			nonce:  nonce
 		} )
 		.done( function ( response ) {
@@ -483,7 +483,7 @@
 
 		// Zber vstupov z #wc-sf-edit-form diva (namiesto <form> kvôli WC mainform wrapperu).
 		var postData = {
-			action: 'wc_sf_save_filter',
+			action: 'spf_save_filter',
 			nonce:  nonce
 		};
 
@@ -553,7 +553,7 @@
 	 */
 	function buildFormData( $inputs ) {
 		var postData = {
-			action: 'wc_sf_save_filter',
+			action: 'spf_save_filter',
 			nonce:  nonce
 		};
 

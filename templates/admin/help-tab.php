@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="wc-sf-wrap wc-sf-help-wrap">
 
-	<h2><?php esc_html_e( 'How to use WC Simple Filter', 'simple-product-filter' ); ?></h2>
+	<h2><?php esc_html_e( 'How to use Simple Product Filter', 'simple-product-filter' ); ?></h2>
 
 	<div class="wc-sf-help-section">
 		<h3><?php esc_html_e( 'Inserting via shortcode', 'simple-product-filter' ); ?></h3>
 		<p>
 			<?php esc_html_e( 'Insert the shortcode on any page or in a widget:', 'simple-product-filter' ); ?>
 		</p>
-		<pre class="wc-sf-code"><code>[spf]</code></pre>
+		<pre class="wc-sf-code"><code>[simple_product_filter]</code></pre>
 	</div>
 
 	<div class="wc-sf-help-section">
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p>
 			<?php esc_html_e( 'If you prefer inserting directly in the theme PHP file:', 'simple-product-filter' ); ?>
 		</p>
-		<pre class="wc-sf-code"><code>&lt;?php spf(); ?&gt;</code></pre>
+		<pre class="wc-sf-code"><code>&lt;?php simple_product_filter(); ?&gt;</code></pre>
 	</div>
 
 	<div class="wc-sf-help-section">
