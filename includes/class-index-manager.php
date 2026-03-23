@@ -432,14 +432,27 @@ class Index_Manager {
 	/**
 	 * Deletes all transient cache for the index.
 	 *
+	 * Uses delete_transient() for safety. Enumerates known filter types from DB
+	 * to remove only plugin-specific transients.
+	 *
 	 * @return void
 	 */
 	public static function flush_all_cache(): void {
-		global $wpdb;
+		// Get all configured filter types (may include attributes/meta).
+		$filters = Filter_Manager::get_all();
+		$types   = array_unique( array_map( static fn( $f ) => $f['filter_type'] ?? '', $filters ) );
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
-		$wpdb->query(
-			"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_spf_index_%' OR option_name LIKE '_transient_timeout_spf_index_%'"
-		);
+		// Ensure core types are covered as well.
+		$core = [ 'brand', 'status', 'sale' ];
+		$all  = array_unique( array_merge( $types, $core ) );
+
+		foreach ( $all as $type ) {
+			if ( empty( $type ) ) {
+				continue;
+			}
+
+			$cache_key = self::CACHE_PREFIX . md5( $type );
+			delete_transient( $cache_key );
+		}
 	}
 }

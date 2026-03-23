@@ -58,10 +58,21 @@ class Ajax_Handler {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$id     = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
-		$data   = $this->extract_filter_data();
+		// Pass sanitized request array to helper to avoid reading globals inside helper.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce and capability already verified above in $this->verify()
+		$data   = $this->extract_filter_data( isset( $_POST ) ? (array) wp_unslash( $_POST ) : [] );
 
-		// Debug log — verify that config came through correctly.
-		error_log( 'WC_SF save_filter: ' . wp_json_encode( $data ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		// Debug log — only in debug mode; prefer WC logger when available.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// Use WooCommerce logger if present.
+			if ( function_exists( 'wc_get_logger' ) ) {
+				$logger  = wc_get_logger();
+				$context = [ 'source' => 'simple-product-filter' ];
+				$logger->debug( 'save_filter: ' . wp_json_encode( $data ), $context );
+			} else {
+				error_log( 'WC_SF save_filter: ' . wp_json_encode( $data ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			}
+		}
 
 		if ( empty( $data['filter_type'] ) ) {
 			wp_send_json_error( [ 'message' => __( 'Filter type is required.', 'simple-product-filter' ) ] );
@@ -666,15 +677,24 @@ class Ajax_Handler {
 		return $args;
 	}
 	/**
-	 * Extracts and sanitizes filter data from POST request.
+	 * Extracts and sanitizes filter data from a request array.
 	 *
+	 * Callers must verify nonce and capability before passing user input here.
+	 * If $request is null, falls back to reading $_POST (for backward compatibility).
+	 *
+	 * @param array<mixed>|null $request Unslashed request data (preferred).
 	 * @return array<string, mixed>
 	 */
-	private function extract_filter_data(): array {
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		$raw_config  = isset( $_POST['config'] ) ? (array) wp_unslash( $_POST['config'] ) : []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized in Config_Validator
-		$filter_type = sanitize_text_field( wp_unslash( $_POST['filter_type'] ?? '' ) );
-		$label       = sanitize_text_field( wp_unslash( $_POST['label'] ?? '' ) );
+	private function extract_filter_data( ?array $request = null ): array {
+		// Prefer explicit request parameter to avoid reading globals in helper.
+		if ( null === $request ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- fallback for backward compatibility; callers should pass $request
+			$request = isset( $_POST ) ? (array) wp_unslash( $_POST ) : [];
+		}
+
+		$raw_config  = isset( $request['config'] ) ? (array) ( $request['config'] ) : []; // already unslashed by caller
+		$filter_type = sanitize_text_field( (string) ( $request['filter_type'] ?? '' ) );
+		$label       = sanitize_text_field( (string) ( $request['label'] ?? '' ) );
 
 		// If label is not provided, generate a nice default name.
 		if ( '' === $label ) {
@@ -699,12 +719,11 @@ class Ajax_Handler {
 
 		return [
 			'filter_type'  => $filter_type,
-			'filter_style' => sanitize_text_field( wp_unslash( $_POST['filter_style'] ?? 'checkbox' ) ),
+			'filter_style' => sanitize_text_field( (string) ( $request['filter_style'] ?? 'checkbox' ) ),
 			'label'        => $label,
-			'show_label'   => isset( $_POST['show_label'] ) ? 1 : 0,
+			'show_label'   => isset( $request['show_label'] ) ? 1 : 0,
 			'config'       => $config,
 		];
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 
 	/**
